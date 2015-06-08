@@ -21,7 +21,6 @@ package myra;
 
 import static myra.Config.CONFIG;
 
-import java.io.IOException;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
@@ -325,18 +324,18 @@ public abstract class Classifier {
 		+ " specified, the model will be tested at the end"
 		+ " of training. The results are presented in a"
 		+ " confusion matrix.";
-	
-	int available = CONSOLE_WIDTH;
-	
-	    for (String s : help.split(" ")) {
-		if (s.length() > available) {
-		    Logger.log("%n");
-		    available = CONSOLE_WIDTH;
-		}
 
-		Logger.log("%s ", s);
-		available -= (s.length() + 1);
+	int available = CONSOLE_WIDTH;
+
+	for (String s : help.split(" ")) {
+	    if (s.length() > available) {
+		Logger.log("%n");
+		available = CONSOLE_WIDTH;
 	    }
+
+	    Logger.log("%s ", s);
+	    available -= (s.length() + 1);
+	}
 
 	Logger.log("%n%n%s%n%n", "The following options are available:");
 	Logger.log("%s", buffer);
@@ -354,7 +353,8 @@ public abstract class Classifier {
 	String description = description() + " " + version();
 	Logger.log("%s", description);
 
-	//DateFormat formatter = new SimpleDateFormat("EEE MMM dd HH:mm:ss yyyy");
+	// DateFormat formatter = new SimpleDateFormat("EEE MMM dd HH:mm:ss
+	// yyyy");
 	DateFormat formatter = new SimpleDateFormat("EEE MMM dd yyyy");
 	String timestamp = formatter.format(new Date());
 	Logger.log("%" + (80 - description.length()) + "s%n", timestamp);
@@ -362,7 +362,7 @@ public abstract class Classifier {
 	for (int i = 0; i < description.length(); i++) {
 	    Logger.log("_");
 	}
-	
+
 	formatter = new SimpleDateFormat("HH:mm:ss");
 	timestamp = formatter.format(new Date());
 	Logger.log("%" + (80 - description.length()) + "s%n", timestamp);
@@ -456,7 +456,7 @@ public abstract class Classifier {
 					.getProperty("git.commit.id.describe"));
 
 	    }
-	} catch (IOException e) {
+	} catch (Exception e) {
 	    // silently ingored
 	}
 
