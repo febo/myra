@@ -1,5 +1,5 @@
 /*
- * AntTreeMiner.java
+ * AJ48.java
  * (this file is part of MYRA)
  * 
  * Copyright 2008-2015 Fernando Esteban Barril Otero
@@ -127,7 +127,6 @@ public class AJ48 extends Classifier {
 
 	TreeBuilder builder = new TreeBuilder();
 	Tree tree = builder.build(graph, null, dataset, covered);
-	tree.fixThresholds(dataset);
 
 	CONFIG.get(DEFAULT_PRUNER).prune(dataset, tree);
 
