@@ -44,8 +44,8 @@ import myra.interval.IntervalBuilder;
 import myra.interval.MDLSplit;
 
 /**
- * This class represents <b>A</b>nother implementation of <b>C4</b>.5 Release <b>8</b>
- * (<code>AJ48</code>) algorithm
+ * This class represents <b>A</b>nother <b>J</b>ava implementation of C<b>4</b>.5 Release <b>8</b>
+ * (<code>AJ48</code>) algorithm.
  * 
  * @author Fernando Esteban Barril Otero
  */
