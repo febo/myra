@@ -2,7 +2,7 @@
 
 MYRA is a collection of Ant Colony Optimization (ACO) algorithms for the data mining classification task. It includes popular rule induction and decision tree induction algorithms. The algorithms are ready to be used from the command line or can be easily called from your own Java code. They are build using a modular architecture, so they can be easily extended to incorporate different procedures and/or use different parameter values.
 
-This repository contains a complete rewrite of the code from the MYRA project hosted at [sourceforge](http://sourceforge.net/projects/myra/). The computational time has been significantly improved – tasks that used to take minutes, now are done in seconds – although it was not possible to maintain backward compatibility. You will find that the overall architecture is very similar, but most of the data structures have changed.
+This repository contains a complete rewrite of the code (by the same author) from the MYRA project hosted at [sourceforge](http://sourceforge.net/projects/myra/). The computational time has been significantly improved – tasks that used to take minutes, now are done in seconds – although it was not possible to maintain backward compatibility. You will find that the overall architecture is very similar, but most of the data structures have changed.
 
 ### Algorithms
 
@@ -106,7 +106,7 @@ Usinng command-line options you can tweak the parameters of an algorithm. Note t
 
 If you publish material based on algorithms from MYRA, please include a reference to the paper describing the algorithm. All papers are available [online](http://cs.kent.ac.uk/~febo).
 
-There is no specific way to cite the MYRA repository. If you want to make a referecence to the repository, please either include a note in your acknowledgements and/or a citation to:
+There is no specific way to cite the MYRA repository. If you would like to make a referecence to the repository, please either include a note in your acknowledgements and/or a citation to:
 ```
 @MISC{otero:myra,
     author = "F.E.B. Otero",
