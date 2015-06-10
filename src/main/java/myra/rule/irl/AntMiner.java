@@ -67,6 +67,7 @@ import myra.rule.function.SensitivitySpecificity;
  *    journal = {IEEE Transactions on Evolutionary Computation},
  *    year    = {2002},
  *    volume  = {6},
+ *    issue   = {4},
  *    pages   = {321--332}
  * }
  * </pre>
