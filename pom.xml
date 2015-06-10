@@ -10,8 +10,29 @@
     <version>4.0</version>
     <packaging>jar</packaging>
 
-    <name>myra</name>
-    <url>http://maven.apache.org</url>
+    <name>MYRA</name>
+    <description>MYRA is a collection of Ant Colony Optimization (ACO) algorithms for the data mining classification task.</description>
+    <url>https://github.com/febo/myra</url>
+
+    <licenses>
+        <license>
+            <name>Apache License, Version 2.0</name>
+            <url>http://www.apache.org/licenses/LICENSE-2.0.txt</url>
+        </license>
+    </licenses>
+
+    <developers>
+        <developer>
+            <name>Fernando Esteban Barril Otero</name>
+            <email>febo@kent.ac.uk</email>
+        </developer>
+    </developers>
+
+    <scm>
+        <connection>scm:git:git@github.com:febo/myra.git</connection>
+        <developerConnection>scm:git:git@github.com:febo/myra.git</developerConnection>
+        <url>git@github.com:febo/myra.git</url>
+    </scm>
 
     <properties>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
@@ -45,7 +66,7 @@
                     <execution>
                         <goals>
                             <goal>revision</goal>
-                         </goals>
+                        </goals>
                     </execution>
                 </executions>
 
