@@ -37,6 +37,7 @@ jar: $(CLASS_FILES)
 	@echo "git.commit.id.abbrev=`git rev-parse --short HEAD`" >> $(GIT_FILE)
 	@echo "git.commit.id.describe=`git describe --always --dirty=-DEV`" >> $(GIT_FILE)
 	@echo "git.commit.id=`git rev-parse HEAD`" >> $(GIT_FILE)
+	@cp -r src/main/resources/* $(OUTPUT)/classes
 	@$(JAR) cf $(OUTPUT)/$(JAR_FILE) -C $(OUTPUT)/classes/ .
 	@echo "[done]"
 
