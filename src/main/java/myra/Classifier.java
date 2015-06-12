@@ -319,22 +319,25 @@ public abstract class Classifier {
 		   "<arff_training_file>",
 		   "<arff_test_file>");
 
-	String help = "The minimum required parameter is a training"
-		+ " file to build the model from. If a test file is"
-		+ " specified, the model will be tested at the end"
-		+ " of training. The results are presented in a"
-		+ " confusion matrix.";
+	try {
+	    Properties messages = new Properties();
+	    messages.load(getClass().getResourceAsStream("/help.properties"));
+	    String help = messages.getProperty("usage.message");
 
-	int available = CONSOLE_WIDTH;
+	    int available = CONSOLE_WIDTH;
 
-	for (String s : help.split(" ")) {
-	    if (s.length() > available) {
-		Logger.log("%n");
-		available = CONSOLE_WIDTH;
+	    for (String s : help.split(" ")) {
+		if (s.length() > available) {
+		    Logger.log("%n");
+		    available = CONSOLE_WIDTH;
+		}
+
+		Logger.log("%s ", s);
+		available -= (s.length() + 1);
 	    }
-
-	    Logger.log("%s ", s);
-	    available -= (s.length() + 1);
+	} catch (Exception e) {
+	    // quietly ignored, the only effect is that the usage
+	    // message is not going to be printed
 	}
 
 	Logger.log("%n%n%s%n%n", "The following options are available:");
