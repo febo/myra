@@ -2,7 +2,9 @@
 
 MYRA is a collection of Ant Colony Optimization (ACO) algorithms for the data mining classification task. It includes popular rule induction and decision tree induction algorithms. The algorithms are ready to be used from the command line or can be easily called from your own Java code. They are build using a modular architecture, so they can be easily extended to incorporate different procedures and/or use different parameter values.
 
-This repository contains a complete rewrite of the code (by the same author) from the MYRA project hosted at [sourceforge](http://sourceforge.net/projects/myra/). The computational time has been significantly improved – tasks that used to take minutes, now are done in seconds – although it was not possible to maintain backward compatibility. You will find that the overall architecture is very similar, but most of the data structures have changed.
+This repository contains a complete rewrite of the code (by the same author) from the MYRA project hosted at [sourceforge](http://sourceforge.net/projects/myra/). The computational time has been significantly improved &mdash; tasks that used to take minutes, now are done in seconds &mdash; although it was not possible to maintain backward compatibility. You will find that the overall architecture is very similar, but most of the data structures have changed.
+
+While this repository is a fresh start, the versioning is maintened &mdash; version `4.0` is the new version of the refactored code. If you are interested in the hierarchical multi-label algorithms (`3.x` version), check the [sourceforge](http://sourceforge.net/projects/myra/) repository. These algorithms will eventually be refactored into this repository.
 
 ### Algorithms
 
@@ -27,7 +29,7 @@ An extension of Ant-Miner to cope with continuous attributes. It works essential
 Main class: myra.rule.pittsburgh.cAntMinerPB
 ```
 
-*c*Ant-Miner<sub>PB</sub> incorporates  a new strategy to discover a list of classification rules, which guides the search performed by the ACO algorithm using the quality of a candidate list of rules, instead of a single rule. The main motivation is to avoid the problem of rule interaction derived from the order in which the rules are discovered – i.e., the outcome of a rule affects the rules that can be discovered subsequently since the search space is modified due to the removal of examples covered by previous rules.
+*c*Ant-Miner<sub>PB</sub> incorporates  a new strategy to discover a list of classification rules, which guides the search performed by the ACO algorithm using the quality of a candidate list of rules, instead of a single rule. The main motivation is to avoid the problem of rule interaction derived from the order in which the rules are discovered &mdash; i.e., the outcome of a rule affects the rules that can be discovered subsequently since the search space is modified due to the removal of examples covered by previous rules.
 
 ##### Unordered *c*Ant-Miner<sub>PB</sub>
 ```
@@ -176,7 +178,7 @@ There is no specific way to cite the MYRA repository. If you would like to make 
 
 * M. Medland, F.E.B. Otero and A.A. Freitas. Improving the cAnt-MinerPB Classification Algorithm. In: Swarm Intelligence (Proc. ANTS 2012), Lecture Notes in Computer Science 7461, pp. 73-84. Springer, 2012.
 ```
-@INPROCEEDINGS{Ledland12datamining,
+@INPROCEEDINGS{Medland12datamining,
     author    = {M. Medland and F.E.B. Otero and A.A. Freitas},
     title     = {Improving the $c$Ant-Miner$_{\mathrm{PB}}$ Classification Algorithm},
     booktitle = {Swarm Intelligence, Lecture Notes in Computer Science 7461},
