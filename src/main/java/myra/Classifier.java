@@ -325,7 +325,7 @@ public abstract class Classifier {
 
 	try {
 	    Properties messages = new Properties();
-	    messages.load(getClass().getResourceAsStream("/help.properties"));
+	    messages.load(getClass().getResourceAsStream("/myra-help.properties"));
 	    String help = messages.getProperty("usage.message");
 
 	    int available = CONSOLE_WIDTH;
@@ -454,7 +454,7 @@ public abstract class Classifier {
 	try {
 	    Properties properties = new Properties();
 	    properties.load(Classifier.class
-		    .getResourceAsStream("/git.properties"));
+		    .getResourceAsStream("/myra-git.properties"));
 
 	    if (properties.containsKey("git.commit.id.describe")) {
 		return String
