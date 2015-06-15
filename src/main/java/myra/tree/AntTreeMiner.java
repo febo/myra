@@ -26,7 +26,6 @@ import static myra.Scheduler.PARALLEL;
 import static myra.interval.IntervalBuilder.DEFAULT_BUILDER;
 import static myra.interval.IntervalBuilder.MAXIMUM_LIMIT;
 import static myra.interval.IntervalBuilder.MINIMUM_CASES;
-import static myra.rule.Heuristic.DYNAMIC_HEURISTIC;
 import static myra.tree.AbstractPruner.DEFAULT_PRUNER;
 import static myra.tree.FindTreeActivity.CONVERGENCE;
 import static myra.tree.FindTreeActivity.DEFAULT_MEASURE;
@@ -34,6 +33,7 @@ import static myra.tree.GainRatioHeuristic.FILTER_GAIN;
 import static myra.tree.Heuristic.DEFAULT_HEURISTIC;
 import static myra.tree.PheromonePolicy.EVAPORATION_FACTOR;
 import static myra.tree.PheromonePolicy.P_BEST;
+import static myra.tree.StochasticBuilder.DYNAMIC_HEURISTIC;
 import static myra.tree.TreeMeasure.PESSIMISTIC;
 
 import java.util.ArrayList;
