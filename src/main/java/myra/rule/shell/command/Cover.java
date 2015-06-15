@@ -58,4 +58,9 @@ public class Cover implements Command {
     public String name() {
 	return "cover";
     }
+    
+    @Override
+    public int size() {
+        return 1;
+    }
 }

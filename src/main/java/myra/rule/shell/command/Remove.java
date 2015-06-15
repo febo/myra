@@ -62,4 +62,9 @@ public class Remove implements Command {
     public String name() {
 	return "remove";
     }
+    
+    @Override
+    public int size() {
+	return 1;
+    }
 }

@@ -38,4 +38,9 @@ public class Version implements Command {
     public String name() {
 	return "version";
     }
+
+    @Override
+    public int size() {
+	return 0;
+    }
 }

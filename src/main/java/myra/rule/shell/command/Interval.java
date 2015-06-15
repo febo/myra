@@ -78,4 +78,9 @@ public class Interval implements Command {
     public String name() {
 	return "interval";
     }
+    
+    @Override
+    public int size() {
+	return 1;
+    }
 }

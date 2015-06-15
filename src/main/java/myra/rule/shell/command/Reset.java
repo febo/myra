@@ -48,4 +48,9 @@ public class Reset implements Command {
     public String name() {
 	return "reset";
     }
+    
+    @Override
+    public int size() {
+	return 0;
+    }
 }

@@ -37,4 +37,9 @@ public class Quit implements Command {
     public String name() {
 	return "quit";
     }
+    
+    @Override
+    public int size() {
+	return 0;
+    }
 }

@@ -68,4 +68,9 @@ public class Load implements Command {
     public String name() {
 	return "load";
     }
+    
+    @Override
+    public int size() {
+	return 1;
+    }
 }

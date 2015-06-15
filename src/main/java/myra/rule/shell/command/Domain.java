@@ -4,6 +4,7 @@ package myra.rule.shell.command;
 import static myra.rule.shell.command.Load.DATASET;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collections;
 
 import myra.Attribute;
@@ -34,12 +35,18 @@ public class Domain implements Command {
 	    System.out.println(": [" + values.get(0) + ", "
 		    + values.get(values.size() - 1) + "]");
 	} else if (attribute.getType() == Attribute.Type.NOMINAL) {
-
+	    System.out.print("Domain for attribute " + attribute.getName() + ": ");
+	    System.out.println(Arrays.toString(attribute.values()));
 	}
     }
 
     @Override
     public String name() {
 	return "domain";
+    }
+    
+    @Override
+    public int size() {
+	return 1;
     }
 }

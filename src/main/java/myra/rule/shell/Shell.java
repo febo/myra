@@ -39,14 +39,28 @@ import myra.rule.shell.command.Remove;
 import myra.rule.shell.command.Reset;
 import myra.rule.shell.command.Version;
 
+/**
+ * Command-line shell to run iteractive commands.
+ * 
+ * @author Fernando Esteban Barril Otero
+ */
 public class Shell {
     /**
      * Memory location for the shell.
      */
     public static final Location<Shell> SHELL = new Location<Shell>();
 
+    /**
+     * Available commands.
+     */
     private Map<String, Command> commands = new HashMap<String, Command>();
 
+    /**
+     * Entry point to execute the shell.
+     * 
+     * @param args
+     *            command-line arguments.
+     */
     public static void main(String[] args) {
 	Shell shell = new Shell();
 	shell.add(new Echo());
@@ -74,6 +88,12 @@ public class Shell {
 	}
     }
 
+    /**
+     * Adds a command to the shell.
+     * 
+     * @param command
+     *            the command to add.
+     */
     public void add(Command command) {
 	if (commands.containsKey(command.name())) {
 	    throw new IllegalArgumentException("Duplicated command: "
@@ -83,6 +103,15 @@ public class Shell {
 	commands.put(command.name(), command);
     }
 
+    /**
+     * Returns a command given its name.
+     * 
+     * @param name
+     *            the command name.
+     * 
+     * @return the command instance; <code>null</code> in case no command is
+     *         found.
+     */
     public Command get(String name) {
 	return commands.get(name);
     }
@@ -96,6 +125,12 @@ public class Shell {
 	return commands.keySet();
     }
 
+    /**
+     * Runs the shell.
+     * 
+     * @throws IOException
+     *             in case of an I/O error.
+     */
     public void run() throws IOException {
 	BufferedReader reader =
 		new BufferedReader(new InputStreamReader(System.in));
@@ -119,7 +154,12 @@ public class Shell {
 		    System.arraycopy(input, 1, arguments, 0, arguments.length);
 		}
 
-		command.execute(memory, arguments);
+		if (command.size() <= arguments.length) {
+		    command.execute(memory, arguments);
+		} else {
+		    System.out.println("Missing command arguments: expected "
+			    + command.size() + ", found " + arguments.length);
+		}
 	    }
 
 	    System.out.print("> ");

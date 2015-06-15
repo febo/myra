@@ -41,4 +41,9 @@ public class Echo implements Command {
     public String name() {
 	return "echo";
     }
+
+    @Override
+    public int size() {
+	return 0;
+    }
 }

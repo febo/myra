@@ -53,4 +53,9 @@ public class Help implements Command {
     public String name() {
 	return "help";
     }
+    
+    @Override
+    public int size() {
+	return 0;
+    }
 }

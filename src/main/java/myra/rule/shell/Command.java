@@ -41,4 +41,11 @@ public interface Command {
      * @return the name of the command.
      */
     public String name();
+    
+    /**
+     * Returns the number of required arguments.
+     * 
+     * @return the number of required arguments.
+     */
+    public int size();
 }
