@@ -26,6 +26,7 @@ import static myra.Scheduler.PARALLEL;
 import static myra.interval.IntervalBuilder.DEFAULT_BUILDER;
 import static myra.interval.IntervalBuilder.MAXIMUM_LIMIT;
 import static myra.interval.IntervalBuilder.MINIMUM_CASES;
+import static myra.rule.Heuristic.DYNAMIC_HEURISTIC;
 import static myra.tree.AbstractPruner.DEFAULT_PRUNER;
 import static myra.tree.FindTreeActivity.CONVERGENCE;
 import static myra.tree.FindTreeActivity.DEFAULT_MEASURE;
@@ -33,7 +34,6 @@ import static myra.tree.GainRatioHeuristic.FILTER_GAIN;
 import static myra.tree.Heuristic.DEFAULT_HEURISTIC;
 import static myra.tree.PheromonePolicy.EVAPORATION_FACTOR;
 import static myra.tree.PheromonePolicy.P_BEST;
-import static myra.tree.StochasticBuilder.DYNAMIC_HEURISTIC;
 import static myra.tree.TreeMeasure.PESSIMISTIC;
 
 import java.util.ArrayList;
@@ -43,6 +43,7 @@ import myra.Classifier;
 import myra.Dataset;
 import myra.Model;
 import myra.Option;
+import myra.Option.BooleanOption;
 import myra.Option.DoubleOption;
 import myra.Option.IntegerOption;
 import myra.Scheduler;
@@ -183,10 +184,10 @@ public class AntTreeMiner extends Classifier {
 	options.add(heuristic);
 
 	// dynamic heuristic calculation
-	Option<Boolean> dynamic = new Option<Boolean>(DYNAMIC_HEURISTIC,
-						      "g",
-						      "enables the dynamic heuristic computation",
-						      false);
+	BooleanOption dynamic =
+		new BooleanOption(DYNAMIC_HEURISTIC,
+				  "g",
+				  "enables the dynamic heuristic computation");
 	options.add(dynamic);
 
 	// dynamic discretisation procedure

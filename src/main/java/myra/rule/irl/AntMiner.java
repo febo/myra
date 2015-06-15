@@ -43,6 +43,7 @@ import myra.Classifier;
 import myra.Dataset;
 import myra.Model;
 import myra.Option;
+import myra.Option.BooleanOption;
 import myra.Option.IntegerOption;
 import myra.interval.C45Split;
 import myra.rule.BacktrackPruner;
@@ -212,10 +213,10 @@ public class AntMiner extends Classifier {
 	options.add(heuristic);
 
 	// dynamic heuristic calculation
-	Option<Boolean> dynamic = new Option<Boolean>(DYNAMIC_HEURISTIC,
-						      "g",
-						      "enables the dynamic heuristic computation",
-						      false);
+	BooleanOption dynamic =
+		new BooleanOption(DYNAMIC_HEURISTIC,
+				  "g",
+				  "enables the dynamic heuristic computation");
 	options.add(dynamic);
 
 	return options;

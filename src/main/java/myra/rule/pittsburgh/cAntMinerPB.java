@@ -42,6 +42,7 @@ import myra.Classifier;
 import myra.Dataset;
 import myra.Model;
 import myra.Option;
+import myra.Option.BooleanOption;
 import myra.Option.DoubleOption;
 import myra.Option.IntegerOption;
 import myra.Scheduler;
@@ -64,8 +65,8 @@ import myra.rule.function.Laplace;
 import myra.rule.function.SensitivitySpecificity;
 
 /**
- * This class represents the <code><i>c</i>Ant-Miner<sub>PB</sub></code> implementation, as described in the
- * paper:
+ * This class represents the <code><i>c</i>Ant-Miner<sub>PB</sub></code>
+ * implementation, as described in the paper:
  * 
  * <pre>
  * &#64;ARTICLE{Otero13covering,
@@ -237,10 +238,10 @@ public class cAntMinerPB extends Classifier {
 	options.add(heuristic);
 
 	// dynamic heuristic calculation
-	Option<Boolean> dynamic = new Option<Boolean>(DYNAMIC_HEURISTIC,
-						      "g",
-						      "enables the dynamic heuristic computation",
-						      false);
+	BooleanOption dynamic =
+		new BooleanOption(DYNAMIC_HEURISTIC,
+				  "g",
+				  "enables the dynamic heuristic computation");
 	options.add(dynamic);
 
 	// dynamic discretisation procedure

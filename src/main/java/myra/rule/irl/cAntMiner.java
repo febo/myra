@@ -38,8 +38,7 @@ import myra.rule.BacktrackPruner;
 /**
  * Default executable class file for the <code><i>c</i>Ant-Miner</code>
  * algorithm. This implementation corresponds to the
- * <code><i>c</i>Ant-Miner2-MDL</code> described in the following
- * paper:
+ * <code><i>c</i>Ant-Miner2-MDL</code> described in the following paper:
  *
  * <pre>
  * &#64;INPROCEEDINGS{Otero09datamining,
@@ -90,15 +89,15 @@ public class cAntMiner extends AntMiner {
 	options.addAll(super.options());
 
 	// discretisation
-	Option<IntervalBuilder> pruner =
+	Option<IntervalBuilder> builder =
 		new Option<IntervalBuilder>(DEFAULT_BUILDER,
 					    "d",
 					    "specify the discretisation %s",
 					    true,
 					    "method");
-	pruner.add("c45", new C45Split());
-	pruner.add("mdl", CONFIG.get(DEFAULT_BUILDER));
-	options.add(pruner);
+	builder.add("c45", new C45Split());
+	builder.add("mdl", CONFIG.get(DEFAULT_BUILDER));
+	options.add(builder);
 
 	return options;
     }

@@ -46,6 +46,7 @@ import myra.Classifier;
 import myra.Dataset;
 import myra.Model;
 import myra.Option;
+import myra.Option.BooleanOption;
 import myra.Option.DoubleOption;
 import myra.Option.IntegerOption;
 import myra.Scheduler;
@@ -230,10 +231,10 @@ public class UcAntMinerPB extends Classifier {
 	options.add(heuristic);
 
 	// dynamic heuristic calculation
-	Option<Boolean> dynamic = new Option<>(DYNAMIC_HEURISTIC,
-					       "g",
-					       "enables the dynamic heuristic computation",
-					       false);
+	BooleanOption dynamic =
+		new BooleanOption(DYNAMIC_HEURISTIC,
+				  "g",
+				  "enables the dynamic heuristic computation");
 	options.add(dynamic);
 
 	// dynamic discretisation procedure
@@ -248,11 +249,10 @@ public class UcAntMinerPB extends Classifier {
 	options.add(builder);
 
 	// dynamic function selector
-	Option<Boolean> selector =
-		new Option<>(DYNAMIC_FUNCTION,
-			     "-selector",
-			     "enable the dynamic function selector",
-			     false);
+	BooleanOption selector =
+		new BooleanOption(DYNAMIC_FUNCTION,
+				  "-selector",
+				  "enable the dynamic function selector");
 	options.add(selector);
 
 	// dynamic function selector

@@ -89,8 +89,10 @@ public class Option<T> {
      * @param hasDefault
      *            indication whether this option has a default value.
      */
-    public Option(ConfigKey<T> key, String modifier, String description,
-	    boolean hasDefault) {
+    public Option(ConfigKey<T> key,
+		  String modifier,
+		  String description,
+		  boolean hasDefault) {
 	this(key, modifier, description, hasDefault, null);
     }
 
@@ -108,8 +110,11 @@ public class Option<T> {
      * @param argument
      *            the name of the option's argument.
      */
-    public Option(ConfigKey<T> key, String modifier, String description,
-	    boolean hasDefault, String argument) {
+    public Option(ConfigKey<T> key,
+		  String modifier,
+		  String description,
+		  boolean hasDefault,
+		  String argument) {
 	this.key = key;
 	this.modifier = modifier;
 	this.description = description;
@@ -145,6 +150,32 @@ public class Option<T> {
 	    CONFIG.set((ConfigKey<String>) key, value);
 	} else {
 	    CONFIG.set(key, alternatives.get(value));
+	}
+    }
+
+    /**
+     * Returns the value set for this option.
+     * 
+     * @return the value set for this option.
+     */
+    public String value() {
+	if (hasArgument()) {
+	    T value = CONFIG.get(key);
+
+	    if (alternatives.isEmpty()) {
+		return value.toString();
+	    }
+
+	    for (Map.Entry<String, T> entry : alternatives.entrySet()) {
+		if (value == entry.getValue()) {
+		    return entry.getKey();
+		}
+	    }
+
+	    throw new IllegalArgumentException("Value not set for option: "
+		    + modifier);
+	} else {
+	    return new String();
 	}
     }
 
@@ -242,11 +273,16 @@ public class Option<T> {
     }
 
     /**
-     * <code>Option</code> for integer arguments.
+     * <code>Option</code> for integer parameters.
      */
     public static class IntegerOption extends Option<Integer> {
-	public IntegerOption(ConfigKey<Integer> key, String modifier,
-		String description, String argument) {
+	/**
+	 * Creates an <code>IntegerOption</code>.
+	 */
+	public IntegerOption(ConfigKey<Integer> key,
+			     String modifier,
+			     String description,
+			     String argument) {
 	    super(key, modifier, description, true, argument);
 	}
 
@@ -262,11 +298,16 @@ public class Option<T> {
     }
 
     /**
-     * <code>Option</code> for double arguments.
+     * <code>Option</code> for double parameters.
      */
     public static class DoubleOption extends Option<Double> {
-	public DoubleOption(ConfigKey<Double> key, String modifier,
-		String description, String argument) {
+	/**
+	 * Creates a <code>DoubleOption</code>.
+	 */
+	public DoubleOption(ConfigKey<Double> key,
+			    String modifier,
+			    String description,
+			    String argument) {
 	    super(key, modifier, description, true, argument);
 	}
 
@@ -278,6 +319,27 @@ public class Option<T> {
 		throw new IllegalArgumentException("Expected a double value: "
 			+ value, e);
 	    }
+	}
+    }
+
+    /**
+     * <code>Option</code> for boolean parameters.
+     */
+    public static class BooleanOption extends Option<Boolean> {
+	/**
+	 * Creates an <code>BooleanOption</code>.
+	 */
+	public BooleanOption(ConfigKey<Boolean> key,
+			     String modifier,
+			     String description) {
+	    super(key, modifier, description, false);
+	}
+
+	@Override
+	public void set(String value) {
+	    // the presence of the option means that its value
+	    // should be set
+	    CONFIG.set(key, Boolean.TRUE);
 	}
     }
 }

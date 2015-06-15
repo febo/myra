@@ -325,7 +325,8 @@ public abstract class Classifier {
 
 	try {
 	    Properties messages = new Properties();
-	    messages.load(getClass().getResourceAsStream("/myra-help.properties"));
+	    messages.load(getClass()
+		    .getResourceAsStream("/myra-help.properties"));
 	    String help = messages.getProperty("usage.message");
 
 	    int available = CONSOLE_WIDTH;
@@ -360,8 +361,6 @@ public abstract class Classifier {
 	String description = description() + " " + version();
 	Logger.log("%s", description);
 
-	// DateFormat formatter = new SimpleDateFormat("EEE MMM dd HH:mm:ss
-	// yyyy");
 	DateFormat formatter = new SimpleDateFormat("EEE MMM dd yyyy");
 	String timestamp = formatter.format(new Date());
 	Logger.log("%" + (80 - description.length()) + "s%n", timestamp);
@@ -393,7 +392,19 @@ public abstract class Classifier {
 	    }
 	}
 
-	Logger.log("%n%n");
+	// default option values
+	Logger.log("%n%n[Runtime default values]%n");
+
+	for (Option<?> option : options()) {
+	    if (!parameters.containsKey(option.getModifier())
+		    && CONFIG.isPresent(option.getKey())
+		    && !option.getModifier().equals("f")
+		    && !option.getModifier().equals("t")) {
+		Logger.log("\t-%s %s%n", option.getModifier(), option.value());
+	    }
+	}
+
+	Logger.log("%n");
 	Logger.log("Relation: %s%n", dataset.getName());
 	Logger.log("Instances: %d%n", dataset.size());
 	Logger.log("Attributes: %d%n", (dataset.attributes().length - 1));
