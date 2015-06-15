@@ -20,7 +20,7 @@ CLASS_FILES=$(JAVA_FILES:.java=.class)
 JAVAC=javac
 JAR=jar
 JAR_FILE=myra-`grep -m 1 '<version>' pom.xml | cut -d '>' -f 2 | cut -d '<' -f 1`.jar
-GIT_FILE=$(OUTPUT)/classes/git.properties
+GIT_FILE=$(OUTPUT)/classes/myra-git.properties
 
 .PHONY: all
 all: jar 
@@ -28,7 +28,7 @@ all: jar
 .PHONY: clean
 clean:
 	@echo "--> Removing generated files "
-	@rm -rf $(OUTPUT)/classes $(OUTPUT)/test-classes $(OUTPUT)/$(JAR_FILE)
+	@rm -rf $(OUTPUT)/*
 	@echo "[done]"
 
 jar: $(CLASS_FILES) 
