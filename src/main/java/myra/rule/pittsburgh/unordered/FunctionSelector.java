@@ -145,10 +145,8 @@ public class FunctionSelector {
      * 
      * @param list
      *            the list of rules.
-     * @param tMin
-     *            the MAX-MIN minimum value threshold.
-     * @param tMax
-     *            the MAX-MIN maximum value threshold.
+     * @param policy
+     *            the pheromone policy instance.
      * 
      * @see PheromonePolicy
      */

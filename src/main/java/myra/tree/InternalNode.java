@@ -58,15 +58,16 @@ public final class InternalNode extends Node {
     /**
      * Creates a new internal node.
      * 
-     * @param name
-     *            the name of the node.
+     * @param attribute
+     *            the attribute represented by this node.
      * @param level
      *            the level of the node.
-     * @param branches
-     *            the branches originating from this node.
+     * @param conditions
+     *            the conditions for the branches originating from this node.
      */
-    public InternalNode(Attribute attribute, int level,
-	    Condition[] conditions) {
+    public InternalNode(Attribute attribute,
+			int level,
+			Condition[] conditions) {
 	super(attribute.getName(), level);
 	this.attribute = attribute.getIndex();
 	this.conditions = conditions;

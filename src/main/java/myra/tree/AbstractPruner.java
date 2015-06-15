@@ -66,6 +66,10 @@ public abstract class AbstractPruner {
      *            the tree undergoing pruning.
      * @param node
      *            the node undergoing pruning.
+     * @param parent
+     *            the parent node.
+     * @param index
+     *            the index of <code>node</code> in the parent's array.
      */
     protected abstract void prune(Dataset dataset,
 				  Tree tree,

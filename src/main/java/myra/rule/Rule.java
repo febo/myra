@@ -26,8 +26,8 @@ import static myra.Dataset.RULE_COVERED;
 import java.util.Arrays;
 
 import myra.Attribute;
-import myra.Dataset;
 import myra.Attribute.Condition;
+import myra.Dataset;
 import myra.Dataset.Instance;
 
 /**
@@ -249,7 +249,9 @@ public final class Rule implements Comparable<Rule> {
     }
 
     /**
-     * Returns the array of terms.
+     * Returns the array of terms of this rule.
+     * 
+     * @return the array of terms of this rule.
      */
     public Term[] terms() {
 	return terms;
@@ -437,8 +439,6 @@ public final class Rule implements Comparable<Rule> {
     /**
      * Returns the string representation of the rule.
      * 
-     * @param graph
-     *            the constructions graph.
      * @param dataset
      *            the current dataset.
      * 
@@ -560,12 +560,12 @@ public final class Rule implements Comparable<Rule> {
 	}
 
 	/**
-	 * Sets the <code>enabled<code> flag. Note that setting the flag to
+	 * Sets the <code>enabled</code> flag. Note that setting the flag to
 	 * <code>false</code> does not remove the term from the antecedent, only
-	 * prevents its evaluation in {@link Rule#covers(Dataset, int, Graph)}.
-	 * When the method {@link Rule#compact()} is called, any term that has
-	 * the flag set to <code>false</code> will be removed from the
-	 * antecedent.
+	 * prevents its evaluation in
+	 * {@link Rule#apply(Dataset, Dataset.Instance[])}. When the method
+	 * {@link Rule#compact()} is called, any term that has the flag set to
+	 * <code>false</code> will be removed from the antecedent.
 	 * 
 	 * @param enabeld
 	 *            the flag to set.

@@ -62,12 +62,18 @@ public class C45Split extends EntropySplit {
      * specified attribute that have provide the higher entropy gain in relation
      * to the distribution of values.
      * 
-     * @param dataset
-     *            the current dataset.
-     * @param instances
-     *            the covered instances flags.
-     * @param attribute
-     *            the index of the continuous attribute.
+     * @param candidates
+     *            the array os candidate values.
+     * @param start
+     *            the start index on the candidates array.
+     * @param end
+     *            the end index on the candidates array.
+     * @param frequency
+     *            the class values frequency.
+     * @param size
+     *            the weighted size of the interval.
+     * @param minimum
+     *            the minimum interval size allowed.
      * 
      * @return attribute conditions representing discrete intervals for the
      *         specified attribute.

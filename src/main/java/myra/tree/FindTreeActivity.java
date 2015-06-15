@@ -90,6 +90,11 @@ public class FindTreeActivity extends IterativeActivity<Tree> {
 
     /**
      * Creates a new <code>FindTreeActivity</code>.
+     * 
+     * @param graph
+     *            the construction graph.
+     * @param dataset
+     *            the current dataset.
      */
     public FindTreeActivity(Graph graph, Dataset dataset) {
 	this.graph = graph;
@@ -120,7 +125,7 @@ public class FindTreeActivity extends IterativeActivity<Tree> {
     public Tree create() {
 	Instance[] covered = Instance.newArray(dataset.size());
 	Instance.markAll(covered, RULE_COVERED);
-	
+
 	double[] heuristic = INITIAL_HEURISTIC.clone();
 
 	Tree tree = builder.build(graph, heuristic, dataset, covered);
@@ -158,7 +163,7 @@ public class FindTreeActivity extends IterativeActivity<Tree> {
 
 	return super.terminate();
     }
-    
+
     /**
      * Returns the best tree.
      * 

@@ -105,6 +105,8 @@ public class Option<T> {
      *            the description of the option.
      * @param hasDefault
      *            indication whether this option has a default value.
+     * @param argument
+     *            the name of the option's argument.
      */
     public Option(ConfigKey<T> key, String modifier, String description,
 	    boolean hasDefault, String argument) {
@@ -155,7 +157,7 @@ public class Option<T> {
     public boolean hasDefault() {
 	return hasDefault;
     }
-    
+
     /**
      * Returns <code>true</code> if this option has an argument value.
      * 

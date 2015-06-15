@@ -89,7 +89,7 @@ public class RuleList implements Model, Comparable<RuleList> {
 
     /**
      * Returns <code>true</code> if the list of rules contains a empty rule
-     * (default rule)>
+     * (default rule).
      * 
      * @return <code>true</code> if the list of rules contains a empty rule;
      *         <code>false</code> otherwise.
@@ -158,8 +158,8 @@ public class RuleList implements Model, Comparable<RuleList> {
      * 
      * @param dataset
      *            the current dataset.
-     * 
-     * @see {@link Rule#apply(Graph, Dataset, byte[])}
+     *
+     * @see Rule#apply(Dataset, Dataset.Instance[])
      */
     public void apply(Dataset dataset) {
 	Instance[] instances = Instance.newArray(dataset.size());
@@ -195,8 +195,6 @@ public class RuleList implements Model, Comparable<RuleList> {
     /**
      * Returns the string representation of the rule list.
      * 
-     * @param graph
-     *            the construction graph.
      * @param dataset
      *            the current dataset.
      * 

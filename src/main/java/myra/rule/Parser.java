@@ -46,6 +46,11 @@ import myra.Attribute.Condition;
 import myra.Dataset.Instance;
 import myra.util.ARFFReader;
 
+/**
+ * Utility to parse a list of rule from different algorihtms' output.
+ * 
+ * @author Fernando Esteban Barril Otero
+ */
 public class Parser {
     /**
      * Start of a rule token.
@@ -62,6 +67,16 @@ public class Parser {
      */
     private static final String CONDITION = "AND";
 
+    /**
+     * Parses a rule.
+     * 
+     * @param dataset
+     *            the dataset to get the attribute informatino from.
+     * @param text
+     *            the rule text.
+     * 
+     * @return a <code>Rule</code> instance.
+     */
     public static Rule parse(Dataset dataset, String text) {
 	StringTokenizer tokens = new StringTokenizer(text);
 	boolean consequent = false;
@@ -190,6 +205,14 @@ public class Parser {
 		+ text);
     }
 
+    /**
+     * Calculates the standard deviation of the values.
+     * 
+     * @param values
+     *            the output values.
+     * 
+     * @return the standard deviation of the values as a string.
+     */
     private static String stdev(ArrayList<Double> values) {
 	double mean = 0;
 
@@ -215,6 +238,16 @@ public class Parser {
 	return String.format("%.3f +/- %.3f", mean, std);
     }
 
+    /**
+     * Parses a list of rules.
+     * 
+     * @param dataset
+     *            the dataset to get the attribute informatino from.
+     * @param rules
+     *            the textual representation of the list of rules.
+     * 
+     * @return a list of rules.
+     */
     public static RuleList parseList(Dataset dataset, ArrayList<String> rules) {
 	RuleList list = new RuleList();
 	Instance[] instances = Instance.newArray(dataset.size());
@@ -230,6 +263,16 @@ public class Parser {
 	return list;
     }
 
+    /**
+     * Parses a set of rules.
+     * 
+     * @param dataset
+     *            the dataset to get the attribute informatino from.
+     * @param rules
+     *            the textual representation of the set of rules.
+     * 
+     * @return a set of rules.
+     */
     public static RuleSet parseSet(Dataset dataset, ArrayList<String> rules) {
 	RuleSet set = new RuleSet();
 
@@ -243,19 +286,37 @@ public class Parser {
 	return set;
     }
 
-    public static double average(Dataset test, RuleList set) {
+    /**
+     * Calculates the predictino-explanation size value of the specified list.
+     * 
+     * @param dataset
+     *            the dataset to get the instances from.
+     * @param list
+     *            the list of rules.
+     * 
+     * @return the predictino-explanation size value of the specified list.
+     * 
+     * @see PredictionExplanationSize
+     */
+    public static double average(Dataset dataset, RuleList list) {
 	PredictionExplanationSize measure = new PredictionExplanationSize();
 
-	return measure.evaluate(test, set);
+	return measure.evaluate(dataset, list);
     }
 
+    /**
+     * C45rules output file parser.
+     */
     public static class C45rules {
 	/**
-	 * args[0] = datasets folder args[1] = results folder
+	 * Entry point to parse rules from a C45rules output file.
 	 * 
 	 * @param args
+	 *            command-line arguments (args[0] = datasets folder, args[1]
+	 *            = results folder).
 	 * 
 	 * @throws Exception
+	 *             in case of any error.
 	 */
 	public static void main(String[] args) throws Exception {
 	    File datasets = new File(args[0]);
@@ -279,6 +340,17 @@ public class Parser {
 	    }
 	}
 
+	/**
+	 * Parses an output file.
+	 * 
+	 * @param output
+	 *            the output file path.
+	 * @param dataset
+	 *            the dataset file path.
+	 * 
+	 * @throws Exception
+	 *             in case of any error (typically I/O error).
+	 */
 	private static void parse(String output, String dataset)
 		throws Exception {
 	    ARFFReader reader = new ARFFReader();
@@ -351,13 +423,19 @@ public class Parser {
 	}
     }
 
+    /**
+     * PART output file parser.
+     */
     public static class PART {
 	/**
-	 * args[0] = datasets folder args[1] = results folder
+	 * Entry point to parse rules from a PART output file.
 	 * 
 	 * @param args
+	 *            command-line arguments (args[0] = datasets folder, args[1]
+	 *            = results folder).
 	 * 
 	 * @throws Exception
+	 *             in case of any error.
 	 */
 	public static void main(String[] args) throws Exception {
 	    File datasets = new File(args[0]);
@@ -381,6 +459,17 @@ public class Parser {
 	    }
 	}
 
+	/**
+	 * Parses an output file.
+	 * 
+	 * @param output
+	 *            the output file path.
+	 * @param dataset
+	 *            the dataset file path.
+	 * 
+	 * @throws Exception
+	 *             in case of any error (typically I/O error).
+	 */
 	private static void parse(String output, String dataset)
 		throws Exception {
 	    ARFFReader reader = new ARFFReader();
@@ -461,14 +550,19 @@ public class Parser {
 	}
     }
 
+    /**
+     * JRip output file parser.
+     */
     public static class JRip {
-
 	/**
-	 * args[0] = datasets folder args[1] = results folder
+	 * Entry point to parse rules from a JRip output file.
 	 * 
 	 * @param args
+	 *            command-line arguments (args[0] = datasets folder, args[1]
+	 *            = results folder).
 	 * 
 	 * @throws Exception
+	 *             in case of any error.
 	 */
 	public static void main(String[] args) throws Exception {
 	    File datasets = new File(args[0]);
@@ -492,6 +586,17 @@ public class Parser {
 	    }
 	}
 
+	/**
+	 * Parses an output file.
+	 * 
+	 * @param output
+	 *            the output file path.
+	 * @param dataset
+	 *            the dataset file path.
+	 * 
+	 * @throws Exception
+	 *             in case of any error (typically I/O error).
+	 */
 	private static void parse(String output, String dataset)
 		throws Exception {
 	    ARFFReader reader = new ARFFReader();
@@ -557,13 +662,19 @@ public class Parser {
 	}
     }
 
+    /**
+     * CN2 output file parser.
+     */
     public static class CN2 {
 	/**
-	 * args[0] = datasets folder args[1] = results folder
+	 * Entry point to parse rules from a CN2 output file.
 	 * 
 	 * @param args
+	 *            command-line arguments (args[0] = datasets folder, args[1]
+	 *            = results folder).
 	 * 
 	 * @throws Exception
+	 *             in case of any error.
 	 */
 	public static void main(String[] args) throws Exception {
 	    File datasets = new File(args[0]);
@@ -587,6 +698,17 @@ public class Parser {
 	    }
 	}
 
+	/**
+	 * Parses an output file.
+	 * 
+	 * @param output
+	 *            the output file path.
+	 * @param dataset
+	 *            the dataset file path.
+	 * 
+	 * @throws Exception
+	 *             in case of any error (typically I/O error).
+	 */
 	private static void parse(String output, String dataset)
 		throws Exception {
 	    ARFFReader reader = new ARFFReader();
@@ -650,13 +772,20 @@ public class Parser {
 	}
     }
 
+    /**
+     * <i>c</i>Ant-Miner (and its variations) output file parser.
+     */
     public static class cAntMiner {
 	/**
-	 * args[0] = datasets folder args[1] = results folder
+	 * Entry point to parse rules from a <i>c</i>Ant-Miner (and its
+	 * extensions) output file.
 	 * 
 	 * @param args
+	 *            command-line arguments (args[0] = datasets folder, args[1]
+	 *            = results folder).
 	 * 
 	 * @throws Exception
+	 *             in case of any error.
 	 */
 	public static void main(String[] args) throws Exception {
 	    File datasets = new File(args[0]);
@@ -684,6 +813,17 @@ public class Parser {
 	    }
 	}
 
+	/**
+	 * Parses an output file.
+	 * 
+	 * @param output
+	 *            the output file path.
+	 * @param dataset
+	 *            the dataset file path.
+	 * 
+	 * @throws Exception
+	 *             in case of any error (typically I/O error).
+	 */
 	private static double parse(String output, String dataset)
 		throws Exception {
 	    ARFFReader reader = new ARFFReader();
@@ -733,13 +873,20 @@ public class Parser {
 	}
     }
 
+    /**
+     * Unordered <i>c</i>Ant-Miner (and its variations) output file parser.
+     */
     public static class UcAntMiner {
 	/**
-	 * args[0] = datasets folder args[1] = results folder
+	 * Entry point to parse rules from a Unordered <i>c</i>Ant-Miner (and
+	 * its variations) output file.
 	 * 
 	 * @param args
+	 *            command-line arguments (args[0] = datasets folder, args[1]
+	 *            = results folder).
 	 * 
 	 * @throws Exception
+	 *             in case of any error.
 	 */
 	public static void main(String[] args) throws Exception {
 	    File datasets = new File(args[0]);
@@ -767,6 +914,17 @@ public class Parser {
 	    }
 	}
 
+	/**
+	 * Parses an output file.
+	 * 
+	 * @param output
+	 *            the output file path.
+	 * @param dataset
+	 *            the dataset file path.
+	 * 
+	 * @throws Exception
+	 *             in case of any error (typically I/O error).
+	 */
 	private static double parse(String output, String dataset)
 		throws Exception {
 	    ARFFReader reader = new ARFFReader();
@@ -819,13 +977,19 @@ public class Parser {
 	}
     }
 
+    /**
+     * PSO/ACO2 output file parser.
+     */
     public static class PSOACO2 {
 	/**
-	 * args[0] = datasets folder args[1] = results folder
+	 * Entry point to parse rules from a PSO/ACO2 output file.
 	 * 
 	 * @param args
+	 *            command-line arguments (args[0] = datasets folder, args[1]
+	 *            = results folder).
 	 * 
 	 * @throws Exception
+	 *             in case of any error.
 	 */
 	public static void main(String[] args) throws Exception {
 	    File datasets = new File(args[0]);
@@ -853,6 +1017,17 @@ public class Parser {
 	    }
 	}
 
+	/**
+	 * Parses an output file.
+	 * 
+	 * @param output
+	 *            the output file path.
+	 * @param dataset
+	 *            the dataset file path.
+	 * 
+	 * @throws Exception
+	 *             in case of any error (typically I/O error).
+	 */
 	private static double parse(String output, String dataset)
 		throws Exception {
 	    ARFFReader reader = new ARFFReader();
@@ -915,13 +1090,19 @@ public class Parser {
 	}
     }
 
+    /**
+     * BioHEL output file parser.
+     */
     public static class BioHEL {
 	/**
-	 * args[0] = datasets folder args[1] = results folder
+	 * Entry point to parse rules from a BioHEL output file.
 	 * 
 	 * @param args
+	 *            command-line arguments (args[0] = datasets folder, args[1]
+	 *            = results folder).
 	 * 
 	 * @throws Exception
+	 *             in case of any error.
 	 */
 	public static void main(String[] args) throws Exception {
 	    File datasets = new File(args[0]);
@@ -949,6 +1130,17 @@ public class Parser {
 	    }
 	}
 
+	/**
+	 * Parses an output file.
+	 * 
+	 * @param output
+	 *            the output file path.
+	 * @param dataset
+	 *            the dataset file path.
+	 * 
+	 * @throws Exception
+	 *             in case of any error (typically I/O error).
+	 */
 	private static double parse(String output, String dataset)
 		throws Exception {
 	    ARFFReader reader = new ARFFReader();

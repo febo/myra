@@ -54,6 +54,8 @@ public abstract class Node {
     /**
      * Creates a new node.
      * 
+     * @param name
+     *            the name of the nome.
      * @param level
      *            the level of the node.
      */
@@ -134,13 +136,10 @@ public abstract class Node {
     }
 
     /**
-     * Indicates if this node is a leaf node or not. If the node is a leaf node,
-     * it is safe to call the {@link #getPrediction()} method.
+     * Indicates if this node is a leaf node or not.
      * 
      * @return <code>true</code> if this node is a leaf node; <code>false</code>
      *         otherwise.
-     * 
-     * @see #getPrediction()
      */
     public abstract boolean isLeaf();
 

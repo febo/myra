@@ -50,6 +50,8 @@ public class LevelRuleFactory {
      *            the id (sequence) of the rule.
      * @param graph
      *            the construction graph.
+     * @param heuristic
+     *            the heuristic values.
      * @param dataset
      *            the current dataset.
      * @param instances

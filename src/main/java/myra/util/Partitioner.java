@@ -54,7 +54,9 @@ public class Partitioner {
     /**
      * Default constructor.
      * 
-     * @param size
+     * @param dataset
+     *            the dataset to partition.
+     * @param slices
      *            the number of partitions.
      */
     public Partitioner(Dataset dataset, int slices) {
@@ -94,8 +96,8 @@ public class Partitioner {
 
 	    while (indexes != null && !indexes.isEmpty()) {
 		for (int j = current; j < partitions.length; j++) {
-		    int index = CONFIG.get(RANDOM_GENERATOR).nextInt(
-								     indexes.size());
+		    int index = CONFIG.get(RANDOM_GENERATOR)
+			    .nextInt(indexes.size());
 		    partitions[j][indexes.get(index)].flag = NOT_COVERED;
 
 		    indexes.remove(index);

@@ -30,18 +30,18 @@ import java.util.Arrays;
  */
 public final class Attribute implements Cloneable {
     /**
-     * Constant representing the condition type <code>(attribute <= v)</code>.
+     * Constant representing the condition type <code>(attribute &lt;= v)</code>.
      */
     public static final short LESS_THAN_OR_EQUAL_TO = 1;
 
     /**
-     * Constant representing the condition type <code>(attribute > v)</code>.
+     * Constant representing the condition type <code>(attribute &gt; v)</code>.
      */
     public static final short GREATER_THAN = 2;
 
     /**
      * Constant representing the condition type
-     * <code>(v1 <= attribute < v2)</code>.
+     * <code>(v1 &lt;= attribute &lt; v2)</code>.
      */
     public static final short IN_RANGE = 3;
 
@@ -51,12 +51,12 @@ public final class Attribute implements Cloneable {
     public static final short EQUAL_TO = 4;
 
     /**
-     * Constant representing the condition type <code>(attribute <= v)</code>.
+     * Constant representing the condition type <code>(attribute &lt; v)</code>.
      */
     public static final short LESS_THAN = 5;
 
     /**
-     * Constant representing the condition type <code>(attribute >= v)</code>.
+     * Constant representing the condition type <code>(attribute &gt;= v)</code>.
      */
     public static final short GREATER_THAN_OR_EQUAL_TO = 6;
 

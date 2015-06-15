@@ -33,6 +33,7 @@ import myra.Attribute.Condition;
 import myra.Config.ConfigKey;
 import myra.Dataset;
 import myra.Dataset.Instance;
+import myra.interval.C45Split;
 import myra.interval.IntervalBuilder;
 
 /**
@@ -48,7 +49,7 @@ public class GainRatioHeuristic implements Heuristic {
      * Computes the gain ratio for each attribute. This involves calculating the
      * information gain and dividing it by the split information. Note that when
      * an attribute does not present any gain, its gain ratio value is set to
-     * negative {@link GainHeuristic#EPSILON}.
+     * negative {@link C45Split#EPSILON}.
      * 
      * @param dataset
      *            the current dataset.

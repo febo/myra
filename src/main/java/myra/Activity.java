@@ -32,6 +32,8 @@ public interface Activity<T> {
     /**
      * Creates a single solution to the problem. This implementation must be
      * thread-safe in order to be executed by the {@link ParallelScheduler}.
+     * 
+     * @return the created solution.
      */
     public T create();
 

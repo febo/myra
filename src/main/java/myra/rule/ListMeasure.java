@@ -40,8 +40,6 @@ public interface ListMeasure {
      * 
      * @param dataset
      *            the current dataset.
-     * @param graph
-     *            the construction graph.
      * @param list
      *            the list of rules.
      * 

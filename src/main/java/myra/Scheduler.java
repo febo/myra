@@ -20,6 +20,7 @@
 package myra;
 
 import static myra.Config.CONFIG;
+
 import myra.Config.ConfigKey;
 
 /**
@@ -46,6 +47,9 @@ import myra.Config.ConfigKey;
  * {@link Activity#create()} to create a solution for each ant in the colony.
  * All solutions are created sequentially.
  * </p>
+ * 
+ * @param <T>
+ *            type of the solution created by the <code>Activity</code>.
  * 
  * @author Fernando Esteban Barril Otero
  * 
@@ -134,9 +138,8 @@ public class Scheduler<T extends Comparable<T>> {
 
     /**
      * Creates the candidate solutions, one per ant in the colony. The creation
-     * of each individual solution is delegated to the activity.
-     * 
-     * @see {@link #COLONY_SIZE}
+     * of each individual solution is delegated to the activity. The number of
+     * ants is controlled by the configuration {@link #COLONY_SIZE}.
      */
     protected void create() {
 	for (int i = 0; i < CONFIG.get(COLONY_SIZE); i++) {
@@ -160,6 +163,9 @@ public class Scheduler<T extends Comparable<T>> {
 
     /**
      * Performs the update of the activity.
+     * 
+     * @param candidate
+     *            the candidate solution to be used during the updata.
      */
     protected void update(T candidate) {
 	activity.update(candidate);
@@ -177,6 +183,9 @@ public class Scheduler<T extends Comparable<T>> {
     /**
      * Returns a new <code>Scheduler</code> instance. This method works as a
      * factory method, checking the {@link #PARALLEL} configuration.
+     * 
+     * @param <V>
+ *            type of the solution created by the <code>Activity</code>.
      * 
      * @return a <code>ParallelScheduler</code> instance if the
      *         {@link #PARALLEL} configuration is set; otherwise a (sequential)

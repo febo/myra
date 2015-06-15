@@ -90,7 +90,7 @@ public class FindRuleListActivity extends IterativeActivity<RuleList> {
      * 
      * @param graph
      *            the construction graph.
-     * @param training
+     * @param dataset
      *            the current dataset.
      */
     public FindRuleListActivity(Graph graph, Dataset dataset) {

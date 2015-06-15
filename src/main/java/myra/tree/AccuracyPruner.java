@@ -31,13 +31,6 @@ import myra.Dataset;
 public class AccuracyPruner extends AbstractPruner {
     /**
      * Recursively prunes a node of the tree based on the predictive accuracy.
-     * 
-     * @param dataset
-     *            dataset the data set used during the pruning
-     * @param tree
-     *            the tree undergoing pruning.
-     * @param node
-     *            the node undergoing pruning.
      */
     protected void prune(Dataset dataset,
 			 Tree tree,

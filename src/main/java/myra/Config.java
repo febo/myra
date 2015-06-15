@@ -47,6 +47,8 @@ public final class Config {
     /**
      * Sets the specified value to the <code>ConfigKey</code> object.
      * 
+     * @param <T>
+     *            the type of the key.
      * @param key
      *            the <code>ConfigKey</code> object.
      * @param value
@@ -60,6 +62,8 @@ public final class Config {
      * Returns the value associated with the specified <code>ConfigKey</code>
      * object.
      * 
+     * @param <T>
+     *            the type of the key.
      * @param key
      *            the <code>ConfigKey</code> object.
      * 
@@ -82,6 +86,8 @@ public final class Config {
      * Returns <code>true</code> if the specified <code>ConfigKey</code> object
      * has been set.
      * 
+     * @param <T>
+     *            the type of the key.
      * @param key
      *            the <code>ConfigKey</code> object.
      * 

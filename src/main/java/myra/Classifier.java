@@ -108,6 +108,8 @@ public abstract class Classifier {
      * 
      * @param args
      *            the array representing the command-line arguments.
+     * 
+     * @return a map of parameter [key, value] pairs from the command-line.
      */
     protected Map<String, String> processCommandLine(String[] args) {
 	Map<String, String> parameters =
@@ -226,6 +228,8 @@ public abstract class Classifier {
      * 
      * @param dataset
      *            the current dataset.
+     * 
+     * @return the model representing the classifier.
      */
     protected abstract Model train(Dataset dataset);
 

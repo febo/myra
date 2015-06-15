@@ -120,10 +120,10 @@ public abstract class EntropySplit extends IntervalBuilder {
     /**
      * Returns a single discrete interval for the specified attribute. This
      * method uses the conditions created by
-     * {@link #multiple(Dataset, Instance[], int)} to choose the best interval.
-     * The interval returned is the interval with the lowest entropy, or when
-     * there are more than two intervals with the same entropy value, the one
-     * that has more instances.
+     * {@link #multiple(Dataset, Dataset.Instance[], int)} to choose the best
+     * interval. The interval returned is the interval with the lowest entropy,
+     * or when there are more than two intervals with the same entropy value,
+     * the one that has more instances.
      * 
      * @param dataset
      *            the current dataset.

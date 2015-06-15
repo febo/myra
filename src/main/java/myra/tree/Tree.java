@@ -267,8 +267,6 @@ public class Tree implements Model, Comparable<Tree> {
     /**
      * Returns the string representation of the tree.
      * 
-     * @param graph
-     *            the constructions graph.
      * @param dataset
      *            the current dataset.
      * 

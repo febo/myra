@@ -28,6 +28,8 @@ public interface Command {
     /**
      * Executes the command.
      * 
+     * @param memory
+     *            the shell memory.
      * @param arguments
      *            the arguments for the execution.
      */

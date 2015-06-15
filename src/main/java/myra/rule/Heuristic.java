@@ -52,6 +52,8 @@ public interface Heuristic {
      *            the current dataset.
      * @param instances
      *            the covered instances flags.
+     * 
+     * @return an array with the heuristic values for each vertex of the graph.
      */
     public Entry[] compute(Graph graph, Dataset dataset, Instance[] instances);
 
@@ -66,6 +68,8 @@ public interface Heuristic {
      *            the covered instances flags.
      * @param used
      *            indicates the vertices already used.
+     * 
+     * @return an array with the heuristic values for each vertex of the graph.
      */
     public Entry[] compute(Graph graph,
 			   Dataset dataset,
@@ -81,10 +85,10 @@ public interface Heuristic {
      *            the current dataset.
      * @param instances
      *            the covered instances flags.
-     * @param used
-     *            indicates the vertices already used.
      * @param target
      *            the target class value.
+     * 
+     * @return an array with the heuristic values for each vertex of the graph.
      */
     public Entry[] compute(Graph graph,
 			   Dataset dataset,
@@ -104,6 +108,8 @@ public interface Heuristic {
      *            indicates the vertices already used.
      * @param target
      *            the target class value.
+     * 
+     * @return an array with the heuristic values for each vertex of the graph.
      */
     public Entry[] compute(Graph graph,
 			   Dataset dataset,

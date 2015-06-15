@@ -79,7 +79,7 @@ public abstract class IntervalBuilder {
      * Returns attribute conditions representing the discrete interval for the
      * specified attribute. The default implementation ignores the
      * <code>target</code> parameter and it has the same result as the
-     * {@link #multiple(Dataset, Instance[], int)} method.
+     * {@link #multiple(Dataset, Dataset.Instance[], int)} method.
      * 
      * @param dataset
      *            the current dataset.
@@ -122,7 +122,7 @@ public abstract class IntervalBuilder {
      * Returns an attribute condition representing a single discrete interval
      * for the specified attribute. The default implementation ignores the
      * <code>target</code> parameter and it has the same result as the
-     * {@link #single(Dataset, Instance[], int)} method.
+     * {@link #single(Dataset, Dataset.Instance[], int)} method.
      * 
      * @param dataset
      *            the current dataset.

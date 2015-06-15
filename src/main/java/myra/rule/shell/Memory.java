@@ -39,6 +39,8 @@ public class Memory extends HashMap<Object, Object> {
     /**
      * Retrieves an object from the memory.
      * 
+     * @param <T>
+     *            the type of the location.
      * @param location
      *            the object's location.
      * 

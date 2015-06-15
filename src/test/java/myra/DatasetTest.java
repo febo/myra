@@ -25,15 +25,15 @@ import junit.framework.TestCase;
 import myra.util.ARFFReader;
 
 /**
+ * Dataset class test.
+ * 
  * @author Fernando Esteban Barril Otero
  */
 public class DatasetTest extends TestCase {
     private Dataset dataset;
 
-    /*
-     * (non-Javadoc)
-     * 
-     * @see junit.framework.TestCase#setUp()
+    /**
+     * Loads the test dataset.
      */
     @Override
     protected void setUp() throws Exception {
@@ -42,6 +42,9 @@ public class DatasetTest extends TestCase {
 		getClass().getResourceAsStream("/weather.arff")));
     }
 
+    /**
+     * Tests the size of the dataset.
+     */
     public void testSize() {
 	assertEquals(14, dataset.size());
     }
