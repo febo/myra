@@ -48,4 +48,14 @@ public class DatasetTest extends TestCase {
     public void testSize() {
 	assertEquals(14, dataset.size());
     }
+    
+    public void testDistribution() {
+	assertEquals(9, dataset.distribution(0));
+	assertEquals(5, dataset.distribution(1));
+	
+	dataset.remove(0);
+	
+	assertEquals(8, dataset.distribution(0));
+	assertEquals(5, dataset.distribution(1));
+    }
 }
