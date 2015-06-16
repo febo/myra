@@ -278,6 +278,15 @@ public class Option<T> {
     public static class IntegerOption extends Option<Integer> {
 	/**
 	 * Creates an <code>IntegerOption</code>.
+	 * 
+	 * @param key
+	 *            the key of the option.
+	 * @param modifier
+	 *            the modifier of the option.
+	 * @param description
+	 *            the description of the option.
+	 * @param argument
+	 *            the name of the option's argument.
 	 */
 	public IntegerOption(ConfigKey<Integer> key,
 			     String modifier,
@@ -303,6 +312,15 @@ public class Option<T> {
     public static class DoubleOption extends Option<Double> {
 	/**
 	 * Creates a <code>DoubleOption</code>.
+	 * 
+	 * @param key
+	 *            the key of the option.
+	 * @param modifier
+	 *            the modifier of the option.
+	 * @param description
+	 *            the description of the option.
+	 * @param argument
+	 *            the name of the option's argument.
 	 */
 	public DoubleOption(ConfigKey<Double> key,
 			    String modifier,
@@ -328,6 +346,13 @@ public class Option<T> {
     public static class BooleanOption extends Option<Boolean> {
 	/**
 	 * Creates an <code>BooleanOption</code>.
+	 * 
+	 * @param key
+	 *            the key of the option.
+	 * @param modifier
+	 *            the modifier of the option.
+	 * @param description
+	 *            the description of the option.
 	 */
 	public BooleanOption(ConfigKey<Boolean> key,
 			     String modifier,
