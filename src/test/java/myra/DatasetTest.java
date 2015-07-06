@@ -25,7 +25,7 @@ import junit.framework.TestCase;
 import myra.util.ARFFReader;
 
 /**
- * Dataset class test.
+ * <code>Dataset</code> class test.
  * 
  * @author Fernando Esteban Barril Otero
  */
@@ -49,6 +49,9 @@ public class DatasetTest extends TestCase {
 	assertEquals(14, dataset.size());
     }
     
+    /**
+     * Tests the class distribution of the dataset.
+     */
     public void testDistribution() {
 	assertEquals(9, dataset.distribution(0));
 	assertEquals(5, dataset.distribution(1));
