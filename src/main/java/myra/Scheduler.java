@@ -21,6 +21,7 @@ package myra;
 
 import static myra.Config.CONFIG;
 
+import myra.Archive.DefaultArchive;
 import myra.Config.ConfigKey;
 
 /**
@@ -34,11 +35,11 @@ import myra.Config.ConfigKey;
  *     // create ant solutions
  *     create();
  * 
+ *     // (optional) local search
+ *     search();
+ * 
  *     // update pheromones
  *     update();
- * 
- *     // (optional) daemon actions
- *     daemon();
  * }
  * </pre>
  * 
@@ -72,15 +73,25 @@ public class Scheduler<T extends Comparable<T>> {
     protected Activity<T> activity;
 
     /**
-     * The iteration-best candidate solution.
+     * Archive of solutions used during the update.
      */
-    protected T candidate;
+    protected Archive<T> archive;
 
     /**
      * Creates a new <code>Scheduler</code>.
      */
     public Scheduler() {
-	this(null);
+	this(null, CONFIG.get(COLONY_SIZE));
+    }
+
+    /**
+     * Creates a new <code>Scheduler</code>.
+     * 
+     * @param capacity
+     *            number of candidate solutions stored at each iteration.
+     */
+    public Scheduler(int capacity) {
+	this(null, capacity);
     }
 
     /**
@@ -90,7 +101,20 @@ public class Scheduler<T extends Comparable<T>> {
      *            the (wrapped) activity.
      */
     public Scheduler(Activity<T> activity) {
+	this(activity, CONFIG.get(COLONY_SIZE));
+    }
+
+    /**
+     * Creates a new <code>Scheduler</code>.
+     * 
+     * @param activity
+     *            the (wrapped) activity.
+     * @param capacity
+     *            number of candidate solutions stored at each iteration.
+     */
+    public Scheduler(Activity<T> activity, int capacity) {
 	this.activity = activity;
+	archive = new DefaultArchive<>(capacity);
     }
 
     /**
@@ -113,6 +137,17 @@ public class Scheduler<T extends Comparable<T>> {
     }
 
     /**
+     * Sets the solution archive capacity. This will clear the current solutions
+     * in the archive.
+     * 
+     * @param capacity
+     *            the archive capacity.
+     */
+    public void setCapacity(int capacity) {
+	archive = new DefaultArchive<>(capacity);
+    }
+
+    /**
      * Runs the scheduler.
      */
     public void run() {
@@ -121,9 +156,9 @@ public class Scheduler<T extends Comparable<T>> {
 	while (!terminate()) {
 	    create();
 
-	    update(candidate);
+	    search();
 
-	    daemon();
+	    update();
 	}
     }
 
@@ -131,9 +166,8 @@ public class Scheduler<T extends Comparable<T>> {
      * Performs the initialisation of the activity.
      */
     protected void initialise() {
-	candidate = null;
-
 	activity.initialise();
+	archive.clear();
     }
 
     /**
@@ -143,11 +177,7 @@ public class Scheduler<T extends Comparable<T>> {
      */
     protected void create() {
 	for (int i = 0; i < CONFIG.get(COLONY_SIZE); i++) {
-	    T current = activity.create();
-
-	    if (candidate == null || current.compareTo(candidate) > 0) {
-		candidate = current;
-	    }
+	    archive.add(activity.create());
 	}
     }
 
@@ -163,21 +193,21 @@ public class Scheduler<T extends Comparable<T>> {
 
     /**
      * Performs the update of the activity.
-     * 
-     * @param candidate
-     *            the candidate solution to be used during the updata.
      */
-    protected void update(T candidate) {
-	activity.update(candidate);
+    protected void update() {
+	activity.update(archive);
+	// clears the archive
+	archive.clear();
     }
 
     /**
-     * Performs the daemon actions of the activity.
+     * Performs the local search of the activity. If the quality of the
+     * candidates solutions are updated, a new solution archive is created.
      */
-    protected void daemon() {
-	activity.daemon();
-	// clears the iteration-best solution from previous iteration
-	candidate = null;
+    protected void search() {
+	if (activity.search(archive)) {
+	    archive.sort();
+	}
     }
 
     /**
@@ -185,7 +215,7 @@ public class Scheduler<T extends Comparable<T>> {
      * factory method, checking the {@link #PARALLEL} configuration.
      * 
      * @param <V>
- *            type of the solution created by the <code>Activity</code>.
+     *            type of the solution created by the <code>Activity</code>.
      * 
      * @return a <code>ParallelScheduler</code> instance if the
      *         {@link #PARALLEL} configuration is set; otherwise a (sequential)
@@ -197,5 +227,24 @@ public class Scheduler<T extends Comparable<T>> {
 	}
 
 	return new Scheduler<V>();
+    }
+
+    /**
+     * Returns a new <code>Scheduler</code> instance. This method works as a
+     * factory method, checking the {@link #PARALLEL} configuration.
+     * 
+     * @param <V>
+     *            type of the solution created by the <code>Activity</code>.
+     * @param capacity
+     *            the solution archive capacity.
+     * 
+     * @return a <code>ParallelScheduler</code> instance if the
+     *         {@link #PARALLEL} configuration is set; otherwise a (sequential)
+     *         <code>Scheduler</code> instance.
+     */
+    public static <V extends Comparable<V>> Scheduler<V> newInstance(int capacity) {
+	Scheduler<V> scheduler = newInstance();
+	scheduler.setCapacity(capacity);
+	return scheduler;
     }
 }

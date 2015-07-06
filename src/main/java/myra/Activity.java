@@ -27,8 +27,11 @@ package myra;
  * @author Fernando Esteban Barril Otero
  * 
  * @see Scheduler
+ * 
+ * @param <T>
+ *            the type of solution created by the activity.
  */
-public interface Activity<T> {
+public interface Activity<T extends Comparable<T>> {
     /**
      * Creates a single solution to the problem. This implementation must be
      * thread-safe in order to be executed by the {@link ParallelScheduler}.
@@ -38,11 +41,16 @@ public interface Activity<T> {
     public T create();
 
     /**
-     * Performs global actions not directly related to the search. In most
-     * cases, this involves incrementing the iteration number, which is the used
-     * as a criteria to stop the search.
+     * Applies local search to the candidate solutions. More generally, local
+     * search is one example of what have been called daemon actions.
+     * 
+     * @param archive
+     *            the solution archive.
+     * 
+     * @return <code>true</code> if the solutions in the archive have been
+     *         modified; <code>false</code> otherwise.
      */
-    public void daemon();
+    public boolean search(Archive<T> archive);
 
     /**
      * Performs the initialisation step.
@@ -61,8 +69,8 @@ public interface Activity<T> {
      * Updates the state of the activity. In most cases, this involves updating
      * the pheromone values using the iteration-best solution.
      * 
-     * @param candidate
-     *            the candidate solution to use during update.
+     * @param archive
+     *            the solution archive.
      */
-    public void update(T candidate);
+    public void update(Archive<T> archive);
 }

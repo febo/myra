@@ -25,6 +25,7 @@ import static myra.tree.AbstractPruner.DEFAULT_PRUNER;
 
 import java.util.Arrays;
 
+import myra.Archive;
 import myra.Config.ConfigKey;
 import myra.Dataset;
 import myra.Dataset.Instance;
@@ -34,13 +35,6 @@ import myra.IterativeActivity;
  * @author Fernando Esteban Barril Otero
  */
 public class FindTreeActivity extends IterativeActivity<Tree> {
-    /**
-     * The config key for the convergence test. If the same rule is created over
-     * <code>CONVERGENCE</code> iterations, the creation process is considered
-     * stagnant.
-     */
-    public final static ConfigKey<Integer> CONVERGENCE = new ConfigKey<>();
-
     /**
      * The config key to indicate if the default pruner to use.
      */
@@ -66,16 +60,6 @@ public class FindTreeActivity extends IterativeActivity<Tree> {
      * The tree builder.
      */
     private StochasticBuilder builder;
-
-    /**
-     * The best-so-far decision tree.
-     */
-    private Tree best;
-
-    /**
-     * The convergence termination criteria counter.
-     */
-    private int convergence;
 
     /**
      * The convergence termination criteria counter.
@@ -106,7 +90,6 @@ public class FindTreeActivity extends IterativeActivity<Tree> {
 	super.initialise();
 
 	reset = true;
-	convergence = 0;
 	builder = new StochasticBuilder();
 
 	policy = new PheromonePolicy();
@@ -138,23 +121,17 @@ public class FindTreeActivity extends IterativeActivity<Tree> {
     }
 
     @Override
-    public void update(Tree candidate) {
-	policy.update(graph, candidate);
-
-	if (best == null || candidate.compareTo(best) > 0) {
-	    best = candidate;
-	    convergence = 0;
-	} else if (candidate.compareTo(best) == 0) {
-	    convergence++;
-	}
+    public void update(Archive<Tree> archive) {
+	super.update(archive);
+	policy.update(graph, archive.highest());
     }
 
     @Override
     public boolean terminate() {
-	if (convergence > CONFIG.get(CONVERGENCE)) {
+	if (stagnation > CONFIG.get(STAGNATION)) {
 	    if (reset) {
 		policy.initialise(graph);
-		convergence = 0;
+		stagnation = 0;
 		reset = false;
 	    } else {
 		return true;
@@ -162,14 +139,5 @@ public class FindTreeActivity extends IterativeActivity<Tree> {
 	}
 
 	return super.terminate();
-    }
-
-    /**
-     * Returns the best tree.
-     * 
-     * @return the best tree.
-     */
-    public Tree getBest() {
-	return best;
     }
 }

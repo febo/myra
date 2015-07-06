@@ -53,7 +53,7 @@ public class SequentialCovering {
 	RuleList discovered = new RuleList();
 	int available = dataset.size();
 
-	Scheduler<Rule> scheduler = Scheduler.newInstance();
+	Scheduler<Rule> scheduler = Scheduler.newInstance(1);
 
 	while (available >= uncovered) {
 	    FindRuleActivity activity =

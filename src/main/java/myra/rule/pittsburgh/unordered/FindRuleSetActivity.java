@@ -26,9 +26,9 @@ import static myra.rule.Heuristic.DEFAULT_HEURISTIC;
 import static myra.rule.ListMeasure.DEFAULT_MEASURE;
 import static myra.rule.Pruner.DEFAULT_PRUNER;
 import static myra.rule.RuleFunction.DEFAULT_FUNCTION;
-import static myra.rule.pittsburgh.FindRuleListActivity.CONVERGENCE;
 import static myra.rule.pittsburgh.FindRuleListActivity.UNCOVERED;
 
+import myra.Archive;
 import myra.Config.ConfigKey;
 import myra.Dataset;
 import myra.Dataset.Instance;
@@ -72,17 +72,7 @@ public class FindRuleSetActivity extends IterativeActivity<RuleList> {
     /**
      * The convergence termination criteria counter.
      */
-    private int convergence;
-
-    /**
-     * The convergence termination criteria counter.
-     */
     private boolean reset;
-
-    /**
-     * The best-so-far list of rules.
-     */
-    private RuleSet best;
 
     /**
      * Creates a new <code>FindRuleListActivity</code> object.
@@ -95,15 +85,6 @@ public class FindRuleSetActivity extends IterativeActivity<RuleList> {
     public FindRuleSetActivity(Graph graph, Dataset training) {
 	this.graph = graph;
 	this.dataset = training;
-    }
-
-    /**
-     * Returns the best-so-far list of rules.
-     * 
-     * @return the best-so-far list of rules.
-     */
-    public RuleSet getBest() {
-	return best;
     }
 
     @Override
@@ -188,18 +169,17 @@ public class FindRuleSetActivity extends IterativeActivity<RuleList> {
 	policy.initialise(graph);
 	selector = new FunctionSelector();
 
-	convergence = 0;
 	reset = true;
     }
 
     @Override
     public boolean terminate() {
-	if (convergence > CONFIG.get(CONVERGENCE)) {
+	if (stagnation > CONFIG.get(STAGNATION)) {
 	    if (reset) {
 		policy.initialise(graph);
 		selector = new FunctionSelector();
 
-		convergence = 0;
+		stagnation = 0;
 		reset = false;
 	    } else {
 		return true;
@@ -210,19 +190,20 @@ public class FindRuleSetActivity extends IterativeActivity<RuleList> {
     }
 
     @Override
-    public void update(RuleList candidate) {
+    public void update(Archive<RuleList> archive) {
+	super.update(archive);
+
+	RuleSet candidate = (RuleSet) archive.highest();
 	policy.update(graph, candidate);
 
 	if (CONFIG.get(DYNAMIC_FUNCTION)) {
 	    selector.update(candidate, policy);
 	}
+    }
 
-	// updates the global best
-	if (best == null || candidate.compareTo(best) > 0) {
-	    best = (RuleSet) candidate;
-	    convergence = 0;
-	} else if (candidate.compareTo(best) == 0) {
-	    convergence++;
-	}
+    @Override
+    public RuleSet getBest() {
+	// TODO Auto-generated method stub
+	return (RuleSet) super.getBest();
     }
 }

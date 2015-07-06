@@ -26,9 +26,11 @@ import static myra.rule.Assignator.ASSIGNATOR;
 import static myra.rule.Heuristic.DEFAULT_HEURISTIC;
 import static myra.rule.ListMeasure.DEFAULT_MEASURE;
 import static myra.rule.Pruner.DEFAULT_PRUNER;
+
 import myra.Config.ConfigKey;
 import myra.Dataset;
 import myra.Dataset.Instance;
+import myra.Archive;
 import myra.IterativeActivity;
 import myra.rule.Graph;
 import myra.rule.Graph.Entry;
@@ -36,14 +38,6 @@ import myra.rule.Rule;
 import myra.rule.RuleList;
 
 public class FindRuleListActivity extends IterativeActivity<RuleList> {
-    /**
-     * The config key for the convergence test. If the same rule is created over
-     * <code>CONVERGENCE</code> iterations, the creation process is considered
-     * stagnant.
-     */
-    public final static ConfigKey<Integer> CONVERGENCE =
-	    new ConfigKey<Integer>();
-
     /**
      * The config key for the percentage of uncovered instances allowed.
      */
@@ -67,17 +61,7 @@ public class FindRuleListActivity extends IterativeActivity<RuleList> {
     /**
      * The convergence termination criteria counter.
      */
-    private int convergence;
-
-    /**
-     * The convergence termination criteria counter.
-     */
     private boolean reset;
-
-    /**
-     * The best-so-far list of rules.
-     */
-    private RuleList best;
 
     /**
      * The (initial) heuristic of the dataset. This value is not modified after
@@ -96,15 +80,6 @@ public class FindRuleListActivity extends IterativeActivity<RuleList> {
     public FindRuleListActivity(Graph graph, Dataset dataset) {
 	this.graph = graph;
 	this.dataset = dataset;
-    }
-
-    /**
-     * Returns the best-so-far list of rules.
-     * 
-     * @return the best-so-far list of rules.
-     */
-    public RuleList getBest() {
-	return best;
     }
 
     @Override
@@ -177,7 +152,6 @@ public class FindRuleListActivity extends IterativeActivity<RuleList> {
 	policy = new LevelPheromonePolicy();
 	policy.initialise(graph);
 
-	convergence = 0;
 	reset = true;
 
 	// (initial) heuristic of the whole dataset
@@ -191,10 +165,10 @@ public class FindRuleListActivity extends IterativeActivity<RuleList> {
 
     @Override
     public boolean terminate() {
-	if (convergence > CONFIG.get(CONVERGENCE)) {
+	if (stagnation > CONFIG.get(STAGNATION)) {
 	    if (reset) {
 		policy.initialise(graph);
-		convergence = 0;
+		stagnation = 0;
 		reset = false;
 	    } else {
 		return true;
@@ -205,15 +179,8 @@ public class FindRuleListActivity extends IterativeActivity<RuleList> {
     }
 
     @Override
-    public void update(RuleList candidate) {
-	policy.update(graph, candidate);
-
-	// updates the global best
-	if (best == null || candidate.compareTo(best) > 0) {
-	    best = candidate;
-	    convergence = 0;
-	} else if (candidate.compareTo(best) == 0) {
-	    convergence++;
-	}
+    public void update(Archive<RuleList> archive) {
+	super.update(archive);
+	policy.update(graph, archive.highest());
     }
 }

@@ -27,9 +27,10 @@ import static myra.rule.Pruner.DEFAULT_PRUNER;
 import static myra.rule.RuleFunction.DEFAULT_FUNCTION;
 import static myra.rule.irl.PheromonePolicy.DEFAULT_POLICY;
 import static myra.rule.irl.RuleFactory.DEFAULT_FACTORY;
-import myra.Config.ConfigKey;
+
 import myra.Dataset;
 import myra.Dataset.Instance;
+import myra.Archive;
 import myra.IterativeActivity;
 import myra.rule.Graph;
 import myra.rule.Graph.Entry;
@@ -42,14 +43,6 @@ import myra.rule.Rule;
  * @author Fernando Esteban Barril Otero
  */
 public class FindRuleActivity extends IterativeActivity<Rule> {
-    /**
-     * The config key for the convergence test. If the same rule is created over
-     * <code>CONVERGENCE</code> iterations, the creation process is considered
-     * stagnant.
-     */
-    public final static ConfigKey<Integer> CONVERGENCE =
-	    new ConfigKey<Integer>();
-
     /**
      * Instance flag array indicating the instances to be used during the
      * construction procedure.
@@ -77,16 +70,6 @@ public class FindRuleActivity extends IterativeActivity<Rule> {
     private Entry[] heuristic;
 
     /**
-     * The convergence termination criteria counter.
-     */
-    private int convergence;
-
-    /**
-     * The best-so-far rule.
-     */
-    private Rule best;
-
-    /**
      * Creates a new <code>FindRuleActivity</code> object.
      * 
      * @param graph
@@ -101,15 +84,6 @@ public class FindRuleActivity extends IterativeActivity<Rule> {
 	this.graph = graph;
 	this.instances = instances;
 	this.dataset = training;
-    }
-
-    /**
-     * Returns the best-so-far rule.
-     * 
-     * @return the best-so-far rule.
-     */
-    public Rule getBest() {
-	return best;
     }
 
     @Override
@@ -130,8 +104,6 @@ public class FindRuleActivity extends IterativeActivity<Rule> {
 	policy = CONFIG.get(DEFAULT_POLICY);
 	policy.initialise(graph);
 
-	convergence = 0;
-
 	// the heuristic procedure only takes into account
 	// the instances covered by a rule, so we prepare an
 	// instance array where each NOT_COVERED value is
@@ -146,19 +118,12 @@ public class FindRuleActivity extends IterativeActivity<Rule> {
 
     @Override
     public boolean terminate() {
-	return super.terminate() || convergence > CONFIG.get(CONVERGENCE);
+	return super.terminate() || stagnation > CONFIG.get(STAGNATION);
     }
 
     @Override
-    public void update(Rule candidate) {
-	policy.update(graph, candidate);
-
-	// updates the global best
-	if (best == null || candidate.compareTo(best) > 0) {
-	    best = candidate;
-	    convergence = 0;
-	} else if (candidate.compareTo(best) == 0) {
-	    convergence++;
-	}
+    public void update(Archive<Rule> archive) {
+	super.update(archive);
+	policy.update(graph, archive.highest());
     }
 }

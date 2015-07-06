@@ -21,6 +21,7 @@ package myra.rule.irl;
 
 import static myra.Config.CONFIG;
 import static myra.IterativeActivity.MAX_ITERATIONS;
+import static myra.IterativeActivity.STAGNATION;
 import static myra.Scheduler.COLONY_SIZE;
 import static myra.Scheduler.PARALLEL;
 import static myra.interval.IntervalBuilder.DEFAULT_BUILDER;
@@ -31,7 +32,6 @@ import static myra.rule.Heuristic.DEFAULT_HEURISTIC;
 import static myra.rule.Heuristic.DYNAMIC_HEURISTIC;
 import static myra.rule.Pruner.DEFAULT_PRUNER;
 import static myra.rule.RuleFunction.DEFAULT_FUNCTION;
-import static myra.rule.irl.FindRuleActivity.CONVERGENCE;
 import static myra.rule.irl.PheromonePolicy.DEFAULT_POLICY;
 import static myra.rule.irl.RuleFactory.DEFAULT_FACTORY;
 import static myra.rule.irl.SequentialCovering.UNCOVERED;
@@ -113,7 +113,7 @@ public class AntMiner extends Classifier {
 	CONFIG.set(MINIMUM_CASES, 10);
 	CONFIG.set(MAXIMUM_LIMIT, 25);
 	CONFIG.set(UNCOVERED, 10);
-	CONFIG.set(CONVERGENCE, 10);
+	CONFIG.set(STAGNATION, 10);
 	CONFIG.set(DEFAULT_PRUNER, new GreedyPruner());
 	CONFIG.set(DEFAULT_FUNCTION, new SensitivitySpecificity());
 	CONFIG.set(DEFAULT_HEURISTIC, new EntropyHeuristic());
@@ -175,7 +175,7 @@ public class AntMiner extends Classifier {
 				      "number"));
 
 	// convergence test
-	options.add(new IntegerOption(CONVERGENCE,
+	options.add(new IntegerOption(STAGNATION,
 				      "x",
 				      "set the number of %s for convergence test",
 				      "iterations"));

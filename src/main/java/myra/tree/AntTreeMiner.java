@@ -21,13 +21,13 @@ package myra.tree;
 
 import static myra.Config.CONFIG;
 import static myra.IterativeActivity.MAX_ITERATIONS;
+import static myra.IterativeActivity.STAGNATION;
 import static myra.Scheduler.COLONY_SIZE;
 import static myra.Scheduler.PARALLEL;
 import static myra.interval.IntervalBuilder.DEFAULT_BUILDER;
 import static myra.interval.IntervalBuilder.MAXIMUM_LIMIT;
 import static myra.interval.IntervalBuilder.MINIMUM_CASES;
 import static myra.tree.AbstractPruner.DEFAULT_PRUNER;
-import static myra.tree.FindTreeActivity.CONVERGENCE;
 import static myra.tree.FindTreeActivity.DEFAULT_MEASURE;
 import static myra.tree.GainRatioHeuristic.FILTER_GAIN;
 import static myra.tree.Heuristic.DEFAULT_HEURISTIC;
@@ -88,7 +88,7 @@ public class AntTreeMiner extends Classifier {
 	CONFIG.set(MINIMUM_CASES, 3);
 	CONFIG.set(EVAPORATION_FACTOR, 0.9);
 	CONFIG.set(DEFAULT_MEASURE, PESSIMISTIC);
-	CONFIG.set(CONVERGENCE, 40);
+	CONFIG.set(STAGNATION, 40);
 	CONFIG.set(DEFAULT_PRUNER, new PessimisticPruner());
 	CONFIG.set(DEFAULT_HEURISTIC, new GainRatioHeuristic());
 	CONFIG.set(DYNAMIC_HEURISTIC, Boolean.FALSE);
@@ -138,7 +138,7 @@ public class AntTreeMiner extends Classifier {
 				      "number"));
 
 	// convergence test
-	options.add(new IntegerOption(CONVERGENCE,
+	options.add(new IntegerOption(STAGNATION,
 				      "x",
 				      "set the number of %s for convergence test",
 				      "iterations"));
@@ -210,7 +210,7 @@ public class AntTreeMiner extends Classifier {
 	FindTreeActivity activity =
 		new FindTreeActivity(new Graph(dataset), dataset);
 
-	Scheduler<Tree> scheduler = Scheduler.newInstance();
+	Scheduler<Tree> scheduler = Scheduler.newInstance(1);
 	scheduler.setActivity(activity);
 	scheduler.run();
 

@@ -21,6 +21,7 @@ package myra.rule.pittsburgh;
 
 import static myra.Config.CONFIG;
 import static myra.IterativeActivity.MAX_ITERATIONS;
+import static myra.IterativeActivity.STAGNATION;
 import static myra.Scheduler.COLONY_SIZE;
 import static myra.Scheduler.PARALLEL;
 import static myra.interval.IntervalBuilder.DEFAULT_BUILDER;
@@ -30,7 +31,6 @@ import static myra.rule.Heuristic.DYNAMIC_HEURISTIC;
 import static myra.rule.ListMeasure.DEFAULT_MEASURE;
 import static myra.rule.Pruner.DEFAULT_PRUNER;
 import static myra.rule.RuleFunction.DEFAULT_FUNCTION;
-import static myra.rule.pittsburgh.FindRuleListActivity.CONVERGENCE;
 import static myra.rule.pittsburgh.FindRuleListActivity.UNCOVERED;
 import static myra.rule.pittsburgh.LevelPheromonePolicy.EVAPORATION_FACTOR;
 import static myra.rule.pittsburgh.LevelPheromonePolicy.P_BEST;
@@ -116,7 +116,7 @@ public class cAntMinerPB extends Classifier {
 	CONFIG.set(EVAPORATION_FACTOR, 0.9);
 	CONFIG.set(DEFAULT_MEASURE, new PessimisticAccuracy());
 	CONFIG.set(UNCOVERED, 0.01);
-	CONFIG.set(CONVERGENCE, 40);
+	CONFIG.set(STAGNATION, 40);
 	CONFIG.set(DEFAULT_PRUNER, new BacktrackPruner());
 	CONFIG.set(DEFAULT_FUNCTION, new SensitivitySpecificity());
 	CONFIG.set(DEFAULT_HEURISTIC, new EntropyHeuristic());
@@ -129,7 +129,7 @@ public class cAntMinerPB extends Classifier {
 	FindRuleListActivity activity =
 		new FindRuleListActivity(new Graph(dataset), dataset);
 
-	Scheduler<RuleList> scheduler = Scheduler.newInstance();
+	Scheduler<RuleList> scheduler = Scheduler.newInstance(1);
 	scheduler.setActivity(activity);
 	scheduler.run();
 
@@ -185,7 +185,7 @@ public class cAntMinerPB extends Classifier {
 				     "percentage"));
 
 	// convergence test
-	options.add(new IntegerOption(CONVERGENCE,
+	options.add(new IntegerOption(STAGNATION,
 				      "x",
 				      "set the number of %s for convergence test",
 				      "iterations"));

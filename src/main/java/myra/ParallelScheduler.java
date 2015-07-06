@@ -26,78 +26,86 @@ import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.ThreadFactory;
 
+import myra.Archive.SynchronizedArchive;
+
 /**
  * Parallel implementation of a <code>Scheduler</code>. Activites executed by
  * this scheduler need to be thread-safe.
  * 
  * @author Fernando Esteban Barril Otero
  */
-public class ParallelScheduler<T extends Comparable<T>>
-	extends Scheduler<T> {
+public class ParallelScheduler<T extends Comparable<T>> extends Scheduler<T> {
     /**
      * Tasks executor service.
      */
     private ExecutorService executor;
 
     /**
-     * The array of candidate solutions.
-     */
-    private Object[] candidates;
-
-    /**
      * Creates a new <code>ParallelScheduler</code>.
      */
     public ParallelScheduler() {
-	super();
+	this(null, CONFIG.get(COLONY_SIZE));
     }
 
     /**
-     * Creates a new <code>ParallelScheduler</code> to run the specified
-     * activity.
+     * Creates a new <code>ParallelScheduler</code>.
+     * 
+     * @param capacity
+     *            number of candidate solutions stored at each iteration.
+     */
+    public ParallelScheduler(int capacity) {
+	this(null, capacity);
+    }
+
+    /**
+     * Creates a new <code>ParallelScheduler</code>.
      * 
      * @param activity
-     *            the activity to run.
+     *            the (wrapped) activity.
      */
     public ParallelScheduler(Activity<T> activity) {
-	super(activity);
+	this(activity, CONFIG.get(COLONY_SIZE));
+    }
+
+    /**
+     * Creates a new <code>ParallelScheduler</code>.
+     * 
+     * @param activity
+     *            the (wrapped) activity.
+     * @param capacity
+     *            number of candidate solutions stored at each iteration.
+     */
+    public ParallelScheduler(Activity<T> activity, int capacity) {
+	super(activity, capacity);
     }
 
     @Override
     protected void initialise() {
 	super.initialise();
-
-	candidates = new Object[CONFIG.get(COLONY_SIZE)];
-
 	// initialises the thread pool
+	executor = Executors.newFixedThreadPool(CONFIG.get(PARALLEL),
+						new ThreadFactory() {
+						    private int id = 0;
 
-	executor =
-		Executors.newFixedThreadPool(CONFIG.get(PARALLEL),
-					     new ThreadFactory() {
-						 private int id = 0;
-
-						 public Thread newThread(Runnable r) {
-						     return new Thread(r,
-							     "ParallelScheduler::worker"
-								     + (id++));
-						 }
-					     });
+						    public Thread newThread(Runnable r) {
+							return new Thread(r,
+									  "ParallelScheduler::worker"
+										  + (id++));
+						    }
+						});
     }
 
     @Override
-    @SuppressWarnings("unchecked")
     protected void create() {
 	final CountDownLatch latch =
 		new CountDownLatch(CONFIG.get(COLONY_SIZE));
+	final Archive<T> pool = new SynchronizedArchive<>(archive);
 
 	for (int i = 0; i < CONFIG.get(COLONY_SIZE); i++) {
-	    final int index = i;
-
 	    executor.execute(new Runnable() {
 		@Override
 		public void run() {
-		    T c = activity.create();
-		    candidates[index] = c;
-
+		    pool.add(activity.create());
 		    latch.countDown();
 		}
 	    });
@@ -106,14 +114,6 @@ public class ParallelScheduler<T extends Comparable<T>>
 	try {
 	    // waits for the creation of trails
 	    latch.await();
-
-	    for (Object o : candidates) {
-		T current = (T) o;
-
-		if (candidate == null || current.compareTo(candidate) > 0) {
-		    candidate = current;
-		}
-	    }
 	} catch (InterruptedException e) {
 	    throw new RuntimeException(e);
 	}
@@ -122,7 +122,6 @@ public class ParallelScheduler<T extends Comparable<T>>
     @Override
     public void run() {
 	super.run();
-
 	// finilizes the executor threads
 	executor.shutdown();
     }
