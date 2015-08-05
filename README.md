@@ -6,6 +6,10 @@ This repository contains a complete rewrite of the code (by the same author) fro
 
 While this repository is a fresh start, the versioning is maintained &mdash; version `4.0` is the new version of the refactored code. If you are interested in the hierarchical multi-label algorithms (`3.x` versions), check the [sourceforge](http://sourceforge.net/projects/myra/) repository. These algorithms will eventually be refactored into this repository.
 
+###### Latest Release
+
+* [MYRA 4.0 (jar file)](https://github.com/febo/myra/releases/download/v4.0/myra-4.0.jar)
+
 ### Algorithms
 
 The following algorithms are implemented:
@@ -193,6 +197,14 @@ There is no specific way to cite the MYRA repository. If you would like to make 
 
 * F.E.B. Otero and A.A. Freitas. Improving the Interpretability of Classification Rules Discovered by an Ant Colony Algorithm. In: Proceedings of the Genetic and Evolutionary Computation Conference (GECCO '13), pp. 73-80, 2013.
 ```
+@ARTICLE{Otero15evco,
+    author  = {F.E.B. Otero and A.A. Freitas},
+    title   = {Improving the Interpretability of Classification Rules Discovered by an Ant Colony Algorithm: Extended Results},
+    journal = {Evolutionary Computation},
+    year    = {2015},
+    note    = {Accepted for publication}
+}
+
 @INPROCEEDINGS{Otero13unordered,
     author    = {F.E.B. Otero and A.A. Freitas},
     title     = {Improving the Interpretability of Classification Rules Discovered by an Ant Colony Algorithm},
