@@ -195,7 +195,7 @@ There is no specific way to cite the MYRA repository. If you would like to make 
 
 ##### Unordered *c*Ant-Miner<sub>PB</sub>
 
-* F.E.B. Otero and A.A. Freitas. Improving the Interpretability of Classification Rules Discovered by an Ant Colony Algorithm. In: Proceedings of the Genetic and Evolutionary Computation Conference (GECCO '13), pp. 73-80, 2013.
+* F.E.B. Otero and A.A. Freitas. Improving the Interpretability of Classification Rules Discovered by an Ant Colony Algorithm: Extended Results. Evolutionary Computation (accepted for publication), MIT Press, 2015.
 ```
 @ARTICLE{Otero15evco,
     author  = {F.E.B. Otero and A.A. Freitas},
@@ -204,7 +204,10 @@ There is no specific way to cite the MYRA repository. If you would like to make 
     year    = {2015},
     note    = {Accepted for publication}
 }
+```
 
+* F.E.B. Otero and A.A. Freitas. Improving the Interpretability of Classification Rules Discovered by an Ant Colony Algorithm. In: Proceedings of the Genetic and Evolutionary Computation Conference (GECCO '13), pp. 73-80, 2013.
+```
 @INPROCEEDINGS{Otero13unordered,
     author    = {F.E.B. Otero and A.A. Freitas},
     title     = {Improving the Interpretability of Classification Rules Discovered by an Ant Colony Algorithm},
