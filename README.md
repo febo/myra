@@ -8,7 +8,7 @@ While this repository is a fresh start, the versioning is maintained &mdash; ver
 
 ###### Latest Release
 
-* [MYRA 4.0 (jar file)](https://github.com/febo/myra/releases/download/v4.0/myra-4.0.jar)
+* [MYRA 4.0 (jar file)](https://sourceforge.net/projects/myra/files/myra/4.0/myra-4.0.jar/download)
 
 ### Algorithms
 
