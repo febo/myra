@@ -34,6 +34,7 @@ import java.util.Random;
 import java.util.TreeMap;
 
 import myra.Config.ConfigKey;
+import myra.Option.BooleanOption;
 import myra.util.ARFFReader;
 import myra.util.Logger;
 
@@ -400,7 +401,16 @@ public abstract class Classifier {
 		    && CONFIG.isPresent(option.getKey())
 		    && !option.getModifier().equals("f")
 		    && !option.getModifier().equals("t")) {
-		Logger.log("\t-%s %s%n", option.getModifier(), option.value());
+
+		if (option instanceof BooleanOption
+			&& !CONFIG.get(((BooleanOption) option).getKey())) {
+		    // we only print the informantion for BooleanOptions that
+		    // have default values set to true
+		} else {
+		    Logger.log("\t-%s %s%n",
+			       option.getModifier(),
+			       option.value());
+		}
 	    }
 	}
 
