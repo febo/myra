@@ -620,6 +620,27 @@ public final class Dataset {
 
 	    return instances;
 	}
+	
+	/**
+	 * Returns a string representation of the instances' flags.
+	 * 
+	 * @param instances the array of instances.
+	 * 
+	 * @return a string representation of the instances' flags.
+	 */
+	public static String toString(Instance[] instances) {
+	    StringBuffer output = new StringBuffer();
+	    output.append("[");
+	    
+	    for (Instance instance : instances) {
+		output.append(" ");
+		output.append(instance.flag);
+	    }
+	    
+	    output.append(" ]");
+	    
+	    return output.toString();
+	}
 
 	/**
 	 * Returns a copy of the specified instance array.
