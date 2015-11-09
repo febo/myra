@@ -141,10 +141,6 @@ public interface Heuristic {
 	    for (int i = 0; i < heuristic.length; i++) {
 		double value = 1.0;
 
-		if (used[i]) {
-		    value = 0.0;
-		}
-
 		heuristic[i].setInitial(value);
 		heuristic[i].set(0, value);
 	    }
