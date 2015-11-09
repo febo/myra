@@ -34,6 +34,8 @@ import myra.interval.IntervalBuilder;
 import myra.interval.MDLSplit;
 import myra.interval.MinimalSplit;
 import myra.rule.BacktrackPruner;
+import myra.rule.GreedyPruner;
+import myra.rule.Pruner;
 
 /**
  * Default executable class file for the <code><i>c</i>Ant-Miner</code>
@@ -84,6 +86,7 @@ public class cAntMiner extends AntMiner {
     }
 
     @Override
+    @SuppressWarnings("unchecked")
     protected Collection<Option<?>> options() {
 	ArrayList<Option<?>> options = new ArrayList<Option<?>>();
 	options.addAll(super.options());
@@ -98,6 +101,15 @@ public class cAntMiner extends AntMiner {
 	builder.add("c45", new C45Split());
 	builder.add("mdl", CONFIG.get(DEFAULT_BUILDER));
 	options.add(builder);
+	
+	// replaces the default pruner method
+	for (Option<?> option : options) {
+	    if (option.getKey() == DEFAULT_PRUNER) {
+		Option<Pruner> pruner = (Option<Pruner>) option;
+		pruner.add("greedy", new GreedyPruner());
+		pruner.add("backtrack", CONFIG.get(DEFAULT_PRUNER));
+	    }
+	}
 
 	return options;
     }
