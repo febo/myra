@@ -389,7 +389,10 @@ public abstract class Classifier {
 	    Logger.log("%nOptions:");
 
 	    for (String option : parameters.keySet()) {
-		Logger.log(" -%s %s", option, parameters.get(option));
+		String value = parameters.get(option);
+		Logger.log(" -%s %s",
+			   option,
+			   (value == null ? "" : parameters.get(option)));
 	    }
 	}
 
