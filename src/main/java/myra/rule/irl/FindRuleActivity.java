@@ -88,10 +88,14 @@ public class FindRuleActivity extends IterativeActivity<Rule> {
 
     @Override
     public Rule create() {
+	// the instances array will be modified by the create and prune,
+	// so we need to work on a copy to avoid concurrency problems
+	Instance[] clone = Instance.copyOf(instances);
+	
 	Rule rule = CONFIG.get(DEFAULT_FACTORY)
-		.create(graph, heuristic, dataset, instances);
+		.create(graph, heuristic, dataset, clone);
 
-	CONFIG.get(DEFAULT_PRUNER).prune(dataset, rule, instances);
+	CONFIG.get(DEFAULT_PRUNER).prune(dataset, rule, clone);
 	rule.setQuality(CONFIG.get(DEFAULT_FUNCTION).evaluate(rule));
 
 	return rule;
