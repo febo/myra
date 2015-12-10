@@ -20,6 +20,7 @@
 package myra.rule.function;
 
 import static myra.Config.CONFIG;
+
 import myra.Config.ConfigKey;
 import myra.rule.Rule;
 import myra.rule.RuleFunction;
@@ -48,8 +49,10 @@ public class MEstimate extends RuleFunction {
 	BinaryConfusionMatrix m = fill(rule);
 
 	final double mValue = CONFIG.get(M);
-	double total = m.TP + m.FP + m.FN + m.TN;
+	double totalN = m.FP + m.TN;
+	double totalP = m.TP + m.FN;
 
-	return (m.TP + (mValue * (m.TP / total))) / (m.TP + m.FP + mValue);
+	return (m.TP + (mValue * (totalP / (totalN + totalP))))
+		/ (m.TP + m.FP + mValue);
     }
 }
