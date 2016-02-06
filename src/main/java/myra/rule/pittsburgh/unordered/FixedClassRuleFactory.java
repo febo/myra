@@ -155,7 +155,7 @@ public class FixedClassRuleFactory {
 		}
 
 		Vertex vertex = graph.vertices()[selected];
-		Condition condition = null;
+		Condition condition = vertex.condition;
 
 		if (vertex.condition == null) {
 		    // continuous vertices do not have a condition,
