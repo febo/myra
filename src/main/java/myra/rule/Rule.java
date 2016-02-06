@@ -19,47 +19,24 @@
 
 package myra.rule;
 
-import static myra.Dataset.COVERED;
-import static myra.Dataset.NOT_COVERED;
-import static myra.Dataset.RULE_COVERED;
-
 import java.util.Arrays;
 
 import myra.Attribute;
 import myra.Attribute.Condition;
 import myra.Dataset;
 import myra.Dataset.Instance;
+import myra.Prediction;
 
 /**
  * This class represents a classification rule.
  * 
  * @author Fernando Esteban Barril Otero
  */
-public final class Rule implements Comparable<Rule> {
-    /**
-     * Constant representing an undefined consequent value.
-     */
-    public static final int UNDEFINED = -1;
-
-    /**
-     * The class value index (-1 if not set).
-     */
-    private int consequent;
-
+public abstract class Rule implements Comparable<Rule> {
     /**
      * The quality of the rule during training.
      */
     private double quality;
-
-    /**
-     * The class distribution of the covered examples.
-     */
-    private int[] covered;
-
-    /**
-     * The class distribution of the uncovered examples.
-     */
-    private int[] uncovered;
 
     /**
      * The list of terms in the antecedent of the rule.
@@ -90,10 +67,7 @@ public final class Rule implements Comparable<Rule> {
      *            the allocated size of the rule.
      */
     public Rule(int capacity) {
-	consequent = UNDEFINED;
 	quality = Double.NaN;
-	covered = new int[0];
-	uncovered = new int[0];
 	terms = new Term[capacity];
 	size = 0;
 	function = -1;
@@ -258,45 +232,6 @@ public final class Rule implements Comparable<Rule> {
     }
 
     /**
-     * Returns the class distribution of the covered examples.
-     * 
-     * @return the class distribution of the covered examples.
-     */
-    public int[] covered() {
-	return covered;
-    }
-
-    /**
-     * Returns the class distribution of the uncovered examples.
-     * 
-     * @return the class distribution of the uncovered examples.
-     */
-    public int[] uncovered() {
-	return uncovered;
-    }
-
-    /**
-     * Returns the number of different class values of the covered instances.
-     * 
-     * @return the number of different class values of the covered instances.
-     */
-    public int diversity() {
-	int diverse = 0;
-
-	for (int i = 0; i < covered.length; i++) {
-	    if (covered[i] > 0) {
-		diverse++;
-	    }
-	}
-
-	if (diverse == 0) {
-	    throw new IllegalStateException("Covered information empty.");
-	}
-
-	return diverse;
-    }
-
-    /**
      * Applies the rule and returns the number of covered instances. Only
      * instances that have not been previously covered are considered.
      * 
@@ -307,39 +242,14 @@ public final class Rule implements Comparable<Rule> {
      * 
      * @return the number of covered instances by the rule.
      */
-    public int apply(Dataset dataset, Instance[] instances) {
-	int total = 0;
-
-	covered = Arrays.copyOf(covered, dataset.classLength());
-	Arrays.fill(covered, 0);
-
-	uncovered = Arrays.copyOf(uncovered, dataset.classLength());
-	Arrays.fill(uncovered, 0);
-
-	for (int i = 0; i < dataset.size(); i++) {
-	    if (instances[i].flag != COVERED) {
-		if (covers(dataset, i)) {
-		    total++;
-		    covered[(int) dataset.value(i, dataset.classIndex())]++;
-		    instances[i].flag = RULE_COVERED;
-		} else {
-		    uncovered[(int) dataset.value(i, dataset.classIndex())]++;
-		    instances[i].flag = NOT_COVERED;
-		}
-	    }
-	}
-
-	return total;
-    }
+    public abstract int apply(Dataset dataset, Instance[] instances);
 
     /**
-     * Returns the predicted class value index.
+     * Returns the predicted class value.
      * 
-     * @return the predicted class value index.
+     * @return the predicted class value.
      */
-    public int getConsequent() {
-	return consequent;
-    }
+    public abstract Prediction getConsequent();
 
     /**
      * Returns the function that evaluated the rule.
@@ -357,16 +267,6 @@ public final class Rule implements Comparable<Rule> {
      */
     public double getQuality() {
 	return quality;
-    }
-
-    /**
-     * Sets the predicted class value index.
-     * 
-     * @param consequent
-     *            the class value index to set.
-     */
-    public void setConsequent(int consequent) {
-	this.consequent = consequent;
     }
 
     /**
@@ -467,11 +367,12 @@ public final class Rule implements Comparable<Rule> {
 
 	buffer.append(" THEN ");
 
-	if (consequent == UNDEFINED) {
+	if (getConsequent() == null) {
 	    buffer.append("<undefined>");
 	} else {
 	    Attribute target = dataset.attributes()[dataset.classIndex()];
-	    buffer.append(target.value(consequent));
+	    buffer.append(getConsequent().toString(target));
+	    /*
 	    buffer.append(" (");
 
 	    for (int i = 0; i < dataset.classLength(); i++) {
@@ -483,6 +384,7 @@ public final class Rule implements Comparable<Rule> {
 	    }
 
 	    buffer.append(")");
+	    */
 	}
 
 	return buffer.toString();
