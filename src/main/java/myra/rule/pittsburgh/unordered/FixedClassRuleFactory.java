@@ -206,7 +206,8 @@ public class FixedClassRuleFactory {
 				    .compute(graph,
 					     dataset,
 					     instances,
-					     incompatible);
+					     incompatible,
+					     target);
 			}
 		    } else {
 			// removed the last added term and marks the selected
