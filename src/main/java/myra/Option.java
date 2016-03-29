@@ -207,6 +207,15 @@ public class Option<T> {
     public ConfigKey<T> getKey() {
 	return key;
     }
+    
+    /**
+     * Returns the argument of this option.
+     * 
+     * @return the argument of this option.
+     */
+    public String getArgument() {
+	return argument;
+    }
 
     /**
      * Returns the switch modifier.
