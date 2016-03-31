@@ -1,8 +1,8 @@
 /**
  * Provides classes that are fundamental to the design of ant colony
- * classification algorithms.
+ * optimization algorithms.
  * 
- * @since 4.0
+ * @since 4.5
  */
 
 package myra;
