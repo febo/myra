@@ -22,6 +22,8 @@ package myra;
 /**
  * The <code>Cost</code> interface represents the cost of a solution.
  * 
+ * @since 4.5
+ * 
  * @author Fernando Esteban Barril Otero
  */
 public interface Cost extends Comparable<Cost> {
@@ -41,8 +43,8 @@ public interface Cost extends Comparable<Cost> {
     public abstract double adjusted();
 
     /**
-     * Class to represent a cost value that should be minimised, where the
-     * lower the value the better the solution.
+     * Class to represent a cost value that should be minimised, where the lower
+     * the value the better the solution.
      */
     public static class Minimise implements Cost {
 	/**
@@ -60,7 +62,7 @@ public interface Cost extends Comparable<Cost> {
 	/**
 	 * Creates a new <code>Minimise</code> object.
 	 * 
-	 * @param value
+	 * @param cost
 	 *            the cost value.
 	 */
 	public Minimise(double cost) {
@@ -72,6 +74,18 @@ public interface Cost extends Comparable<Cost> {
 	    return compareTo((Minimise) o);
 	}
 
+	/**
+	 * Compares this cost with the specified cost <code>o</code> for order.
+	 * Returns a negative integer, zero, or a positive integer as this cost
+	 * is less than, equal to, or greater than the specified cost.
+	 * 
+	 * @param o
+	 *            the cost to be compared.
+	 * 
+	 * @return a negative integer, zero, or a positive integer as this
+	 *         object is less than, equal to, or greater than the specified
+	 *         object.
+	 */
 	public int compareTo(Minimise o) {
 	    return Double.compare(o.cost, cost);
 	}
@@ -122,6 +136,18 @@ public interface Cost extends Comparable<Cost> {
 	    return compareTo((Maximise) o);
 	}
 
+	/**
+	 * Compares this cost with the specified cost <code>o</code> for order.
+	 * Returns a negative integer, zero, or a positive integer as this cost
+	 * is less than, equal to, or greater than the specified cost.
+	 * 
+	 * @param o
+	 *            the cost to be compared.
+	 * 
+	 * @return a negative integer, zero, or a positive integer as this
+	 *         object is less than, equal to, or greater than the specified
+	 *         object.
+	 */
 	public int compareTo(Maximise o) {
 	    return Double.compare(cost, o.cost);
 	}
