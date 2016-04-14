@@ -155,7 +155,7 @@ public class FixedClassRuleFactory {
 		}
 
 		Vertex vertex = graph.vertices()[selected];
-		Condition condition = null;
+		Condition condition = vertex.condition;
 
 		if (vertex.condition == null) {
 		    ClassAwareSplit builder = null;
@@ -215,7 +215,8 @@ public class FixedClassRuleFactory {
 				    CONFIG.get(DEFAULT_HEURISTIC).compute(graph,
 									  dataset,
 									  instances,
-									  incompatible);
+									  incompatible,
+									  target.value());
 			}
 		    } else {
 			// removed the last added term and marks the selected

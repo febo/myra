@@ -49,9 +49,10 @@ public class MEstimate extends ClassificationRuleFunction {
 	BinaryConfusionMatrix m = fill(rule);
 
 	final double mValue = CONFIG.get(M);
-	double total = m.TP + m.FP + m.FN + m.TN;
+	double totalN = m.FP + m.TN;
+	double totalP = m.TP + m.FN;
 
-	return new Maximise((m.TP + (mValue * (m.TP / total)))
+	return new Maximise((m.TP + (mValue * (totalP / (totalN + totalP))))
 		/ (m.TP + m.FP + mValue));
     }
 }
