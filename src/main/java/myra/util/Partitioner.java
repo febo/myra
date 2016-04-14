@@ -19,16 +19,16 @@
 
 package myra.util;
 
-import static myra.Classifier.RANDOM_GENERATOR;
 import static myra.Config.CONFIG;
-import static myra.Dataset.COVERED;
-import static myra.Dataset.NOT_COVERED;
+import static myra.classification.Classifier.RANDOM_GENERATOR;
+import static myra.data.Dataset.COVERED;
+import static myra.data.Dataset.NOT_COVERED;
 
 import java.util.ArrayList;
 import java.util.HashMap;
 
-import myra.Dataset;
-import myra.Dataset.Instance;
+import myra.data.Dataset;
+import myra.data.Dataset.Instance;
 
 /**
  * This class can be used to partition de data in-memory.

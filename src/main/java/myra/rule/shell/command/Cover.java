@@ -21,9 +21,10 @@ package myra.rule.shell.command;
 
 import static myra.rule.shell.command.Load.DATASET;
 import static myra.rule.shell.command.Load.INSTANCES;
-import myra.Dataset;
-import myra.Dataset.Instance;
-import myra.rule.Parser;
+
+import myra.classification.rule.Parser;
+import myra.data.Dataset;
+import myra.data.Dataset.Instance;
 import myra.rule.Rule;
 import myra.rule.shell.Command;
 import myra.rule.shell.Memory;
@@ -32,9 +33,9 @@ import myra.rule.shell.Memory;
  * Command that cover instances using the specified rule. A dataset needs to be
  * loaded prior to executing this command.
  * 
- * @see Load
- * 
  * @author Fernando Esteban Barril Otero
+ * 
+ * @see Load
  */
 public class Cover implements Command {
     @Override

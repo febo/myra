@@ -19,13 +19,18 @@
 
 package myra.rule;
 
+import static myra.Config.CONFIG;
+
 import java.util.Arrays;
 
-import myra.Attribute;
-import myra.Attribute.Condition;
-import myra.Dataset;
-import myra.Dataset.Instance;
-import myra.Prediction;
+import myra.Config.ConfigKey;
+import myra.data.Attribute;
+import myra.data.Dataset;
+import myra.data.Prediction;
+import myra.data.Attribute.Condition;
+import myra.data.Dataset.Instance;
+import myra.Cost;
+import myra.util.ObjectFactory;
 
 /**
  * This class represents a classification rule.
@@ -34,9 +39,15 @@ import myra.Prediction;
  */
 public abstract class Rule implements Comparable<Rule> {
     /**
-     * The quality of the rule during training.
+     * The config key for the default rule implementation class.
      */
-    private double quality;
+    public static final ConfigKey<Class<? extends Rule>> DEFAULT_RULE =
+	    new ConfigKey<>();
+
+    /**
+     * The quality (cost) of the rule during training.
+     */
+    private Cost quality;
 
     /**
      * The list of terms in the antecedent of the rule.
@@ -67,10 +78,38 @@ public abstract class Rule implements Comparable<Rule> {
      *            the allocated size of the rule.
      */
     public Rule(int capacity) {
-	quality = Double.NaN;
 	terms = new Term[capacity];
 	size = 0;
 	function = -1;
+    }
+
+    /**
+     * Returns a new <code>Rule</code> object using the default class
+     * implementation.
+     * 
+     * @return a new <code>Rule</code> object.
+     * 
+     * @see #DEFAULT_RULE
+     */
+    public static Rule newInstance() {
+	return ObjectFactory.create(CONFIG.get(DEFAULT_RULE));
+    }
+
+    /**
+     * Returns a new <code>Rule</code> object with the specified capacity using
+     * the default class implementation.
+     * 
+     * @param capacity
+     *            the allocated size of the rule.
+     * 
+     * @return a new <code>Rule</code> object.
+     * 
+     * @see #DEFAULT_RULE
+     */
+    public static Rule newInstance(int capacity) {
+	return ObjectFactory.create(CONFIG.get(DEFAULT_RULE),
+				    new Class<?>[] { int.class },
+				    new Object[] { capacity });
     }
 
     /**
@@ -245,9 +284,17 @@ public abstract class Rule implements Comparable<Rule> {
     public abstract int apply(Dataset dataset, Instance[] instances);
 
     /**
-     * Returns the predicted class value.
+     * Sets the predicted value.
      * 
-     * @return the predicted class value.
+     * @param prediction
+     *            the value to set.
+     */
+    public abstract void setConsequent(Prediction prediction);
+
+    /**
+     * Returns the predicted value.
+     * 
+     * @return the predicted value.
      */
     public abstract Prediction getConsequent();
 
@@ -265,7 +312,7 @@ public abstract class Rule implements Comparable<Rule> {
      * 
      * @return the quality of the rule.
      */
-    public double getQuality() {
+    public Cost getQuality() {
 	return quality;
     }
 
@@ -285,13 +332,18 @@ public abstract class Rule implements Comparable<Rule> {
      * @param quality
      *            the quality to set.
      */
-    public void setQuality(double quality) {
+    public void setQuality(Cost quality) {
 	this.quality = quality;
     }
 
+    /**
+     * Compares this rule with the specified rule. The first criteria is the
+     * quality; in the case that both rules have the same quality, their are
+     * compared in terms of size (occam's razor criteria).
+     */
     @Override
     public int compareTo(Rule o) {
-	int c = Double.compare(quality, o.quality);
+	int c = (quality == null ? 0 : quality.compareTo(o.quality));
 
 	if (c == 0) {
 	    c = Double.compare(o.size(), size());
@@ -299,6 +351,14 @@ public abstract class Rule implements Comparable<Rule> {
 
 	return c;
     }
+
+    /**
+     * Returns <code>true</code> if the rule covers diverse instances.
+     * 
+     * @return <code>true</code> if the rule covers diverse instances;
+     *         <code>flase</code> otherwise.
+     */
+    public abstract boolean isDiverse();
 
     /**
      * Substitutes continuous attributes' threshold values with values that
@@ -373,18 +433,15 @@ public abstract class Rule implements Comparable<Rule> {
 	    Attribute target = dataset.attributes()[dataset.classIndex()];
 	    buffer.append(getConsequent().toString(target));
 	    /*
-	    buffer.append(" (");
-
-	    for (int i = 0; i < dataset.classLength(); i++) {
-		if (i > 0) {
-		    buffer.append(",");
-		}
-
-		buffer.append(covered[i]);
-	    }
-
-	    buffer.append(")");
-	    */
+	     * buffer.append(" (");
+	     * 
+	     * for (int i = 0; i < dataset.classLength(); i++) { if (i > 0) {
+	     * buffer.append(","); }
+	     * 
+	     * buffer.append(covered[i]); }
+	     * 
+	     * buffer.append(")");
+	     */
 	}
 
 	return buffer.toString();

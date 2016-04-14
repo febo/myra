@@ -19,9 +19,9 @@
 
 package myra.rule.irl;
 
-import myra.Dataset;
 import myra.Config.ConfigKey;
-import myra.Dataset.Instance;
+import myra.data.Dataset;
+import myra.data.Dataset.Instance;
 import myra.rule.Graph;
 import myra.rule.Graph.Entry;
 import myra.rule.Rule;

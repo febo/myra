@@ -19,13 +19,13 @@
 
 package myra.rule;
 
-import static myra.Attribute.EQUAL_TO;
+import static myra.data.Attribute.EQUAL_TO;
 
 import java.util.Arrays;
 
-import myra.Attribute;
-import myra.Dataset;
-import myra.Attribute.Condition;
+import myra.data.Attribute;
+import myra.data.Dataset;
+import myra.data.Attribute.Condition;
 
 /**
  * This class represents the construction graph. The graph holds the information

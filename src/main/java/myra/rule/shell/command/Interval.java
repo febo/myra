@@ -23,37 +23,39 @@ import static myra.Config.CONFIG;
 import static myra.rule.shell.command.Load.DATASET;
 import static myra.rule.shell.command.Load.INSTANCES;
 
-import myra.Attribute;
-import myra.Attribute.Condition;
-import myra.Dataset;
-import myra.Dataset.Instance;
-import myra.interval.IntervalBuilder;
-import myra.interval.MDLSplit;
-import myra.rule.Parser;
+import myra.classification.attribute.MDLSplit;
+import myra.classification.rule.ClassificationRule;
+import myra.classification.rule.Parser;
+import myra.data.Attribute;
+import myra.data.Dataset;
+import myra.data.IntervalBuilder;
+import myra.data.Attribute.Condition;
+import myra.data.Dataset.Instance;
 import myra.rule.Rule;
 import myra.rule.shell.Command;
 import myra.rule.shell.Memory;
 
 /**
- * Executes the discretisation process on the specified continuous attributes. A
- * dataset must be loaded prior to the execution of this command.
+ * Executes the discretisation process on the specified continuous attributes.
+ * A dataset must be loaded prior to the execution of this command.
+ * 
+ * @author Fernando Esteban Barril Otero
  * 
  * @see IntervalBuilder
  * @see Load
- * 
- * @author Fernando Esteban Barril Otero
  */
 public class Interval implements Command {
     @Override
     public void execute(Memory memory, String... arguments) {
 	CONFIG.set(IntervalBuilder.MINIMUM_CASES, 10);
 	CONFIG.set(IntervalBuilder.MAXIMUM_LIMIT, 25);
+	CONFIG.set(Rule.DEFAULT_RULE, ClassificationRule.class);
 
 	Dataset dataset = memory.get(DATASET);
 	Instance[] instances = memory.get(INSTANCES);
 	Attribute attribute = dataset.findAttribute(arguments[0]);
 
-	Rule rule = new Rule();
+	Rule rule = Rule.newInstance();
 
 	if (arguments.length == 2) {
 	    rule = Parser.parse(dataset, "IF " + arguments[1] + " THEN 0");

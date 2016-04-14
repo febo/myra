@@ -19,7 +19,7 @@
 
 package myra.rule.shell.command;
 
-import myra.Classifier;
+import myra.classification.Classifier;
 import myra.rule.shell.Command;
 import myra.rule.shell.Memory;
 

@@ -19,17 +19,18 @@
 
 package myra.classification;
 
-import myra.io.Dataset;
-import myra.io.Model;
+import myra.Cost;
+import myra.data.Dataset;
+import myra.data.Model;
 
 /**
  * Base class for model evaluation measures.
  * 
  * @author Fernando Esteban Barril Otero
  */
-public abstract class Measure extends myra.io.Measure {
+public abstract class Measure extends myra.data.Measure {
     @Override
-    public double evaluate(Dataset dataset, Model model) {
+    public Cost evaluate(Dataset dataset, Model model) {
 	return evaluate(dataset, (ClassificationModel) model);
     }
 
@@ -43,7 +44,7 @@ public abstract class Measure extends myra.io.Measure {
      * 
      * @return the quality of the specified classification model.
      */
-    public abstract double evaluate(Dataset dataset, ClassificationModel model);
+    public abstract Cost evaluate(Dataset dataset, ClassificationModel model);
 
     /**
      * Creates a confusion matrix for the specified list.

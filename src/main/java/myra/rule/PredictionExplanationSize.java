@@ -20,9 +20,13 @@
 package myra.rule;
 
 import static myra.Config.CONFIG;
-import static myra.rule.ConflictResolution.FREQUENT_CLASS;
+import static myra.classification.rule.unordered.ConflictResolution.FREQUENT_CLASS;
 import static myra.rule.RuleSet.CONFLICT_RESOLUTION;
-import myra.Dataset;
+
+import myra.Cost;
+import myra.Cost.Minimise;
+import myra.classification.rule.ClassificationRule;
+import myra.data.Dataset;
 
 /**
  * This class calculates the prediction-explanation size of a list of rules.
@@ -32,7 +36,7 @@ import myra.Dataset;
 public class PredictionExplanationSize implements ListMeasure {
 
     @Override
-    public double evaluate(Dataset dataset, RuleList list) {
+    public Cost evaluate(Dataset dataset, RuleList list) {
 	if (list instanceof RuleSet) {
 	    return average(dataset, (RuleSet) list);
 	}
@@ -51,7 +55,7 @@ public class PredictionExplanationSize implements ListMeasure {
      * 
      * @return the average number of terms of the predictions.
      */
-    private double average(Dataset dataset, RuleList list) {
+    private Cost average(Dataset dataset, RuleList list) {
 	double terms = 0.0;
 
 	for (int i = 0; i < dataset.size(); i++) {
@@ -71,7 +75,7 @@ public class PredictionExplanationSize implements ListMeasure {
 	    }
 	}
 
-	return terms / dataset.size();
+	return new Minimise(terms / dataset.size());
     }
 
     /**
@@ -85,7 +89,7 @@ public class PredictionExplanationSize implements ListMeasure {
      * 
      * @return the average number of terms of the predictions.
      */
-    private double average(Dataset dataset, RuleSet set) {
+    private Cost average(Dataset dataset, RuleSet set) {
 	double terms = 0.0;
 
 	if (CONFIG.get(CONFLICT_RESOLUTION) == FREQUENT_CLASS) {
@@ -108,7 +112,8 @@ public class PredictionExplanationSize implements ListMeasure {
 		double best = Double.MIN_VALUE;
 		double length = 0.0;
 
-		for (Rule rule : set.rules()) {
+		for (ClassificationRule rule : (ClassificationRule[]) set
+			.rules()) {
 		    if (!rule.isEmpty() && rule.covers(dataset, i)) {
 			int[] frequency = rule.covered();
 			int total = 0;
@@ -117,8 +122,10 @@ public class PredictionExplanationSize implements ListMeasure {
 			    total += frequency[j];
 			}
 
-			double laplace = (frequency[rule.getConsequent()] + 1)
-				/ (double) (total + dataset.classLength());
+			double laplace =
+				(frequency[rule.getConsequent().value()] + 1)
+					/ (double) (total
+						+ dataset.classLength());
 
 			if (laplace > best) {
 			    best = laplace;
@@ -131,6 +138,6 @@ public class PredictionExplanationSize implements ListMeasure {
 	    }
 	}
 
-	return terms / dataset.size();
+	return new Minimise(terms / dataset.size());
     }
 }

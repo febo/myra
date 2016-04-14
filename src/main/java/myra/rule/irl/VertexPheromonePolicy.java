@@ -67,7 +67,7 @@ public final class VertexPheromonePolicy implements PheromonePolicy {
     public void update(Graph graph, Rule rule) {
 	Term[] terms = rule.terms();
 	Entry[][] matrix = graph.matrix();
-	final double q = rule.getQuality();
+	final double q = rule.getQuality().raw();
 
 	for (int i = 0; i < terms.length; i++) {
 	    double value = matrix[terms[i].index()][0].value(0);

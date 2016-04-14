@@ -19,8 +19,9 @@
 
 package myra.rule;
 
+import myra.Cost;
 import myra.Config.ConfigKey;
-import myra.Dataset;
+import myra.data.Dataset;
 
 /**
  * This class is the base class for all list quality measures.
@@ -45,18 +46,5 @@ public interface ListMeasure {
      * 
      * @return the quality of the specified list of rules.
      */
-    public double evaluate(Dataset dataset, RuleList list);
-
-    /**
-     * Bridge class to represent the accuracy measure as a
-     * <code>ListMeasure</code>.
-     * 
-     * @author Fernando Esteban Barril Otero
-     */
-    public static class Accuracy extends myra.Accuracy implements ListMeasure {
-	@Override
-	public double evaluate(Dataset dataset, RuleList list) {
-	    return super.evaluate(dataset, list);
-	}
-    }
+    public Cost evaluate(Dataset dataset, RuleList list);
 }

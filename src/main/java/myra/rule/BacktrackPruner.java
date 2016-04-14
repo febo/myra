@@ -21,8 +21,10 @@ package myra.rule;
 
 import static myra.Config.CONFIG;
 import static myra.rule.Assignator.ASSIGNATOR;
-import myra.Dataset;
-import myra.Dataset.Instance;
+
+import myra.Cost;
+import myra.data.Dataset;
+import myra.data.Dataset.Instance;
 import myra.rule.Rule.Term;
 
 /**
@@ -40,7 +42,7 @@ public class BacktrackPruner extends Pruner {
 	Assignator assignator = CONFIG.get(ASSIGNATOR);
 	int available = assignator.assign(rule);
 
-	double best = function.evaluate(rule);
+	Cost best = function.evaluate(rule);
 	Term last = null;
 
 	while (rule.size() > 1) {
@@ -48,9 +50,9 @@ public class BacktrackPruner extends Pruner {
 	    rule.apply(dataset, instances);
 	    int pruned = assignator.assign(rule);
 
-	    double current = function.evaluate(rule);
+	    Cost current = function.evaluate(rule);
 
-	    if (current >= best) {
+	    if (current.compareTo(best) > 0) {
 		available = pruned;
 		best = current;
 	    } else {

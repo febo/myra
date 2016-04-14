@@ -20,24 +20,24 @@
 package myra.rule.irl;
 
 import static myra.Config.CONFIG;
-import static myra.Dataset.NOT_COVERED;
-import static myra.Dataset.RULE_COVERED;
+import static myra.data.Dataset.NOT_COVERED;
+import static myra.data.Dataset.RULE_COVERED;
 import static myra.rule.Heuristic.DEFAULT_HEURISTIC;
 import static myra.rule.Pruner.DEFAULT_PRUNER;
 import static myra.rule.RuleFunction.DEFAULT_FUNCTION;
 import static myra.rule.irl.PheromonePolicy.DEFAULT_POLICY;
 import static myra.rule.irl.RuleFactory.DEFAULT_FACTORY;
 
-import myra.Dataset;
-import myra.Dataset.Instance;
 import myra.Archive;
 import myra.IterativeActivity;
+import myra.data.Dataset;
+import myra.data.Dataset.Instance;
 import myra.rule.Graph;
-import myra.rule.Graph.Entry;
 import myra.rule.Rule;
+import myra.rule.Graph.Entry;
 
 /**
- * The <code>EvolverActivity</code> is responsible for evolving a single rule
+ * The <code>FindRuleActivity</code> is responsible for evolving a single rule
  * using an ACO-based procedure.
  * 
  * @author Fernando Esteban Barril Otero

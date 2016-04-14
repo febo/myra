@@ -21,7 +21,9 @@ package myra.rule.pittsburgh;
 
 import static myra.Config.CONFIG;
 import static myra.rule.Graph.START_INDEX;
+
 import myra.Config.ConfigKey;
+import myra.Cost;
 import myra.rule.Graph;
 import myra.rule.Graph.Entry;
 import myra.rule.Rule;
@@ -64,7 +66,7 @@ public final class LevelPheromonePolicy {
     /**
      * The quality of the global best solution.
      */
-    private double global;
+    private Cost global;
 
     /**
      * The MAX-MIN upper pheromone limit.
@@ -80,7 +82,7 @@ public final class LevelPheromonePolicy {
      * Default constructor.
      */
     public LevelPheromonePolicy() {
-	global = 0.0;
+	global = null;
 	tMax = 0.0;
 	tMin = 0.0;
     }
@@ -121,14 +123,14 @@ public final class LevelPheromonePolicy {
 
 	// updates the pheromone limits if we have a new best solution
 
-	if (list.getQuality() > global) {
+	if (global == null || list.getQuality().compareTo(global) > 0) {
 	    global = list.getQuality();
 	    double n = graph.size();
 
 	    double average = (n / 2.0);
 	    double pDec = Math.pow(CONFIG.get(P_BEST), 1.0 / n);
 
-	    tMax = (1 / (1 - factor)) * (global / 5.0);
+	    tMax = (1 / (1 - factor)) * (global.raw() / 5.0);
 	    tMin = (tMax * (1 - pDec)) / ((average - 1) * pDec);
 
 	    if (tMin > tMax) {
@@ -181,7 +183,7 @@ public final class LevelPheromonePolicy {
 
 	// updates the pheromone of the edges
 
-	double delta = list.getQuality() / 5.0;
+	double delta = list.getQuality().raw() / 5.0;
 	int level = 0;
 
 	for (int i = 0; i < size; i++) {

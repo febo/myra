@@ -19,13 +19,15 @@
 
 package myra.classification;
 
-import myra.io.Attribute;
-import myra.io.Dataset;
-import myra.io.Prediction;
+import myra.data.Attribute;
+import myra.data.Dataset;
+import myra.data.Prediction;
 
 /**
  * The <code>Label</code> represents the predicted value of a classification
  * algorithm.
+ * 
+ * @since 4.5
  * 
  * @author Fernando Esteban Barril Otero
  */

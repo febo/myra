@@ -1,5 +1,5 @@
 /*
- * RuleFunction.java
+ * ClassificationRuleFunction.java
  * (this file is part of MYRA)
  * 
  * Copyright 2008-2015 Fernando Esteban Barril Otero
@@ -19,6 +19,7 @@
 
 package myra.classification.rule.function;
 
+import myra.Cost;
 import myra.classification.rule.ClassificationRule;
 import myra.rule.Rule;
 import myra.rule.RuleFunction;
@@ -26,11 +27,13 @@ import myra.rule.RuleFunction;
 /**
  * Base class for all rule quality functions.
  * 
+ * @since 4.5
+ * 
  * @author Fernando Esteban Barril Otero
  */
 public abstract class ClassificationRuleFunction extends RuleFunction {
     @Override
-    public final double evaluate(Rule rule) {
+    public final Cost evaluate(Rule rule) {
 	return evaluate((ClassificationRule) rule);
     }
 
@@ -40,9 +43,9 @@ public abstract class ClassificationRuleFunction extends RuleFunction {
      * @param rule
      *            the rule to be evaluated.
      * 
-     * @return the quality of the rule.
+     * @return the cost of the rule.
      */
-    public abstract double evaluate(ClassificationRule rule);
+    public abstract Cost evaluate(ClassificationRule rule);
 
     /**
      * Returns a confusion matrix based on the covered/uncovered instances

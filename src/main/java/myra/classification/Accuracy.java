@@ -19,7 +19,9 @@
 
 package myra.classification;
 
-import myra.io.Dataset;
+import myra.Cost;
+import myra.Cost.Maximise;
+import myra.data.Dataset;
 
 /**
  * Accuracy model evaluation measure.
@@ -28,7 +30,7 @@ import myra.io.Dataset;
  */
 public class Accuracy extends Measure {
     @Override
-    public double evaluate(Dataset dataset, ClassificationModel model) {
+    public Cost evaluate(Dataset dataset, ClassificationModel model) {
 	int[][] matrix = Measure.fill(dataset, model);
 
 	int correct = 0;
@@ -44,6 +46,6 @@ public class Accuracy extends Measure {
 	    }
 	}
 
-	return correct / (double) total;
+	return new Maximise(correct / (double) total);
     }
 }

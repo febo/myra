@@ -19,16 +19,16 @@
 
 package myra.rule.irl;
 
-import static myra.Classifier.RANDOM_GENERATOR;
 import static myra.Config.CONFIG;
+import static myra.classification.Classifier.RANDOM_GENERATOR;
 import static myra.rule.Graph.START_INDEX;
 import static myra.rule.Heuristic.DEFAULT_HEURISTIC;
 import static myra.rule.Heuristic.DYNAMIC_HEURISTIC;
 
-import myra.Attribute.Condition;
-import myra.Dataset;
-import myra.Dataset.Instance;
-import myra.interval.IntervalBuilder;
+import myra.data.Dataset;
+import myra.data.IntervalBuilder;
+import myra.data.Attribute.Condition;
+import myra.data.Dataset.Instance;
 import myra.rule.Graph;
 import myra.rule.Graph.Entry;
 import myra.rule.Graph.Vertex;
@@ -65,7 +65,7 @@ public class EdgeRuleFactory implements RuleFactory {
 	Term last = null;
 
 	// the rule being created (empty at the start)
-	Rule rule = new Rule(graph.size() / 2);
+	Rule rule = Rule.newInstance(graph.size() / 2);
 	int ruleCovered = rule.apply(dataset, instances);
 	int previous = START_INDEX;
 
@@ -77,7 +77,7 @@ public class EdgeRuleFactory implements RuleFactory {
 	// terms to the antecedent while the number of covered cases is greater
 	// than the minimum allowed and the diversity of the covered instances
 	// is greater than 1
-	while (ruleCovered > minimum && rule.diversity() > 1) {
+	while (ruleCovered > minimum && rule.isDiverse()) {
 	    int selected = -1;
 
 	    while (selected == -1) {

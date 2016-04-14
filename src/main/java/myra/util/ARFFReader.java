@@ -27,9 +27,9 @@ import java.io.Reader;
 import java.util.Arrays;
 import java.util.StringTokenizer;
 
-import myra.Attribute;
-import myra.Dataset;
-import myra.Attribute.Type;
+import myra.data.Attribute;
+import myra.data.Attribute.Type;
+import myra.data.Dataset;
 
 /**
  * Reads the dataset information from a ARFF file.
@@ -79,11 +79,10 @@ public class ARFFReader {
      * @exception IOException
      *                if an I/O error occurs.
      */
-    public Dataset read(String filename)
-	    throws IOException {
+    public Dataset read(String filename) throws IOException {
 	return read(new File(filename));
     }
-    
+
     /**
      * Reads the specified file.
      * 
@@ -96,19 +95,18 @@ public class ARFFReader {
      * @exception IOException
      *                if an I/O error occurs.
      */
-    public Dataset read(File input)
-	    throws IOException {
+    public Dataset read(File input) throws IOException {
 	if (!input.exists()) {
 	    throw new IllegalArgumentException("Could not open file: "
 		    + input.getAbsolutePath());
 	}
-	
+
 	return read(new FileReader(input));
     }
 
     /**
-     * Reads the specified input reader. The reader will be closed at the end
-     * of the method.
+     * Reads the specified input reader. The reader will be closed at the end of
+     * the method.
      * 
      * @param input
      *            a reader.
@@ -119,8 +117,7 @@ public class ARFFReader {
      * @exception IOException
      *                if an I/O error occurs.
      */
-    public Dataset read(Reader input)
-	    throws IOException {
+    public Dataset read(Reader input) throws IOException {
 	BufferedReader reader = new BufferedReader(input);
 	Dataset dataset = new Dataset();
 	String line = null;
@@ -136,8 +133,8 @@ public class ARFFReader {
 		if (split[0].startsWith(ATTRIBUTE)) {
 		    if (split.length != 3) {
 			reader.close();
-			throw new IllegalArgumentException(
-				"Invalid attribute specification: " + line);
+			throw new IllegalArgumentException("Invalid attribute specification: "
+				+ line);
 		    }
 
 		    processAttribute(dataset, split);

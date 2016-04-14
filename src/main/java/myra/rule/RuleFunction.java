@@ -20,6 +20,7 @@
 package myra.rule;
 
 import myra.Config.ConfigKey;
+import myra.Cost;
 
 /**
  * Base class for all rule quality functions.
@@ -41,60 +42,5 @@ public abstract class RuleFunction {
      * 
      * @return the quality of the rule.
      */
-    public abstract double evaluate(Rule rule);
-
-    /**
-     * Returns a confusion matrix based on the covered/uncovered instances
-     * information of the rule.
-     * 
-     * @param rule
-     *            a rule.
-     * 
-     * @return a confusion matrix based on the covered/uncovered instances
-     *         information of the rule.
-     */
-    public BinaryConfusionMatrix fill(Rule rule) {
-	BinaryConfusionMatrix m = new BinaryConfusionMatrix();
-	int[] covered = rule.covered();
-	int[] uncovered = rule.uncovered();
-
-	for (int i = 0; i < covered.length; i++) {
-	    if (i == rule.getConsequent()) {
-		m.TP += covered[i];
-		m.FN += uncovered[i];
-	    } else {
-		m.FP += covered[i];
-		m.TN += uncovered[i];
-	    }
-	}
-
-	return m;
-    }
-
-    /**
-     * Struct-like class to represent a binary confusion matrix.
-     * 
-     * @author Fernando Esteban Barril Otero
-     */
-    public static class BinaryConfusionMatrix {
-	/**
-	 * The true-positive value.
-	 */
-	public double TP = 0;
-
-	/**
-	 * The false-positive value.
-	 */
-	public double FP = 0;
-
-	/**
-	 * The false-negative value.
-	 */
-	public double FN = 0;
-
-	/**
-	 * The true-negative value.
-	 */
-	public double TN = 0;
-    }
+    public abstract Cost evaluate(Rule rule);
 }

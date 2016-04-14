@@ -41,9 +41,6 @@ public interface Assignator {
      *            a rule.
      * 
      * @return the number of uncovered instances.
-     * 
-     * @see Rule#covered()
-     * @see Rule#uncovered()
      */
     public int assign(Rule rule);
 }

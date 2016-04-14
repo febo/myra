@@ -19,13 +19,17 @@
 
 package myra.rule;
 
-import static myra.Dataset.NOT_COVERED;
+import static myra.data.Dataset.NOT_COVERED;
 
+import java.lang.reflect.Array;
 import java.util.Arrays;
 
-import myra.Dataset;
-import myra.Model;
-import myra.Dataset.Instance;
+import myra.Config;
+import myra.Cost;
+import myra.data.Dataset;
+import myra.data.Model;
+import myra.data.Prediction;
+import myra.data.Dataset.Instance;
 
 /**
  * This class represents a list of classification rules. When classifying a new
@@ -38,7 +42,7 @@ public class RuleList implements Model, Comparable<RuleList> {
     /**
      * The quality of the rule list.
      */
-    protected double quality;
+    protected Cost quality;
 
     /**
      * The list of rules.
@@ -54,8 +58,8 @@ public class RuleList implements Model, Comparable<RuleList> {
      * Default constructor.
      */
     public RuleList() {
-	quality = Double.NaN;
-	rules = new Rule[0];
+	rules = (Rule[]) Array.newInstance(Config.CONFIG.get(Rule.DEFAULT_RULE),
+					   0);
     }
 
     /**
@@ -119,7 +123,7 @@ public class RuleList implements Model, Comparable<RuleList> {
      * 
      * @return the quality of the rule list.
      */
-    public double getQuality() {
+    public Cost getQuality() {
 	return quality;
     }
 
@@ -129,7 +133,7 @@ public class RuleList implements Model, Comparable<RuleList> {
      * @param quality
      *            the quality to set.
      */
-    public void setQuality(double quality) {
+    public void setQuality(Cost quality) {
 	this.quality = quality;
     }
 
@@ -181,7 +185,7 @@ public class RuleList implements Model, Comparable<RuleList> {
      * 
      * @return the predicted class value of the specified instance.
      */
-    public int classify(Dataset dataset, int instance) {
+    public Prediction predict(Dataset dataset, int instance) {
 	for (int i = 0; i < rules.length; i++) {
 	    if (rules[i].covers(dataset, instance)) {
 		return rules[i].getConsequent();
@@ -219,8 +223,8 @@ public class RuleList implements Model, Comparable<RuleList> {
 	double mean = terms / rules.length;
 	buffer.append(String.format("Average number of terms: %.2f%n", mean));
 
-	if (!Double.isNaN(quality)) {
-	    buffer.append(String.format("List quality: %f%n", quality));
+	if (quality != null) {
+	    buffer.append(String.format("List quality: %f%n", quality.raw()));
 	    buffer.append(String.format("List iteration: %d", iteration));
 	}
 
@@ -231,7 +235,7 @@ public class RuleList implements Model, Comparable<RuleList> {
     public int compareTo(RuleList o) {
 	// (1) compare the quality
 
-	int c = Double.compare(quality, o.quality);
+	int c = (quality == null ? 0 : quality.compareTo(o.quality));
 
 	if (c == 0) {
 	    // (2) compare the number of rules

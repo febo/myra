@@ -36,8 +36,8 @@ import java.util.TreeMap;
 import myra.Config.ConfigKey;
 import myra.Option;
 import myra.Option.BooleanOption;
-import myra.io.Attribute;
-import myra.io.Dataset;
+import myra.data.Attribute;
+import myra.data.Dataset;
 import myra.util.ARFFReader;
 import myra.util.Logger;
 
@@ -187,7 +187,7 @@ public abstract class Classifier {
 	    double elapsed = (System.nanoTime() - start) / Math.pow(10, 9);
 
 	    Accuracy measure = new Accuracy();
-	    double accuracy = measure.evaluate(dataset, model);
+	    double accuracy = measure.evaluate(dataset, model).raw();
 	    Logger.log("Classification accuracy on training set: %f (%3.2f%%)\n",
 		       accuracy,
 		       accuracy * 100);
@@ -200,7 +200,7 @@ public abstract class Classifier {
 
 		Logger.log("%n=== Evaluation on test set ===%n%n");
 
-		accuracy = measure.evaluate(dataset, model);
+		accuracy = measure.evaluate(dataset, model).raw();
 		Logger.log("Classification accuracy on test set: %f (%3.2f%%)%n",
 			   accuracy,
 			   accuracy * 100);

@@ -80,7 +80,7 @@ public final class EdgePheromonePolicy implements PheromonePolicy {
 	Term[] terms = rule.terms();
 	Entry[][] matrix = graph.matrix();
 
-	final double q = rule.getQuality();
+	final double q = rule.getQuality().raw();
 	int from = START_INDEX;
 
 	for (int i = 0; i < terms.length; i++) {

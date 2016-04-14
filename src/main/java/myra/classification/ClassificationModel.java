@@ -19,13 +19,15 @@
 
 package myra.classification;
 
-import myra.io.Dataset;
-import myra.io.Model;
+import myra.data.Dataset;
+import myra.data.Model;
 
 /**
  * Wrapper class for classification models. This class follows the Adapter
  * design pattern to provide type safety for models that actually represent
  * classification models.
+ * 
+ * @since 4.5
  * 
  * @author Fernando Esteban Barril Otero
  */
@@ -37,6 +39,11 @@ public final class ClassificationModel implements Model {
 
     /**
      * Default constructor.
+     * 
+     * @param model
+     *            the wrapped model. Note that it is expected that the model
+     *            {@link Model#predict(Dataset, int)} method returns a
+     *            <code>Label</code> object.
      */
     public ClassificationModel(Model model) {
 	this.model = model;

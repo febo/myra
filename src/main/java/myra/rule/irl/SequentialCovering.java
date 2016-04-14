@@ -20,13 +20,14 @@
 package myra.rule.irl;
 
 import static myra.Config.CONFIG;
-import static myra.Dataset.NOT_COVERED;
+import static myra.data.Dataset.NOT_COVERED;
 import static myra.rule.Assignator.ASSIGNATOR;
-import myra.Dataset;
-import myra.Model;
-import myra.Scheduler;
+
 import myra.Config.ConfigKey;
-import myra.Dataset.Instance;
+import myra.data.Dataset;
+import myra.data.Model;
+import myra.data.Dataset.Instance;
+import myra.Scheduler;
 import myra.rule.Graph;
 import myra.rule.Rule;
 import myra.rule.RuleList;
@@ -83,7 +84,7 @@ public class SequentialCovering {
 		Instance.markAll(instances, NOT_COVERED);
 	    }
 
-	    Rule rule = new Rule();
+	    Rule rule = Rule.newInstance();
 	    rule.apply(dataset, instances);
 	    CONFIG.get(ASSIGNATOR).assign(rule);
 	    discovered.add(rule);

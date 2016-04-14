@@ -21,8 +21,10 @@ package myra.rule;
 
 import static myra.Config.CONFIG;
 import static myra.rule.Assignator.ASSIGNATOR;
-import myra.Dataset;
-import myra.Dataset.Instance;
+
+import myra.Cost;
+import myra.data.Dataset;
+import myra.data.Dataset.Instance;
 import myra.rule.Rule.Term;
 
 /**
@@ -40,7 +42,7 @@ public class GreedyPruner extends Pruner {
 	Assignator assignator = CONFIG.get(ASSIGNATOR);
 	assignator.assign(rule);
 
-	double best = function.evaluate(rule);
+	Cost best = function.evaluate(rule);
 
 	while (rule.size() > 1) {
 	    Term[] terms = rule.terms();
@@ -52,9 +54,9 @@ public class GreedyPruner extends Pruner {
 		rule.apply(dataset, instances);
 		assignator.assign(rule);
 
-		double current = function.evaluate(rule);
+		Cost current = function.evaluate(rule);
 
-		if (current >= best) {
+		if (current.compareTo(best) > 0) {
 		    best = current;
 		    irrelevant = i;
 		}
