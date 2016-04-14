@@ -20,23 +20,30 @@
 package myra.rule.pittsburgh;
 
 import static myra.Config.CONFIG;
-import static myra.Dataset.NOT_COVERED;
-import static myra.Dataset.RULE_COVERED;
+import static myra.data.Dataset.NOT_COVERED;
+import static myra.data.Dataset.RULE_COVERED;
 import static myra.rule.Assignator.ASSIGNATOR;
 import static myra.rule.Heuristic.DEFAULT_HEURISTIC;
 import static myra.rule.ListMeasure.DEFAULT_MEASURE;
+import static myra.rule.ListPruner.DEFAULT_LIST_PRUNER;
 import static myra.rule.Pruner.DEFAULT_PRUNER;
 
-import myra.Config.ConfigKey;
-import myra.Dataset;
-import myra.Dataset.Instance;
 import myra.Archive;
+import myra.Config.ConfigKey;
 import myra.IterativeActivity;
+import myra.data.Dataset;
+import myra.data.Dataset.Instance;
 import myra.rule.Graph;
 import myra.rule.Graph.Entry;
 import myra.rule.Rule;
 import myra.rule.RuleList;
 
+/**
+ * The <code>FindRuleListActivity</code> is responsible for evolving a complete
+ * list of rules using an ACO-based procedure.
+ * 
+ * @author Fernando Esteban Barril Otero
+ */
 public class FindRuleListActivity extends IterativeActivity<RuleList> {
     /**
      * The config key for the percentage of uncovered instances allowed.
@@ -134,12 +141,15 @@ public class FindRuleListActivity extends IterativeActivity<RuleList> {
 		Instance.markAll(instances, NOT_COVERED);
 	    }
 
-	    Rule rule = new Rule();
+	    Rule rule = Rule.newInstance();
 	    rule.apply(dataset, instances);
 	    CONFIG.get(ASSIGNATOR).assign(rule);
 	    list.add(rule);
 	}
 
+	// global pruning
+	CONFIG.get(DEFAULT_LIST_PRUNER).prune(dataset, list);
+	// evaluates the list
 	list.setQuality(CONFIG.get(DEFAULT_MEASURE).evaluate(dataset, list));
 
 	return list;
