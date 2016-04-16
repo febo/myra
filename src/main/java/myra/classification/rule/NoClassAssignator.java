@@ -19,6 +19,8 @@
 
 package myra.classification.rule;
 
+import myra.data.Dataset;
+import myra.data.Dataset.Instance;
 import myra.rule.Assignator;
 import myra.rule.Rule;
 
@@ -30,14 +32,14 @@ import myra.rule.Rule;
  */
 public class NoClassAssignator implements Assignator {
     /**
-     * Returns the number of uncovered instances of the class value predicted
-     * by the rule.
+     * Returns the number of uncovered instances of the class value predicted by
+     * the rule.
      * 
-     * @return the number of uncovered instances of the class value predicted
-     *         by the rule.
+     * @return the number of uncovered instances of the class value predicted by
+     *         the rule.
      */
     @Override
-    public int assign(Rule rule) {
+    public int assign(Dataset dataset, Rule rule, Instance[] instances) {
 	if (!(rule instanceof ClassificationRule)) {
 	    throw new IllegalArgumentException("Expecting a classification rule: "
 		    + rule.getClass().getName());

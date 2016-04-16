@@ -30,19 +30,19 @@ import static myra.rule.pittsburgh.FindRuleListActivity.UNCOVERED;
 
 import myra.Archive;
 import myra.Config.ConfigKey;
+import myra.IterativeActivity;
 import myra.classification.Label;
 import myra.classification.rule.ClassificationRule;
 import myra.classification.rule.MajorityAssignator;
 import myra.classification.rule.function.FunctionSelector;
 import myra.data.Dataset;
 import myra.data.Dataset.Instance;
-import myra.IterativeActivity;
 import myra.rule.Graph;
+import myra.rule.Graph.Entry;
 import myra.rule.Rule;
 import myra.rule.RuleFunction;
 import myra.rule.RuleList;
 import myra.rule.RuleSet;
-import myra.rule.Graph.Entry;
 import myra.rule.pittsburgh.LevelPheromonePolicy;
 
 public class FindRuleSetActivity extends IterativeActivity<RuleList> {
@@ -155,7 +155,7 @@ public class FindRuleSetActivity extends IterativeActivity<RuleList> {
 	Instance.markAll(instances, NOT_COVERED);
 	Rule rule = Rule.newInstance();
 	rule.apply(dataset, instances);
-	new MajorityAssignator().assign(rule);
+	new MajorityAssignator().assign(dataset, rule, instances);
 
 	ruleSet.add(rule);
 	ruleSet.apply(dataset);

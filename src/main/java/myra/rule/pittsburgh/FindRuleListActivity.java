@@ -143,7 +143,7 @@ public class FindRuleListActivity extends IterativeActivity<RuleList> {
 
 	    Rule rule = Rule.newInstance();
 	    rule.apply(dataset, instances);
-	    CONFIG.get(ASSIGNATOR).assign(rule);
+	    CONFIG.get(ASSIGNATOR).assign(dataset, rule, instances);
 	    list.add(rule);
 	}
 

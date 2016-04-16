@@ -20,6 +20,8 @@
 package myra.rule;
 
 import myra.Config.ConfigKey;
+import myra.data.Dataset;
+import myra.data.Dataset.Instance;
 
 /**
  * The <code>Assignator</code> should be implemented by classes that are
@@ -37,10 +39,14 @@ public interface Assignator {
     /**
      * Assignes the consequent of the rule.
      * 
+     * @param dataset
+     *            the current dataset.
      * @param rule
-     *            a rule.
+     *            the rule.
+     * @param instances
+     *            the instaces flag array.
      * 
      * @return the number of uncovered instances.
      */
-    public int assign(Rule rule);
+    public int assign(Dataset dataset, Rule rule, Instance[] instances);
 }

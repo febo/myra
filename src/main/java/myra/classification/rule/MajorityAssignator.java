@@ -25,6 +25,8 @@ import static myra.classification.Classifier.RANDOM_GENERATOR;
 import java.util.Arrays;
 
 import myra.classification.Label;
+import myra.data.Dataset;
+import myra.data.Dataset.Instance;
 import myra.rule.Assignator;
 import myra.rule.Rule;
 
@@ -36,7 +38,7 @@ import myra.rule.Rule;
  */
 public class MajorityAssignator implements Assignator {
     @Override
-    public int assign(Rule rule) {
+    public int assign(Dataset dataset, Rule rule, Instance[] instances) {
 	if (!(rule instanceof ClassificationRule)) {
 	    throw new IllegalArgumentException("Expecting a classification rule: "
 		    + rule.getClass().getName());

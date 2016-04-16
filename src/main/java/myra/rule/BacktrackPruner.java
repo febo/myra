@@ -40,7 +40,7 @@ public class BacktrackPruner extends Pruner {
 		     Instance[] instances,
 		     RuleFunction function) {
 	Assignator assignator = CONFIG.get(ASSIGNATOR);
-	int available = assignator.assign(rule);
+	int available = assignator.assign(dataset, rule, instances);
 
 	Cost best = function.evaluate(rule);
 	Term last = null;
@@ -48,7 +48,7 @@ public class BacktrackPruner extends Pruner {
 	while (rule.size() > 1) {
 	    last = rule.pop();
 	    rule.apply(dataset, instances);
-	    int pruned = assignator.assign(rule);
+	    int pruned = assignator.assign(dataset, rule, instances);
 
 	    Cost current = function.evaluate(rule);
 
@@ -58,7 +58,7 @@ public class BacktrackPruner extends Pruner {
 	    } else {
 		rule.push(last);
 		rule.apply(dataset, instances);
-		available = assignator.assign(rule);
+		available = assignator.assign(dataset, rule, instances);
 
 		break;
 	    }
