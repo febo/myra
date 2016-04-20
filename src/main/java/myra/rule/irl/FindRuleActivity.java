@@ -33,8 +33,8 @@ import myra.IterativeActivity;
 import myra.data.Dataset;
 import myra.data.Dataset.Instance;
 import myra.rule.Graph;
-import myra.rule.Rule;
 import myra.rule.Graph.Entry;
+import myra.rule.Rule;
 
 /**
  * The <code>FindRuleActivity</code> is responsible for evolving a single rule
@@ -79,8 +79,9 @@ public class FindRuleActivity extends IterativeActivity<Rule> {
      * @param training
      *            the current dataset.
      */
-    public FindRuleActivity(Graph graph, Instance[] instances,
-	    Dataset training) {
+    public FindRuleActivity(Graph graph,
+			    Instance[] instances,
+			    Dataset training) {
 	this.graph = graph;
 	this.instances = instances;
 	this.dataset = training;
@@ -91,12 +92,14 @@ public class FindRuleActivity extends IterativeActivity<Rule> {
 	// the instances array will be modified by the create and prune,
 	// so we need to work on a copy to avoid concurrency problems
 	Instance[] clone = Instance.copyOf(instances);
-	
+
 	Rule rule = CONFIG.get(DEFAULT_FACTORY)
 		.create(graph, heuristic, dataset, clone);
 
 	CONFIG.get(DEFAULT_PRUNER).prune(dataset, rule, clone);
-	rule.setQuality(CONFIG.get(DEFAULT_FUNCTION).evaluate(rule));
+	rule.setQuality(CONFIG.get(DEFAULT_FUNCTION).evaluate(dataset,
+							      rule,
+							      clone));
 
 	return rule;
     }

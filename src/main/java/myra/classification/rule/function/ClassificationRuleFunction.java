@@ -21,6 +21,8 @@ package myra.classification.rule.function;
 
 import myra.Cost;
 import myra.classification.rule.ClassificationRule;
+import myra.data.Dataset;
+import myra.data.Dataset.Instance;
 import myra.rule.Rule;
 import myra.rule.RuleFunction;
 
@@ -33,19 +35,27 @@ import myra.rule.RuleFunction;
  */
 public abstract class ClassificationRuleFunction extends RuleFunction {
     @Override
-    public final Cost evaluate(Rule rule) {
-	return evaluate((ClassificationRule) rule);
+    public final Cost evaluate(Dataset dataset,
+			       Rule rule,
+			       Instance[] instances) {
+	return evaluate(dataset, (ClassificationRule) rule, instances);
     }
 
     /**
      * Evaluates the specified classification rule.
      * 
+     * @param dataset
+     *            the current dataset.
      * @param rule
      *            the rule to be evaluated.
+     * @param instances
+     *            the instaces flag array.
      * 
      * @return the cost of the rule.
      */
-    public abstract Cost evaluate(ClassificationRule rule);
+    public abstract Cost evaluate(Dataset dataset,
+				  ClassificationRule rule,
+				  Instance[] instances);
 
     /**
      * Returns a confusion matrix based on the covered/uncovered instances

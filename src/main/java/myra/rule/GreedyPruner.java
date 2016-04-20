@@ -42,7 +42,7 @@ public class GreedyPruner extends Pruner {
 	Assignator assignator = CONFIG.get(ASSIGNATOR);
 	assignator.assign(dataset, rule, instances);
 
-	Cost best = function.evaluate(rule);
+	Cost best = function.evaluate(dataset, rule, instances);
 
 	while (rule.size() > 1) {
 	    Term[] terms = rule.terms();
@@ -54,7 +54,7 @@ public class GreedyPruner extends Pruner {
 		rule.apply(dataset, instances);
 		assignator.assign(dataset, rule, instances);
 
-		Cost current = function.evaluate(rule);
+		Cost current = function.evaluate(dataset, rule, instances);
 
 		if (current.compareTo(best) > 0) {
 		    best = current;

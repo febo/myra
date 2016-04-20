@@ -24,6 +24,8 @@ import static myra.Config.CONFIG;
 import myra.Config.ConfigKey;
 import myra.Cost.Maximise;
 import myra.classification.rule.ClassificationRule;
+import myra.data.Dataset;
+import myra.data.Dataset.Instance;
 
 /**
  * The <code>Fmeasure</code> class represents a rule quality function based on
@@ -45,7 +47,9 @@ public class Fmeasure extends ClassificationRuleFunction {
     }
 
     @Override
-    public Maximise evaluate(ClassificationRule rule) {
+    public Maximise evaluate(Dataset dataset,
+			     ClassificationRule rule,
+			     Instance[] instances) {
 	BinaryConfusionMatrix m = fill(rule);
 	final double beta = CONFIG.get(BETA);
 

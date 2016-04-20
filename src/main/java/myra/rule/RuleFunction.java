@@ -21,6 +21,8 @@ package myra.rule;
 
 import myra.Config.ConfigKey;
 import myra.Cost;
+import myra.data.Dataset;
+import myra.data.Dataset.Instance;
 
 /**
  * Base class for all rule quality functions.
@@ -37,10 +39,16 @@ public abstract class RuleFunction {
     /**
      * Evaluates the specified rule.
      * 
+     * @param dataset
+     *            the current dataset.
      * @param rule
      *            the rule to be evaluated.
+     * @param instances
+     *            the instaces flag array.
      * 
      * @return the quality of the rule.
      */
-    public abstract Cost evaluate(Rule rule);
+    public abstract Cost evaluate(Dataset dataset,
+				  Rule rule,
+				  Instance[] instances);
 }

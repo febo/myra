@@ -21,6 +21,8 @@ package myra.classification.rule.function;
 
 import myra.Cost.Maximise;
 import myra.classification.rule.ClassificationRule;
+import myra.data.Dataset;
+import myra.data.Dataset.Instance;
 
 /**
  * The <code>Jaccard</code> class represents a rule quality function based on
@@ -30,7 +32,9 @@ import myra.classification.rule.ClassificationRule;
  */
 public class Jaccard extends ClassificationRuleFunction {
     @Override
-    public Maximise evaluate(ClassificationRule rule) {
+    public Maximise evaluate(Dataset dataset,
+			     ClassificationRule rule,
+			     Instance[] instances) {
 	BinaryConfusionMatrix m = fill(rule);
 	return new Maximise(m.TP / (m.TP + m.FP + m.FN));
     }

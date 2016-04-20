@@ -21,6 +21,8 @@ package myra.classification.rule.function;
 
 import myra.Cost.Maximise;
 import myra.classification.rule.ClassificationRule;
+import myra.data.Dataset;
+import myra.data.Dataset.Instance;
 import myra.util.Stats;
 
 /**
@@ -31,7 +33,9 @@ import myra.util.Stats;
  */
 public class PessimisticAccuracy extends ClassificationRuleFunction {
     @Override
-    public Maximise evaluate(ClassificationRule rule) {
+    public Maximise evaluate(Dataset dataset,
+			     ClassificationRule rule,
+			     Instance[] instances) {
 	BinaryConfusionMatrix m = fill(rule);
 
 	double total = m.TP + m.FP;

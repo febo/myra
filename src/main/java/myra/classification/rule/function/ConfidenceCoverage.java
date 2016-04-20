@@ -21,6 +21,8 @@ package myra.classification.rule.function;
 
 import myra.Cost.Maximise;
 import myra.classification.rule.ClassificationRule;
+import myra.data.Dataset;
+import myra.data.Dataset.Instance;
 
 /**
  * The <code>ConfidenceCoverage</code> class represents a rule quality function
@@ -31,7 +33,9 @@ import myra.classification.rule.ClassificationRule;
  */
 public class ConfidenceCoverage extends ClassificationRuleFunction {
     @Override
-    public Maximise evaluate(ClassificationRule rule) {
+    public Maximise evaluate(Dataset dataset,
+			     ClassificationRule rule,
+			     Instance[] instances) {
 	int[] cFrequency = rule.covered();
 	int[] uFrequency = rule.uncovered();
 

@@ -24,6 +24,8 @@ import static myra.Config.CONFIG;
 import myra.Config.ConfigKey;
 import myra.Cost.Maximise;
 import myra.classification.rule.ClassificationRule;
+import myra.data.Dataset;
+import myra.data.Dataset.Instance;
 
 /**
  * The <code>Klosgen</code> class represents a rule quality function that allows
@@ -45,7 +47,9 @@ public class Klosgen extends ClassificationRuleFunction {
     }
 
     @Override
-    public Maximise evaluate(ClassificationRule rule) {
+    public Maximise evaluate(Dataset dataset,
+			     ClassificationRule rule,
+			     Instance[] instances) {
 	BinaryConfusionMatrix m = fill(rule);
 
 	double total = m.TP + m.FP + m.FN + m.TN;
