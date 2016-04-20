@@ -25,7 +25,7 @@ import myra.rule.Rule;
 import myra.rule.RuleFunction;
 
 /**
- * Base class for all rule quality functions.
+ * Base class for all classification rule quality functions.
  * 
  * @since 4.5
  * 

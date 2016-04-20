@@ -24,7 +24,7 @@ import myra.data.Dataset;
 import myra.data.Model;
 
 /**
- * Base class for model evaluation measures.
+ * Base class for model classification evaluation measures.
  * 
  * @author Fernando Esteban Barril Otero
  */
