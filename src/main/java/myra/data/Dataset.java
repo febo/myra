@@ -76,9 +76,14 @@ public final class Dataset {
     private double[] instances;
 
     /**
-     * Class frequency distribution.
+     * Class frequency distribution (only valid for classificatino problems).
      */
     private double[] distribution;
+
+    /**
+     * Mean of the target values (only valid for regression problems).
+     */
+    private double mean;
 
     /**
      * Default constructor.
@@ -87,6 +92,7 @@ public final class Dataset {
 	attributes = new Attribute[0];
 	instances = new double[0];
 	distribution = new double[0];
+	mean = 0;
     }
 
     /**
@@ -260,14 +266,19 @@ public final class Dataset {
 
 	System.arraycopy(values, 0, instances, offset, values.length);
 
-	// increments the class distribution (if dealing with
-	// a classification problem)
-	if (attributes[classIndex()].getType() == Attribute.Type.NOMINAL) {
+	// increments the class distribution
+	// (if dealing with a classification problem)
+	if (attributes[classIndex()].getType() == NOMINAL) {
 	    if (distribution.length == 0) {
 		distribution = new double[classLength()];
 	    }
 
 	    distribution[(int) values[classIndex()]]++;
+	}
+	// increments the mean
+	// (if dealing with a regression problem)
+	else if (attributes[classIndex()].getType() == CONTINUOUS) {
+	    mean += values[classIndex()];
 	}
     }
 
@@ -306,9 +317,15 @@ public final class Dataset {
 	int target = 0;
 
 	for (int removed : indexes) {
-	    // updates the class frequency
-	    distribution[(int) value(removed * attributes.length,
-				     classIndex())]--;
+	    if (attributes[classIndex()].getType() == NOMINAL) {
+		// updates the class frequency
+		distribution[(int) value(removed * attributes.length,
+					 classIndex())]--;
+	    } else if (attributes[classIndex()].getType() == CONTINUOUS) {
+		// updates the mean
+		mean -= distribution[(int) value(removed * attributes.length,
+						 classIndex())];
+	    }
 
 	    if (current == removed) {
 		current++;
@@ -441,6 +458,17 @@ public final class Dataset {
 
 	throw new UnsupportedOperationException("Invalid class attribute: "
 		+ attributes[classIndex()].getType());
+    }
+
+    /**
+     * Returns the mean of the target values across all instances of the
+     * dataset.
+     * 
+     * @return the mean of the target values across all instances of the
+     *         dataset.
+     */
+    public final double mean() {
+	return mean / size();
     }
 
     /**
