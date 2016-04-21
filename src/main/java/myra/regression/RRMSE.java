@@ -24,8 +24,11 @@ import myra.Cost.Minimise;
 import myra.data.Dataset;
 
 /**
+ * Relative root mean squared error (RRMSE) measure for regression models.
+ * 
+ * @since 4.5
+ * 
  * @author Fernando Esteban Barril Otero
- *
  */
 public class RRMSE extends Measure {
     @Override
