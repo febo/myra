@@ -23,7 +23,7 @@ import myra.datamining.Attribute;
 import myra.datamining.Prediction;
 
 /**
- * The <code>Real</code> represents the predicted value of a regression
+ * The <code>Real</code> class represents the predicted value of a regression
  * algorithm.
  * 
  * @since 4.5
@@ -52,7 +52,7 @@ public class Real implements Prediction {
     public Real(double value) {
 	this.value = value;
     }
-    
+
     /**
      * Returns the predicted (real) value.
      * 
@@ -64,6 +64,6 @@ public class Real implements Prediction {
 
     @Override
     public String toString(Attribute target) {
-	return Double.toString(value);
+	return String.format("%.2f", value);
     }
 }
