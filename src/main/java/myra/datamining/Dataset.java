@@ -108,6 +108,15 @@ public final class Dataset {
     }
 
     /**
+     * Returns the target attribute.
+     * 
+     * @return the target attribute.
+     */
+    public Attribute getTarget() {
+	return attributes[classIndex()];
+    }
+
+    /**
      * Returns the attributes of the dataset.
      * 
      * @return the attributes of the dataset.
