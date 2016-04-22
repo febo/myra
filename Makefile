@@ -2,15 +2,25 @@ SRC=src/main/java
 OUTPUT=target
 PACKAGES=\
 	myra\
-	myra/interval\
+	myra/classification\
+	myra/classification/attribute\
+	myra/classification/rule\
+	myra/classification/rule/function\
+	myra/classification/rule/impl\
+	myra/classification/rule/unordered\
+	myra/classification/rule/unordered/attribute\
+	myra/classification/tree\
+	myra/datamining\
+	myra/regression\
+	myra/regression/attribute\
+	myra/regression/rule\
+	myra/regression/rule/function\
+	myra/regression/rule/impl\
 	myra/rule\
-	myra/rule/function\
 	myra/rule/irl\
 	myra/rule/pittsburgh\
-	myra/rule/pittsburgh/unordered\
 	myra/rule/shell\
 	myra/rule/shell/command\
-	myra/tree\
 	myra/util
 
 SRC_DIR=$(addprefix $(SRC)/,$(PACKAGES))
