@@ -20,7 +20,7 @@
 package myra.util;
 
 import static myra.Config.CONFIG;
-import static myra.classification.Classifier.RANDOM_GENERATOR;
+import static myra.datamining.Algorithm.RANDOM_GENERATOR;
 import static myra.datamining.Dataset.COVERED;
 import static myra.datamining.Dataset.NOT_COVERED;
 

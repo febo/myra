@@ -20,7 +20,7 @@
 package myra.classification.rule.unordered;
 
 import static myra.Config.CONFIG;
-import static myra.classification.Classifier.RANDOM_GENERATOR;
+import static myra.datamining.Algorithm.RANDOM_GENERATOR;
 import static myra.datamining.IntervalBuilder.DEFAULT_BUILDER;
 import static myra.rule.Graph.START_INDEX;
 import static myra.rule.Heuristic.DEFAULT_HEURISTIC;

@@ -20,7 +20,7 @@
 package myra.classification.rule.function;
 
 import static myra.Config.CONFIG;
-import static myra.classification.Classifier.RANDOM_GENERATOR;
+import static myra.datamining.Algorithm.RANDOM_GENERATOR;
 import static myra.rule.pittsburgh.LevelPheromonePolicy.EVAPORATION_FACTOR;
 import static myra.rule.pittsburgh.LevelPheromonePolicy.INITIAL_PHEROMONE;
 

@@ -20,7 +20,7 @@
 package myra.classification.tree;
 
 import static myra.Config.CONFIG;
-import static myra.classification.Classifier.RANDOM_GENERATOR;
+import static myra.datamining.Algorithm.RANDOM_GENERATOR;
 import static myra.classification.tree.Graph.START_INDEX;
 import static myra.classification.tree.Heuristic.DEFAULT_HEURISTIC;
 
