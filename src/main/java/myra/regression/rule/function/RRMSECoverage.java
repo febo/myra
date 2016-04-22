@@ -19,8 +19,12 @@
 
 package myra.regression.rule.function;
 
+import static myra.Config.CONFIG;
+import static myra.datamining.Dataset.RULE_COVERED;
+
+import myra.Config.ConfigKey;
 import myra.Cost;
-import myra.Cost.Minimise;
+import myra.Cost.Maximise;
 import myra.datamining.Dataset;
 import myra.datamining.Dataset.Instance;
 import myra.regression.rule.RegressionRule;
@@ -43,6 +47,18 @@ import myra.regression.rule.RegressionRule;
  * @author Fernando Esteban Barril Otero
  */
 public class RRMSECoverage extends RegressionRuleFunction {
+    /**
+     * The config key for the <i>m</i> parameter.
+     */
+    public static final ConfigKey<Double> ALPHA = new ConfigKey<Double>();
+
+    static {
+	// default alpha value
+	// see F. Janssen and J. Furnkranz, "On the quest for optimal rule
+	// learning heuristics", Machine Learning 78, pp. 343-379, 2010.
+	CONFIG.set(ALPHA, 0.59);
+    }
+
     @Override
     public Cost evaluate(Dataset dataset,
 			 RegressionRule rule,
@@ -52,17 +68,25 @@ public class RRMSECoverage extends RegressionRuleFunction {
 
 	double lRMSE = 0;
 	double lDefault = 0;
+	double coverage = 0;
 
 	for (int i = 0; i < dataset.size(); i++) {
 	    double actual = dataset.value(i, dataset.classIndex());
 
 	    lRMSE += Math.pow(actual - predicted, 2);
 	    lDefault += Math.pow(actual - mean, 2);
+
+	    if (instances[i].flag == RULE_COVERED) {
+		coverage += instances[i].weight;
+	    }
 	}
 
-	double RRMSE = Math.sqrt(lRMSE / dataset.size())
-		/ Math.sqrt(lDefault / dataset.size());
+	double RRMSE =
+		CONFIG.get(ALPHA) * (1 - (Math.sqrt(lRMSE / dataset.size())
+			/ Math.sqrt(lDefault / dataset.size())));
 
-	return new Minimise(RRMSE);
+	coverage = (1 - CONFIG.get(ALPHA)) * coverage;
+
+	return new Maximise(RRMSE + coverage);
     }
 }
