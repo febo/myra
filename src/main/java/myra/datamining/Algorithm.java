@@ -20,6 +20,7 @@
 package myra.datamining;
 
 import static myra.Config.CONFIG;
+import static myra.datamining.Attribute.Type.NOMINAL;
 
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
@@ -431,7 +432,10 @@ public abstract class Algorithm {
 	Logger.log("Relation: %s%n", dataset.getName());
 	Logger.log("Instances: %d%n", dataset.size());
 	Logger.log("Attributes: %d%n", (dataset.attributes().length - 1));
-	Logger.log("Classes: %d%n", dataset.classLength());
+
+	if (dataset.getTarget().getType() == NOMINAL) {
+	    Logger.log("Classes: %d%n", dataset.classLength());
+	}
 
 	if (CONFIG.isPresent(RANDOM_SEED)) {
 	    Logger.log("Random seed: %d%n", CONFIG.get(RANDOM_SEED));
