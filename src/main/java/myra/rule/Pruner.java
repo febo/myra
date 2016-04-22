@@ -23,8 +23,8 @@ import static myra.Config.CONFIG;
 import static myra.rule.RuleFunction.DEFAULT_FUNCTION;
 
 import myra.Config.ConfigKey;
-import myra.data.Dataset;
-import myra.data.Dataset.Instance;
+import myra.datamining.Dataset;
+import myra.datamining.Dataset.Instance;
 
 /**
  * The <code>Pruner</code> should be implemented by classes that are responsible

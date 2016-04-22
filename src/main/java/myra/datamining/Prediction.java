@@ -1,5 +1,5 @@
 /*
- * Measure.java
+ * Prediction.java
  * (this file is part of MYRA)
  * 
  * Copyright 2008-2015 Fernando Esteban Barril Otero
@@ -17,25 +17,15 @@
  * limitations under the License.
  */
 
-package myra.data;
-
-import myra.Cost;
+package myra.datamining;
 
 /**
- * Base class for model evaluation measures.
+ * Interface to represent a predicted value.
+ * 
+ * @since 4.5
  * 
  * @author Fernando Esteban Barril Otero
  */
-public abstract class Measure {
-    /**
-     * Returns the cost of the specified model.
-     * 
-     * @param dataset
-     *            the current dataset.
-     * @param model
-     *            the model to evaluate.
-     * 
-     * @return the cost of the specified model.
-     */
-    public abstract Cost evaluate(Dataset dataset, Model model);
+public interface Prediction {
+    public String toString(Attribute target);
 }

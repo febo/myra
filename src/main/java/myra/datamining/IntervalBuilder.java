@@ -17,13 +17,13 @@
  * limitations under the License.
  */
 
-package myra.data;
+package myra.datamining;
 
 import static myra.Config.CONFIG;
 
 import myra.Config.ConfigKey;
-import myra.data.Attribute.Condition;
-import myra.data.Dataset.Instance;
+import myra.datamining.Attribute.Condition;
+import myra.datamining.Dataset.Instance;
 
 /**
  * The <code>IntervalBuilder</code> handles continuous attributes

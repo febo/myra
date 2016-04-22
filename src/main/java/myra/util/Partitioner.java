@@ -21,14 +21,14 @@ package myra.util;
 
 import static myra.Config.CONFIG;
 import static myra.classification.Classifier.RANDOM_GENERATOR;
-import static myra.data.Dataset.COVERED;
-import static myra.data.Dataset.NOT_COVERED;
+import static myra.datamining.Dataset.COVERED;
+import static myra.datamining.Dataset.NOT_COVERED;
 
 import java.util.ArrayList;
 import java.util.HashMap;
 
-import myra.data.Dataset;
-import myra.data.Dataset.Instance;
+import myra.datamining.Dataset;
+import myra.datamining.Dataset.Instance;
 
 /**
  * This class can be used to partition de data in-memory.

@@ -17,11 +17,11 @@
  * limitations under the License.
  */
 
-package myra.data;
+package myra.datamining;
 
 import static myra.Config.CONFIG;
-import static myra.data.Attribute.Type.CONTINUOUS;
-import static myra.data.Attribute.Type.NOMINAL;
+import static myra.datamining.Attribute.Type.CONTINUOUS;
+import static myra.datamining.Attribute.Type.NOMINAL;
 
 import java.util.ArrayList;
 import java.util.Arrays;

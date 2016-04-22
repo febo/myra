@@ -19,13 +19,13 @@
 
 package myra.rule;
 
-import static myra.data.Attribute.EQUAL_TO;
+import static myra.datamining.Attribute.EQUAL_TO;
 
 import java.util.Arrays;
 
-import myra.data.Attribute;
-import myra.data.Dataset;
-import myra.data.Attribute.Condition;
+import myra.datamining.Attribute;
+import myra.datamining.Dataset;
+import myra.datamining.Attribute.Condition;
 
 /**
  * This class represents the construction graph. The graph holds the information

@@ -25,9 +25,9 @@ import static myra.classification.tree.Graph.START_INDEX;
 import static myra.classification.tree.Heuristic.DEFAULT_HEURISTIC;
 
 import myra.Config.ConfigKey;
-import myra.data.Attribute;
-import myra.data.Dataset;
-import myra.data.Dataset.Instance;
+import myra.datamining.Attribute;
+import myra.datamining.Dataset;
+import myra.datamining.Dataset.Instance;
 
 /**
  * This class is responsible to probabilistically create a decision tree using

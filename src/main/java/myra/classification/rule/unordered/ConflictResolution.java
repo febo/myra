@@ -21,7 +21,7 @@ package myra.classification.rule.unordered;
 
 import myra.classification.Label;
 import myra.classification.rule.ClassificationRule;
-import myra.data.Dataset;
+import myra.datamining.Dataset;
 
 /**
  * The <code>ConflictResolution</code> enum represent different conflict

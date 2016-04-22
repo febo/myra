@@ -19,10 +19,10 @@
 
 package myra.classification.attribute;
 
-import static myra.data.Attribute.GREATER_THAN;
-import static myra.data.Attribute.LESS_THAN_OR_EQUAL_TO;
+import static myra.datamining.Attribute.GREATER_THAN;
+import static myra.datamining.Attribute.LESS_THAN_OR_EQUAL_TO;
 
-import myra.data.Attribute.Condition;
+import myra.datamining.Attribute.Condition;
 
 /**
  * This class creates discrete intervals based on the entropy measure, similar

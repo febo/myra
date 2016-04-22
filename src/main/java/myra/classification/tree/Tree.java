@@ -19,20 +19,20 @@
 
 package myra.classification.tree;
 
-import static myra.data.Attribute.EQUAL_TO;
-import static myra.data.Attribute.GREATER_THAN;
-import static myra.data.Attribute.IN_RANGE;
-import static myra.data.Attribute.LESS_THAN_OR_EQUAL_TO;
-import static myra.data.Attribute.Type.CONTINUOUS;
+import static myra.datamining.Attribute.EQUAL_TO;
+import static myra.datamining.Attribute.GREATER_THAN;
+import static myra.datamining.Attribute.IN_RANGE;
+import static myra.datamining.Attribute.LESS_THAN_OR_EQUAL_TO;
+import static myra.datamining.Attribute.Type.CONTINUOUS;
 
 import java.util.LinkedList;
 
 import myra.Cost;
 import myra.classification.Label;
-import myra.data.Attribute;
-import myra.data.Attribute.Condition;
-import myra.data.Dataset;
-import myra.data.Model;
+import myra.datamining.Attribute;
+import myra.datamining.Dataset;
+import myra.datamining.Model;
+import myra.datamining.Attribute.Condition;
 
 /**
  * This class represents a decision tree.

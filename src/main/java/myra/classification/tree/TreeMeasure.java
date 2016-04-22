@@ -20,7 +20,7 @@
 package myra.classification.tree;
 
 import myra.Cost;
-import myra.data.Dataset;
+import myra.datamining.Dataset;
 
 /**
  * Base class for tree quality measures.

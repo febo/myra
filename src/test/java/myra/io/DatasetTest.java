@@ -22,7 +22,7 @@ package myra.io;
 import java.io.InputStreamReader;
 
 import junit.framework.TestCase;
-import myra.data.Dataset;
+import myra.datamining.Dataset;
 import myra.util.ARFFReader;
 
 /**

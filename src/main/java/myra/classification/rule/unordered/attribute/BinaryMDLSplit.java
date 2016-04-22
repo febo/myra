@@ -19,15 +19,15 @@
 
 package myra.classification.rule.unordered.attribute;
 
-import static myra.data.Dataset.RULE_COVERED;
+import static myra.datamining.Dataset.RULE_COVERED;
 
 import java.util.Arrays;
 
 import myra.classification.attribute.MDLSplit;
-import myra.data.Attribute.Condition;
-import myra.data.Dataset;
-import myra.data.Dataset.Instance;
-import myra.data.IntervalBuilder;
+import myra.datamining.Dataset;
+import myra.datamining.IntervalBuilder;
+import myra.datamining.Attribute.Condition;
+import myra.datamining.Dataset.Instance;
 
 /**
  * This class creates discrete intervals based on minimum description length

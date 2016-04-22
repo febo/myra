@@ -20,9 +20,9 @@
 package myra.rule;
 
 import myra.Config.ConfigKey;
+import myra.datamining.Dataset;
+import myra.datamining.Dataset.Instance;
 import myra.Cost;
-import myra.data.Dataset;
-import myra.data.Dataset.Instance;
 
 /**
  * Base class for all rule quality functions.

@@ -24,8 +24,8 @@ import java.util.Collection;
 import java.util.HashMap;
 import java.util.Map;
 
-import myra.data.Attribute;
-import myra.data.Dataset;
+import myra.datamining.Attribute;
+import myra.datamining.Dataset;
 
 /**
  * This class represents the construction graph. The graph holds the information

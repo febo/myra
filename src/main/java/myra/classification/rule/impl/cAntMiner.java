@@ -20,7 +20,7 @@
 package myra.classification.rule.impl;
 
 import static myra.Config.CONFIG;
-import static myra.data.IntervalBuilder.DEFAULT_BUILDER;
+import static myra.datamining.IntervalBuilder.DEFAULT_BUILDER;
 import static myra.rule.Pruner.DEFAULT_PRUNER;
 import static myra.rule.irl.PheromonePolicy.DEFAULT_POLICY;
 import static myra.rule.irl.RuleFactory.DEFAULT_FACTORY;
@@ -32,7 +32,7 @@ import myra.Option;
 import myra.classification.attribute.BoundarySplit;
 import myra.classification.attribute.C45Split;
 import myra.classification.attribute.MDLSplit;
-import myra.data.IntervalBuilder;
+import myra.datamining.IntervalBuilder;
 import myra.rule.BacktrackPruner;
 import myra.rule.GreedyPruner;
 import myra.rule.Pruner;

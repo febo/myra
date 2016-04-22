@@ -22,16 +22,16 @@ package myra.classification.rule.unordered.attribute;
 import static myra.classification.attribute.C45Split.DELTA;
 import static myra.classification.attribute.C45Split.PRECISION_10;
 import static myra.classification.attribute.C45Split.PRECISION_15;
-import static myra.data.Attribute.GREATER_THAN;
-import static myra.data.Attribute.LESS_THAN_OR_EQUAL_TO;
-import static myra.data.Dataset.RULE_COVERED;
+import static myra.datamining.Attribute.GREATER_THAN;
+import static myra.datamining.Attribute.LESS_THAN_OR_EQUAL_TO;
+import static myra.datamining.Dataset.RULE_COVERED;
 
 import java.util.Arrays;
 
-import myra.data.Attribute.Condition;
-import myra.data.Dataset;
-import myra.data.Dataset.Instance;
-import myra.data.IntervalBuilder;
+import myra.datamining.Dataset;
+import myra.datamining.IntervalBuilder;
+import myra.datamining.Attribute.Condition;
+import myra.datamining.Dataset.Instance;
 
 /**
  * This class creates discrete intervals based on the Laplace accuracy of the

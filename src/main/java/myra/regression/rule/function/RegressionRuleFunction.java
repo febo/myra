@@ -20,8 +20,8 @@
 package myra.regression.rule.function;
 
 import myra.Cost;
-import myra.data.Dataset;
-import myra.data.Dataset.Instance;
+import myra.datamining.Dataset;
+import myra.datamining.Dataset.Instance;
 import myra.regression.rule.RegressionRule;
 import myra.rule.Rule;
 import myra.rule.RuleFunction;

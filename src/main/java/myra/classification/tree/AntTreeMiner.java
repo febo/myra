@@ -32,9 +32,9 @@ import static myra.classification.tree.PheromonePolicy.EVAPORATION_FACTOR;
 import static myra.classification.tree.PheromonePolicy.P_BEST;
 import static myra.classification.tree.StochasticBuilder.DYNAMIC_HEURISTIC;
 import static myra.classification.tree.TreeMeasure.PESSIMISTIC;
-import static myra.data.IntervalBuilder.DEFAULT_BUILDER;
-import static myra.data.IntervalBuilder.MAXIMUM_LIMIT;
-import static myra.data.IntervalBuilder.MINIMUM_CASES;
+import static myra.datamining.IntervalBuilder.DEFAULT_BUILDER;
+import static myra.datamining.IntervalBuilder.MAXIMUM_LIMIT;
+import static myra.datamining.IntervalBuilder.MINIMUM_CASES;
 
 import java.util.ArrayList;
 import java.util.Collection;
@@ -49,8 +49,8 @@ import myra.classification.Classifier;
 import myra.classification.attribute.BoundarySplit;
 import myra.classification.attribute.C45Split;
 import myra.classification.attribute.MDLSplit;
-import myra.data.Dataset;
-import myra.data.IntervalBuilder;
+import myra.datamining.Dataset;
+import myra.datamining.IntervalBuilder;
 
 /**
  * Default executable class file for the <code>Ant-Tree-Miner</code> algorithm.

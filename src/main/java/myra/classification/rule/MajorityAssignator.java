@@ -25,8 +25,8 @@ import static myra.classification.Classifier.RANDOM_GENERATOR;
 import java.util.Arrays;
 
 import myra.classification.Label;
-import myra.data.Dataset;
-import myra.data.Dataset.Instance;
+import myra.datamining.Dataset;
+import myra.datamining.Dataset.Instance;
 import myra.rule.Assignator;
 import myra.rule.Rule;
 

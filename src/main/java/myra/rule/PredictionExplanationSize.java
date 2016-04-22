@@ -26,7 +26,7 @@ import static myra.rule.RuleSet.CONFLICT_RESOLUTION;
 import myra.Cost;
 import myra.Cost.Minimise;
 import myra.classification.rule.ClassificationRule;
-import myra.data.Dataset;
+import myra.datamining.Dataset;
 
 /**
  * This class calculates the prediction-explanation size of a list of rules.

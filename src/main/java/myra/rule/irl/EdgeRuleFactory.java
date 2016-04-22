@@ -25,10 +25,10 @@ import static myra.rule.Graph.START_INDEX;
 import static myra.rule.Heuristic.DEFAULT_HEURISTIC;
 import static myra.rule.Heuristic.DYNAMIC_HEURISTIC;
 
-import myra.data.Dataset;
-import myra.data.IntervalBuilder;
-import myra.data.Attribute.Condition;
-import myra.data.Dataset.Instance;
+import myra.datamining.Dataset;
+import myra.datamining.IntervalBuilder;
+import myra.datamining.Attribute.Condition;
+import myra.datamining.Dataset.Instance;
 import myra.rule.Graph;
 import myra.rule.Graph.Entry;
 import myra.rule.Graph.Vertex;

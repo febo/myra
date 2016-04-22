@@ -4,4 +4,4 @@
  * @since 4.0
  */
 
-package myra.data;
+package myra.datamining;

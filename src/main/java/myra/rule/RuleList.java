@@ -19,17 +19,17 @@
 
 package myra.rule;
 
-import static myra.data.Dataset.NOT_COVERED;
+import static myra.datamining.Dataset.NOT_COVERED;
 
 import java.lang.reflect.Array;
 import java.util.Arrays;
 
 import myra.Config;
 import myra.Cost;
-import myra.data.Dataset;
-import myra.data.Model;
-import myra.data.Prediction;
-import myra.data.Dataset.Instance;
+import myra.datamining.Dataset;
+import myra.datamining.Model;
+import myra.datamining.Prediction;
+import myra.datamining.Dataset.Instance;
 
 /**
  * This class represents a list of classification rules. When classifying a new

@@ -19,8 +19,8 @@
 
 package myra.regression;
 
-import myra.data.Attribute;
-import myra.data.Prediction;
+import myra.datamining.Attribute;
+import myra.datamining.Prediction;
 
 /**
  * The <code>Real</code> represents the predicted value of a regression

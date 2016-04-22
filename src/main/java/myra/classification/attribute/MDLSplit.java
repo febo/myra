@@ -20,16 +20,16 @@
 package myra.classification.attribute;
 
 import static myra.classification.attribute.C45Split.PRECISION_10;
-import static myra.data.Attribute.GREATER_THAN;
-import static myra.data.Attribute.IN_RANGE;
-import static myra.data.Attribute.LESS_THAN_OR_EQUAL_TO;
+import static myra.datamining.Attribute.GREATER_THAN;
+import static myra.datamining.Attribute.IN_RANGE;
+import static myra.datamining.Attribute.LESS_THAN_OR_EQUAL_TO;
 
 import java.util.Arrays;
 import java.util.Comparator;
 import java.util.Iterator;
 import java.util.LinkedList;
 
-import myra.data.Attribute.Condition;
+import myra.datamining.Attribute.Condition;
 
 /**
  * This class creates discrete intervals based on minimum description length

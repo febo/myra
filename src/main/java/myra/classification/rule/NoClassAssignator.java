@@ -19,8 +19,8 @@
 
 package myra.classification.rule;
 
-import myra.data.Dataset;
-import myra.data.Dataset.Instance;
+import myra.datamining.Dataset;
+import myra.datamining.Dataset.Instance;
 import myra.rule.Assignator;
 import myra.rule.Rule;
 

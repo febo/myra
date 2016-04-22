@@ -19,10 +19,10 @@
 
 package myra.classification.tree;
 
-import static myra.data.Dataset.RULE_COVERED;
+import static myra.datamining.Dataset.RULE_COVERED;
 
 import myra.classification.Label;
-import myra.data.Dataset;
+import myra.datamining.Dataset;
 
 /**
  * Accuracy based pruner.

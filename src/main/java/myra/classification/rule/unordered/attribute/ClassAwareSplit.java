@@ -19,10 +19,10 @@
 
 package myra.classification.rule.unordered.attribute;
 
-import myra.data.Attribute.Condition;
-import myra.data.Dataset;
-import myra.data.Dataset.Instance;
-import myra.data.IntervalBuilder;
+import myra.datamining.Dataset;
+import myra.datamining.IntervalBuilder;
+import myra.datamining.Attribute.Condition;
+import myra.datamining.Dataset.Instance;
 
 /**
  * The <code>ClassAwareSplit</code> interface specifies the methods to handle

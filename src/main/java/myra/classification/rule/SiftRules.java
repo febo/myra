@@ -19,16 +19,16 @@
 
 package myra.classification.rule;
 
-import static myra.data.Attribute.Type.CONTINUOUS;
-import static myra.data.Attribute.Type.NOMINAL;
-import static myra.data.Dataset.MISSING_VALUE_INDEX;
-import static myra.data.Dataset.RULE_COVERED;
+import static myra.datamining.Attribute.Type.CONTINUOUS;
+import static myra.datamining.Attribute.Type.NOMINAL;
+import static myra.datamining.Dataset.MISSING_VALUE_INDEX;
+import static myra.datamining.Dataset.RULE_COVERED;
 
-import myra.data.Attribute;
-import myra.data.Dataset;
-import myra.data.IntervalBuilder;
-import myra.data.Attribute.Condition;
-import myra.data.Dataset.Instance;
+import myra.datamining.Attribute;
+import myra.datamining.Dataset;
+import myra.datamining.IntervalBuilder;
+import myra.datamining.Attribute.Condition;
+import myra.datamining.Dataset.Instance;
 import myra.rule.Rule;
 import myra.rule.RuleList;
 

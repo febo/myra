@@ -19,16 +19,16 @@
 
 package myra.classification.rule;
 
-import static myra.data.Dataset.COVERED;
-import static myra.data.Dataset.NOT_COVERED;
-import static myra.data.Dataset.RULE_COVERED;
+import static myra.datamining.Dataset.COVERED;
+import static myra.datamining.Dataset.NOT_COVERED;
+import static myra.datamining.Dataset.RULE_COVERED;
 
 import java.util.Arrays;
 
 import myra.classification.Label;
-import myra.data.Dataset;
-import myra.data.Prediction;
-import myra.data.Dataset.Instance;
+import myra.datamining.Dataset;
+import myra.datamining.Prediction;
+import myra.datamining.Dataset.Instance;
 import myra.rule.Rule;
 
 /**

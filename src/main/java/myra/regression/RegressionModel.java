@@ -19,8 +19,8 @@
 
 package myra.regression;
 
-import myra.data.Dataset;
-import myra.data.Model;
+import myra.datamining.Dataset;
+import myra.datamining.Model;
 
 /**
  * Wrapper class for classification models. This class follows the Adapter

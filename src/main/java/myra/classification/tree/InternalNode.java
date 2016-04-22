@@ -19,13 +19,13 @@
 
 package myra.classification.tree;
 
-import static myra.data.Attribute.EQUAL_TO;
+import static myra.datamining.Attribute.EQUAL_TO;
 
-import myra.data.Attribute;
-import myra.data.Dataset;
-import myra.data.IntervalBuilder;
-import myra.data.Attribute.Condition;
-import myra.data.Dataset.Instance;
+import myra.datamining.Attribute;
+import myra.datamining.Dataset;
+import myra.datamining.IntervalBuilder;
+import myra.datamining.Attribute.Condition;
+import myra.datamining.Dataset.Instance;
 
 /**
  * This class represent an internal node of the decision tree. Internal nodes

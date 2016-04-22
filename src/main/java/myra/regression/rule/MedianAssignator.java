@@ -19,12 +19,12 @@
 
 package myra.regression.rule;
 
-import static myra.data.Dataset.RULE_COVERED;
+import static myra.datamining.Dataset.RULE_COVERED;
 
 import java.util.Arrays;
 
-import myra.data.Dataset;
-import myra.data.Dataset.Instance;
+import myra.datamining.Dataset;
+import myra.datamining.Dataset.Instance;
 import myra.regression.Real;
 import myra.rule.Assignator;
 import myra.rule.Rule;

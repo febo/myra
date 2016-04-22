@@ -19,13 +19,13 @@
 
 package myra.regression.rule;
 
-import static myra.data.Dataset.COVERED;
-import static myra.data.Dataset.NOT_COVERED;
-import static myra.data.Dataset.RULE_COVERED;
+import static myra.datamining.Dataset.COVERED;
+import static myra.datamining.Dataset.NOT_COVERED;
+import static myra.datamining.Dataset.RULE_COVERED;
 
-import myra.data.Dataset;
-import myra.data.Dataset.Instance;
-import myra.data.Prediction;
+import myra.datamining.Dataset;
+import myra.datamining.Prediction;
+import myra.datamining.Dataset.Instance;
 import myra.regression.Real;
 import myra.rule.Rule;
 

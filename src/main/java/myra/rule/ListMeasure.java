@@ -21,7 +21,7 @@ package myra.rule;
 
 import myra.Cost;
 import myra.Config.ConfigKey;
-import myra.data.Dataset;
+import myra.datamining.Dataset;
 
 /**
  * This class is the base class for all list quality measures.

@@ -19,9 +19,9 @@
 
 package myra.classification;
 
-import myra.data.Attribute;
-import myra.data.Dataset;
-import myra.data.Prediction;
+import myra.datamining.Attribute;
+import myra.datamining.Dataset;
+import myra.datamining.Prediction;
 
 /**
  * The <code>Label</code> represents the predicted value of a classification

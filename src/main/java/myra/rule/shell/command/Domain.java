@@ -25,8 +25,8 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
 
-import myra.data.Attribute;
-import myra.data.Dataset;
+import myra.datamining.Attribute;
+import myra.datamining.Dataset;
 import myra.rule.shell.Command;
 import myra.rule.shell.Memory;
 

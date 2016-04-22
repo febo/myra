@@ -21,7 +21,7 @@ package myra.regression;
 
 import myra.Cost;
 import myra.Cost.Minimise;
-import myra.data.Dataset;
+import myra.datamining.Dataset;
 
 /**
  * Relative root mean squared error (RRMSE) measure for regression models.

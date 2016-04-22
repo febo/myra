@@ -19,14 +19,14 @@
 
 package myra.classification.tree;
 
-import static myra.data.Dataset.NOT_COVERED;
-import static myra.data.Dataset.RULE_COVERED;
+import static myra.datamining.Dataset.NOT_COVERED;
+import static myra.datamining.Dataset.RULE_COVERED;
 
 import myra.Config.ConfigKey;
 import myra.classification.Label;
-import myra.data.Attribute;
-import myra.data.Dataset;
-import myra.data.Dataset.Instance;
+import myra.datamining.Attribute;
+import myra.datamining.Dataset;
+import myra.datamining.Dataset.Instance;
 
 /**
  * Base class for tree pruner procedures.

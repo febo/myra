@@ -20,8 +20,8 @@
 package myra.regression;
 
 import myra.Cost;
-import myra.data.Dataset;
-import myra.data.Model;
+import myra.datamining.Dataset;
+import myra.datamining.Model;
 
 /**
  * Base class for model regression evaluation measures.
@@ -30,7 +30,7 @@ import myra.data.Model;
  * 
  * @author Fernando Esteban Barril Otero
  */
-public abstract class Measure extends myra.data.Measure {
+public abstract class Measure extends myra.datamining.Measure {
     @Override
     public Cost evaluate(Dataset dataset, Model model) {
 	return evaluate(dataset, (RegressionModel) model);

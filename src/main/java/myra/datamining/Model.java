@@ -17,7 +17,7 @@
  * limitations under the License.
  */
 
-package myra.data;
+package myra.datamining;
 
 /**
  * Marker interface for classification models.

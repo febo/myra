@@ -20,15 +20,15 @@
 package myra.classification;
 
 import myra.Cost;
-import myra.data.Dataset;
-import myra.data.Model;
+import myra.datamining.Dataset;
+import myra.datamining.Model;
 
 /**
  * Base class for model classification evaluation measures.
  * 
  * @author Fernando Esteban Barril Otero
  */
-public abstract class Measure extends myra.data.Measure {
+public abstract class Measure extends myra.datamining.Measure {
     @Override
     public Cost evaluate(Dataset dataset, Model model) {
 	return evaluate(dataset, (ClassificationModel) model);

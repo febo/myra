@@ -24,11 +24,11 @@ import static myra.Config.CONFIG;
 import java.util.Arrays;
 
 import myra.Config.ConfigKey;
-import myra.data.Attribute;
-import myra.data.Dataset;
-import myra.data.Prediction;
-import myra.data.Attribute.Condition;
-import myra.data.Dataset.Instance;
+import myra.datamining.Attribute;
+import myra.datamining.Dataset;
+import myra.datamining.Prediction;
+import myra.datamining.Attribute.Condition;
+import myra.datamining.Dataset.Instance;
 import myra.Cost;
 import myra.util.ObjectFactory;
 

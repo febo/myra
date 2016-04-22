@@ -23,10 +23,10 @@ import static myra.Config.CONFIG;
 import static myra.classification.tree.AbstractPruner.DEFAULT_PRUNER;
 import static myra.classification.tree.GainRatioHeuristic.FILTER_GAIN;
 import static myra.classification.tree.Heuristic.DEFAULT_HEURISTIC;
-import static myra.data.Dataset.RULE_COVERED;
-import static myra.data.IntervalBuilder.DEFAULT_BUILDER;
-import static myra.data.IntervalBuilder.MAXIMUM_LIMIT;
-import static myra.data.IntervalBuilder.MINIMUM_CASES;
+import static myra.datamining.Dataset.RULE_COVERED;
+import static myra.datamining.IntervalBuilder.DEFAULT_BUILDER;
+import static myra.datamining.IntervalBuilder.MAXIMUM_LIMIT;
+import static myra.datamining.IntervalBuilder.MINIMUM_CASES;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -39,9 +39,9 @@ import myra.classification.Classifier;
 import myra.classification.attribute.BoundarySplit;
 import myra.classification.attribute.C45Split;
 import myra.classification.attribute.MDLSplit;
-import myra.data.Dataset;
-import myra.data.Dataset.Instance;
-import myra.data.IntervalBuilder;
+import myra.datamining.Dataset;
+import myra.datamining.IntervalBuilder;
+import myra.datamining.Dataset.Instance;
 
 /**
  * This class represents <b>A</b>nother <b>J</b>ava implementation of C<b>4</b>.5 Release <b>8</b>

@@ -19,10 +19,10 @@
 
 package myra.rule.shell.command;
 
-import static myra.data.Dataset.NOT_COVERED;
+import static myra.datamining.Dataset.NOT_COVERED;
 import static myra.rule.shell.command.Load.INSTANCES;
 
-import myra.data.Dataset.Instance;
+import myra.datamining.Dataset.Instance;
 import myra.rule.shell.Command;
 import myra.rule.shell.Memory;
 

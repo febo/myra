@@ -20,19 +20,19 @@
 package myra.classification.rule.unordered;
 
 import static myra.Config.CONFIG;
-import static myra.data.Attribute.Type.CONTINUOUS;
-import static myra.data.Attribute.Type.NOMINAL;
-import static myra.data.Dataset.RULE_COVERED;
-import static myra.data.IntervalBuilder.DEFAULT_BUILDER;
+import static myra.datamining.Attribute.Type.CONTINUOUS;
+import static myra.datamining.Attribute.Type.NOMINAL;
+import static myra.datamining.Dataset.RULE_COVERED;
+import static myra.datamining.IntervalBuilder.DEFAULT_BUILDER;
 import static myra.rule.Graph.START_INDEX;
 
 import java.util.Arrays;
 
 import myra.classification.rule.unordered.attribute.ClassAwareSplit;
-import myra.data.Attribute;
-import myra.data.Attribute.Condition;
-import myra.data.Dataset;
-import myra.data.Dataset.Instance;
+import myra.datamining.Attribute;
+import myra.datamining.Dataset;
+import myra.datamining.Attribute.Condition;
+import myra.datamining.Dataset.Instance;
 import myra.rule.Graph;
 import myra.rule.Graph.Entry;
 import myra.rule.Heuristic;

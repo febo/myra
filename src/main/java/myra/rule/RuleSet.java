@@ -20,15 +20,15 @@
 package myra.rule;
 
 import static myra.Config.CONFIG;
-import static myra.data.Dataset.NOT_COVERED;
+import static myra.datamining.Dataset.NOT_COVERED;
 
 import myra.Config.ConfigKey;
 import myra.classification.Label;
 import myra.classification.rule.ClassificationRule;
 import myra.classification.rule.unordered.ConflictResolution;
-import myra.data.Dataset;
-import myra.data.Prediction;
-import myra.data.Dataset.Instance;
+import myra.datamining.Dataset;
+import myra.datamining.Prediction;
+import myra.datamining.Dataset.Instance;
 
 /**
  * This class represent an unordered list of rules. While the rules are

@@ -21,7 +21,7 @@ package myra.classification.rule;
 
 import myra.Cost;
 import myra.Cost.Maximise;
-import myra.data.Dataset;
+import myra.datamining.Dataset;
 import myra.rule.ListMeasure;
 import myra.rule.RuleList;
 import myra.util.Stats;

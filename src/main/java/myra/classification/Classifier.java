@@ -36,8 +36,8 @@ import java.util.TreeMap;
 import myra.Config.ConfigKey;
 import myra.Option;
 import myra.Option.BooleanOption;
-import myra.data.Attribute;
-import myra.data.Dataset;
+import myra.datamining.Attribute;
+import myra.datamining.Dataset;
 import myra.util.ARFFReader;
 import myra.util.Logger;
 

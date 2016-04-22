@@ -21,18 +21,18 @@ package myra.classification.tree;
 
 import static myra.Config.CONFIG;
 import static myra.classification.attribute.C45Split.EPSILON;
-import static myra.data.Attribute.Type.CONTINUOUS;
-import static myra.data.Attribute.Type.NOMINAL;
-import static myra.data.Dataset.RULE_COVERED;
-import static myra.data.IntervalBuilder.MINIMUM_CASES;
+import static myra.datamining.Attribute.Type.CONTINUOUS;
+import static myra.datamining.Attribute.Type.NOMINAL;
+import static myra.datamining.Dataset.RULE_COVERED;
+import static myra.datamining.IntervalBuilder.MINIMUM_CASES;
 
 import java.util.Arrays;
 
-import myra.data.Attribute;
-import myra.data.Dataset;
-import myra.data.IntervalBuilder;
-import myra.data.Attribute.Condition;
-import myra.data.Dataset.Instance;
+import myra.datamining.Attribute;
+import myra.datamining.Dataset;
+import myra.datamining.IntervalBuilder;
+import myra.datamining.Attribute.Condition;
+import myra.datamining.Dataset.Instance;
 
 /**
  * This class is responsible to calculate the heuristic information based on the

@@ -22,8 +22,8 @@ package myra.classification.tree;
 import java.util.Arrays;
 
 import myra.Config.ConfigKey;
-import myra.data.Dataset;
-import myra.data.Dataset.Instance;
+import myra.datamining.Dataset;
+import myra.datamining.Dataset.Instance;
 
 public interface Heuristic {
     /**

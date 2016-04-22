@@ -21,7 +21,7 @@ package myra.classification;
 
 import myra.Cost;
 import myra.Cost.Maximise;
-import myra.data.Dataset;
+import myra.datamining.Dataset;
 
 /**
  * Accuracy model evaluation measure.

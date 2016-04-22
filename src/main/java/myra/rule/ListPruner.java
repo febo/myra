@@ -20,7 +20,7 @@
 package myra.rule;
 
 import myra.Config.ConfigKey;
-import myra.data.Dataset;
+import myra.datamining.Dataset;
 
 /**
  * The <code>ListPruner</code> should be implemented by classes that are

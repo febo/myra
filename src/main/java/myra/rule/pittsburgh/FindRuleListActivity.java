@@ -20,8 +20,8 @@
 package myra.rule.pittsburgh;
 
 import static myra.Config.CONFIG;
-import static myra.data.Dataset.NOT_COVERED;
-import static myra.data.Dataset.RULE_COVERED;
+import static myra.datamining.Dataset.NOT_COVERED;
+import static myra.datamining.Dataset.RULE_COVERED;
 import static myra.rule.Assignator.ASSIGNATOR;
 import static myra.rule.Heuristic.DEFAULT_HEURISTIC;
 import static myra.rule.ListMeasure.DEFAULT_MEASURE;
@@ -30,9 +30,9 @@ import static myra.rule.Pruner.DEFAULT_PRUNER;
 
 import myra.Archive;
 import myra.Config.ConfigKey;
+import myra.datamining.Dataset;
+import myra.datamining.Dataset.Instance;
 import myra.IterativeActivity;
-import myra.data.Dataset;
-import myra.data.Dataset.Instance;
 import myra.rule.Graph;
 import myra.rule.Graph.Entry;
 import myra.rule.Rule;

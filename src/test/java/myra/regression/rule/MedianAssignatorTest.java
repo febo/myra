@@ -22,8 +22,8 @@ package myra.regression.rule;
 import java.io.InputStreamReader;
 
 import junit.framework.TestCase;
-import myra.data.Dataset;
-import myra.data.Dataset.Instance;
+import myra.datamining.Dataset;
+import myra.datamining.Dataset.Instance;
 import myra.util.ARFFReader;
 
 /**

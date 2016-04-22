@@ -24,8 +24,8 @@ import static myra.Config.CONFIG;
 import myra.Config.ConfigKey;
 import myra.Cost.Maximise;
 import myra.classification.rule.ClassificationRule;
-import myra.data.Dataset;
-import myra.data.Dataset.Instance;
+import myra.datamining.Dataset;
+import myra.datamining.Dataset.Instance;
 
 /**
  * The <code>MEstimate</code> class represents a rule quality function that

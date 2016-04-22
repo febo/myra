@@ -23,8 +23,8 @@ import static myra.Config.CONFIG;
 import static myra.rule.Assignator.ASSIGNATOR;
 
 import myra.Cost;
-import myra.data.Dataset;
-import myra.data.Dataset.Instance;
+import myra.datamining.Dataset;
+import myra.datamining.Dataset.Instance;
 import myra.rule.Rule.Term;
 
 /**

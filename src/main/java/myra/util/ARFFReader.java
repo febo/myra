@@ -27,9 +27,9 @@ import java.io.Reader;
 import java.util.Arrays;
 import java.util.StringTokenizer;
 
-import myra.data.Attribute;
-import myra.data.Attribute.Type;
-import myra.data.Dataset;
+import myra.datamining.Attribute;
+import myra.datamining.Dataset;
+import myra.datamining.Attribute.Type;
 
 /**
  * Reads the dataset information from a ARFF file.

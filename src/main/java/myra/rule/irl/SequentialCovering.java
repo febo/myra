@@ -20,14 +20,14 @@
 package myra.rule.irl;
 
 import static myra.Config.CONFIG;
-import static myra.data.Dataset.NOT_COVERED;
+import static myra.datamining.Dataset.NOT_COVERED;
 import static myra.rule.Assignator.ASSIGNATOR;
 
 import myra.Config.ConfigKey;
+import myra.datamining.Dataset;
+import myra.datamining.Model;
+import myra.datamining.Dataset.Instance;
 import myra.Scheduler;
-import myra.data.Dataset;
-import myra.data.Dataset.Instance;
-import myra.data.Model;
 import myra.rule.Graph;
 import myra.rule.Rule;
 import myra.rule.RuleList;
