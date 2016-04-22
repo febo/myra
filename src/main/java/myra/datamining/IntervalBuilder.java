@@ -23,6 +23,7 @@ import static myra.Config.CONFIG;
 
 import myra.Config.ConfigKey;
 import myra.datamining.Attribute.Condition;
+import myra.datamining.Attribute.Type;
 import myra.datamining.Dataset.Instance;
 
 /**
@@ -105,7 +106,9 @@ public abstract class IntervalBuilder {
      * @return the minimum number of examples that an interval must contain.
      */
     public static double minimumCases(Dataset dataset, double length) {
-	double minimum = 0.1 * (length / (double) dataset.classLength());
+	double minimum = (dataset.getTarget().getType() == Type.NOMINAL
+		? 0.1 * (length / (double) dataset.classLength())
+		: CONFIG.get(MINIMUM_CASES));
 
 	if (minimum < CONFIG.get(MINIMUM_CASES)) {
 	    minimum = CONFIG.get(MINIMUM_CASES);
