@@ -24,8 +24,8 @@ import static myra.datamining.Dataset.NOT_COVERED;
 import static myra.datamining.Dataset.RULE_COVERED;
 
 import myra.datamining.Dataset;
-import myra.datamining.Prediction;
 import myra.datamining.Dataset.Instance;
+import myra.datamining.Prediction;
 import myra.regression.Real;
 import myra.rule.Rule;
 
@@ -38,6 +38,23 @@ public class RegressionRule extends Rule {
      * The predicted real value.
      */
     private Real consequent;
+
+    /**
+     * Creates a new <code>RegressionRule</code>.
+     */
+    public RegressionRule() {
+	this(0);
+    }
+
+    /**
+     * Creates a new <code>RegressionRule</code> with the specified capacity.
+     * 
+     * @param capacity
+     *            the allocated size of the rule.
+     */
+    public RegressionRule(int capacity) {
+	super(capacity);
+    }
 
     @Override
     public int apply(Dataset dataset, Instance[] instances) {
