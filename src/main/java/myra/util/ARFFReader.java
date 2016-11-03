@@ -251,10 +251,10 @@ public class ARFFReader {
 
 	    for (int i = 0; i < components[2].length(); i++) {
 		if (components[2].charAt(i) == ',') {
-		    attribute.add(value.toString().trim());
+		    attribute.add(trim(value.toString()));
 		    value.delete(0, value.length());
 		} else if (components[2].charAt(i) == '}') {
-		    attribute.add(value.toString().trim());
+		    attribute.add(trim(value.toString()));
 		    dataset.add(attribute);
 		    break;
 		} else if (components[2].charAt(i) != '{') {
@@ -290,12 +290,26 @@ public class ARFFReader {
 	int index = 0;
 
 	while (tokens.hasMoreTokens()) {
-	    String value = tokens.nextToken();
+	    String value = trim(tokens.nextToken());
 	    // value.replaceAll("'|\"", "");
 	    values[index] = value;
 	    index++;
 	}
 
 	dataset.add(values);
+    }
+    
+    /**
+     * Removes spaces from the beginning and end of the string. This method
+     * will also remove single quotes usually created by WEKA discretisation
+     * process.
+     * 
+     * @param value the string to trim.
+     * 
+     * @return a string without spaces at the beginning and end.
+     */
+    private String trim(String value) {
+	value = value.replace("'\\'", "\"").replace("\\''", "\"");
+	return value.trim();
     }
 }
