@@ -56,7 +56,7 @@ public class GreedyPruner extends Pruner {
 
 		Cost current = function.evaluate(dataset, rule, instances);
 
-		if (current.compareTo(best) > 0) {
+		if (current.compareTo(best) >= 0) {
 		    best = current;
 		    irrelevant = i;
 		}

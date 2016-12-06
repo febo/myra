@@ -52,7 +52,7 @@ public class BacktrackPruner extends Pruner {
 
 	    Cost current = function.evaluate(dataset, rule, instances);
 
-	    if (current.compareTo(best) > 0) {
+	    if (current.compareTo(best) >= 0) {
 		available = pruned;
 		best = current;
 	    } else {
