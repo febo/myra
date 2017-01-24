@@ -236,7 +236,7 @@ public final class Attribute implements Cloneable {
      * 
      * @author Fernando Esteban Barril Otero
      */
-    public static class Condition {
+    public static class Condition implements Comparable<Condition> {
 	/**
 	 * The maximum number of decimal places in the output of double values.
 	 */
@@ -297,6 +297,16 @@ public final class Attribute implements Cloneable {
 	 * only for continuous attrutes conditions.
 	 */
 	public int index;
+	
+	/**
+	 * The quality of the condition.
+	 */
+	public double quality = Double.MIN_VALUE;
+	
+	/**
+	 * The weight of the condition.
+	 */
+	public double weight = 0;
 
 	/**
 	 * Returns <code>true</code> if the specified value satisfies this
@@ -442,6 +452,11 @@ public final class Attribute implements Cloneable {
 	    }
 
 	    return output;
+	}
+	
+	@Override
+	public int compareTo(Condition o) {
+	    return Double.compare(quality, o.quality);
 	}
     }
 }
