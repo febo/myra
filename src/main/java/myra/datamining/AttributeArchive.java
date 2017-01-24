@@ -58,6 +58,11 @@ public abstract class AttributeArchive {
      * The attribute index.
      */
     protected int index;
+    
+    /**
+     * The weight vector
+     */
+    protected double[] weights;
 
     /**
      * Default constructor.
@@ -65,6 +70,8 @@ public abstract class AttributeArchive {
     public AttributeArchive(int index) {
 	this.index = index;
 	archive = new DefaultArchive<Condition>(CONFIG.get(ARCHIVE_SIZE));
+	weights = new double[CONFIG.get(ARCHIVE_SIZE)];
+	initaliseweights();
     }
 
     /**
@@ -88,22 +95,29 @@ public abstract class AttributeArchive {
     }
 
     /**
-     * Updates the archive weights.
+     * initalise the archive weights.
      */
-    public void update() {
+    public void initaliseweights() {
 	double q = CONFIG.get(Q);
 	double k = CONFIG.get(ARCHIVE_SIZE);
-	Object[] solutions = archive.solutions();
 
-	for (int i = 0; i < solutions.length; i++) {
-	    // ugly, but necessary
-	    Condition c = (Condition) solutions[i];
-
+	for (int i = 0; i < k; i++) {
 	    double exp = -Math.pow((i + 1) - 1, 2) / (2 * q * q * k * k);
-	    c.weight = (1 / (q * k * Math.sqrt(2 * Math.PI)))
+	    weights[i] = (1 / (q * k * Math.sqrt(2 * Math.PI)))
 		    * Math.pow(Math.E, exp);
-	}
+		}
     }
+    
+    
+    /**
+	 * Returns the weights of the solutions in the archive.
+	 * 
+	 * @return the weights of the solutions  in the archive.
+	 */
+	public double[] weights() {
+	    return weights;
+	}
+    
 
     /**
      * This class represents the archive for continuous attributes.
@@ -161,7 +175,9 @@ public abstract class AttributeArchive {
 		double[] probabilities = new double[size];
 		Object[] solutions = archive.solutions();
 
-		double[] weight = new double[size];
+		double[] weight =  new double[size];
+		
+		
 		int n = 0;
 
 		for (int i = 0; i < size; i++) {
@@ -172,7 +188,7 @@ public abstract class AttributeArchive {
 			if (j == c.value[0]) {
 			    if (weight[j] == 0) {
 				// highest quality solution that uses value i
-				weight[j] = c.weight;
+				weight[j] = weights[i];
 			    }
 
 			    // number of solutions that use value i

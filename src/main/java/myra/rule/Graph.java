@@ -26,6 +26,7 @@ import java.util.Arrays;
 import myra.datamining.Attribute;
 import myra.datamining.Dataset;
 import myra.datamining.Attribute.Condition;
+import myra.datamining.AttributeArchive;
 
 /**
  * This class represents the construction graph. The graph holds the information
@@ -54,7 +55,7 @@ public class Graph {
      * Default constructor. Subclasses are responsible for initilising the
      * properties of the graph.
      */
-    protected Graph() {
+    public Graph() {
     }
 
     /**
@@ -146,7 +147,70 @@ public class Graph {
 	    }
 	}
     }
+    
+    
+    public void initalize(Dataset dataset) {
+    	Attribute[] attributes = dataset.attributes();
+    	// the virtual start vertex
+    	int termsCount = attributes.length;
 
+    	vertices = new Vertex[termsCount];
+
+    	vertices[START_INDEX] = new Vertex();
+    	vertices[START_INDEX].attribute = -1;
+    	vertices[START_INDEX].condition = null;
+
+    	int index = 1;
+
+    	for (int i = 0; i < (attributes.length - 1); i++) {
+    	    switch (attributes[i].getType()) {
+    	    case NOMINAL: { 
+    		    Vertex v = new Vertex();
+    		    v.attribute = i;
+    		    v.condition = null;
+    		    int size = attributes[i].length();
+    		    v.archive = new AttributeArchive.Nominal(i, size);
+    		    vertices[index] = v;
+    		    index++;
+    		break;
+    	    }
+
+    	    case CONTINUOUS: {
+    		Vertex v = new Vertex();
+    		v.attribute = i;
+    		v.condition = null;
+    		v.archive = new AttributeArchive.Continuous(i);
+    		vertices[index] = v;
+    		index++;
+    		break;
+    	    }
+    	    }
+    	}
+
+    	// creates the pheromone matrix
+
+    	matrix = new Entry[termsCount][termsCount];
+
+    	for (int i = 0; i < termsCount; i++) {
+    	    Vertex current = vertices[i];
+
+    	    for (int j = 0; j < termsCount; j++) {
+    		if (i != j && j > 0) {
+    		    Vertex other = vertices[j];
+
+    		    if (current.attribute != other.attribute) {
+    			matrix[i][j] = new Entry();
+    		    } else {
+    			matrix[i][j] = null;
+    		    }
+    		} else {
+    		    matrix[i][j] = null;
+    		}
+    	    }
+    	}
+        }
+    
+    
     /**
      * Returns the number of vertices of the graph.
      * 
@@ -402,6 +466,11 @@ public class Graph {
 	 * The attribute-value condition.
 	 */
 	public Condition condition;
+	
+	/**
+	 * The archive structure for this attribute
+	 */
+	public AttributeArchive archive;
 
 	/**
 	 * Default constructor.
