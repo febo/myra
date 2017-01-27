@@ -68,7 +68,7 @@ public class AntMinerMA extends AntMiner {
 	CONFIG.set(DEFAULT_BUILDER, new MDLSplit(new BoundarySplit(), false));
 	CONFIG.set(DEFAULT_PRUNER, new BacktrackPruner());
 	CONFIG.set(UNCOVERED, 10);
-	CONFIG.set(ARCHIVE_SIZE, 20);
+	CONFIG.set(ARCHIVE_SIZE, 5);
 	CONFIG.set(Q, DEFAULT_Q);
 	
     }

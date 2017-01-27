@@ -183,16 +183,16 @@ public abstract class AttributeArchive {
 		for (int i = 0; i < size; i++) {
 		    for (int j = 0; j < solutions.length; j++) {
 			// ugly, but necessary
-			Condition c = (Condition) solutions[i];
+			Condition c = (Condition) solutions[j];
 
-			if (j == c.value[0]) {
-			    if (weight[j] == 0) {
+			if (i == c.value[0]) {
+			    if (weight[i] == 0) {
 				// highest quality solution that uses value i
-				weight[j] = weights[i];
+				weight[i] = weights[j];
 			    }
 
 			    // number of solutions that use value i
-			    probabilities[j]++;
+			    probabilities[i]++;
 			}
 		    }
 
