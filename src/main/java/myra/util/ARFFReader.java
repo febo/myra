@@ -151,11 +151,43 @@ public class ARFFReader {
 	}
 
 	reader.close();
-
+	
+	setMaxMinValue(dataset);
+	
 	return dataset;
     }
 
     /**
+     * updates the attributes in the dataset to find the max and min values of continuous attributes
+     * 
+	 * @param dataset
+	 */
+	private void setMaxMinValue(Dataset dataset) {
+		
+		Attribute[] attributes = dataset.attributes();
+		
+		
+		for(int i=0; i < attributes.length; i ++)
+		{
+			if(attributes[i].getType() == Type.CONTINUOUS){
+				double min = Double.MAX_VALUE;
+				double max = Double.MIN_VALUE;
+				for(int j=0;j < dataset.size();j++){
+					if(min > dataset.value(j, i))
+						min = dataset.value(j, i);
+					
+					if(max < dataset.value(j, i))
+						max = dataset.value(j, i);
+				}
+				dataset.getAttribute(i).setMax(max);
+				dataset.getAttribute(i).setMin(min);
+				
+			}
+		}
+		
+	}
+
+	/**
      * Divides the input String into tokens, using a white space as delimiter.
      * 
      * @param line

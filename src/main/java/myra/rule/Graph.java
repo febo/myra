@@ -179,7 +179,7 @@ public class Graph {
     		Vertex v = new Vertex();
     		v.attribute = i;
     		v.condition = null;
-    		v.archive = new AttributeArchive.Continuous(i);
+    		v.archive = new AttributeArchive.Continuous(i,attributes[i].min(),attributes[i].max());
     		vertices[index] = v;
     		index++;
     		break;

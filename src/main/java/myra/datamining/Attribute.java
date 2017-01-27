@@ -85,6 +85,12 @@ public final class Attribute implements Cloneable {
      * The index (position) of the attribute relative to an instance.
      */
     private int index;
+    
+    /**
+     * The limits of the attribute, only valid for real attributes.
+     */
+    private double[] limits;
+    
 
     /**
      * Creates a new attribute.
@@ -98,6 +104,7 @@ public final class Attribute implements Cloneable {
 	this.type = type;
 	this.name = name;
 	values = new String[0];
+	limits = new double[2];
 	index = -1;
     }
 
@@ -177,6 +184,45 @@ public final class Attribute implements Cloneable {
      */
     public String value(int index) {
 	return values[index];
+    }
+    
+    /**
+     * Returns the attribute max value for continuous attribute.
+     * 
+     * 
+     * @return the attribute max value.
+     */
+    public double max() {
+	return limits[1];
+    }
+    
+    /**
+     *  Returns the attribute min value for continuous attribute.
+     * 
+     * 
+     * @return the attribute min value.
+     */
+    public double min() {
+	return limits[0];
+    }
+    
+    /**
+     * Sets the max value for continuous attribute
+     * 
+     * @param max
+     */
+    public void setMax(double max){
+    	limits[1] = max;
+    }
+    
+    
+    /**
+     * Sets the min value for continuous attribute
+     * 
+     * @param min
+     */
+    public void setMin(double min){
+    	limits[0] = min;
     }
 
     /**

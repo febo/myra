@@ -29,6 +29,8 @@ import static myra.rule.irl.ArchiveSequentialCovering.UNCOVERED;
 import static myra.datamining.AttributeArchive.ARCHIVE_SIZE;
 import static myra.datamining.AttributeArchive.Q;
 import static myra.datamining.AttributeArchive.DEFAULT_Q;
+import static myra.datamining.AttributeArchive.CONVERGENCE;
+import static myra.datamining.AttributeArchive.DEFAULT_CONVERGENCE;
 
 
 import java.util.ArrayList;
@@ -68,9 +70,9 @@ public class AntMinerMA extends AntMiner {
 	CONFIG.set(DEFAULT_BUILDER, new MDLSplit(new BoundarySplit(), false));
 	CONFIG.set(DEFAULT_PRUNER, new BacktrackPruner());
 	CONFIG.set(UNCOVERED, 10);
-	CONFIG.set(ARCHIVE_SIZE, 5);
+	CONFIG.set(ARCHIVE_SIZE, 10);
 	CONFIG.set(Q, DEFAULT_Q);
-	
+	CONFIG.set(CONVERGENCE, DEFAULT_CONVERGENCE);
     }
 
     @Override
