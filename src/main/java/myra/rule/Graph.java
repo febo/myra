@@ -195,7 +195,7 @@ public class Graph {
     	    Vertex current = vertices[i];
 
     	    for (int j = 0; j < termsCount; j++) {
-    		if (i != j && j > 0) {
+    		if (i != j ) {
     		    Vertex other = vertices[j];
 
     		    if (current.attribute != other.attribute) {

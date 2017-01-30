@@ -78,7 +78,7 @@ public class ArchivePhermonePolicy  implements PheromonePolicy {
 
 	final double q = rule.getQuality().raw();
 	int from = START_INDEX;
-
+	
 	for (int i = 0; i < terms.length; i++) {
 		int to = terms[i].index();
 	    Entry entry = matrix[from][to];
@@ -94,7 +94,12 @@ public class ArchivePhermonePolicy  implements PheromonePolicy {
 	    
 	    from = to;
 	}
-
+	// updating the last term of the matrix
+	if(terms.length > 0){
+		Entry entry = matrix[from][START_INDEX];
+		double value = entry.value(0);
+		entry.set(0, value + (value * q));
+	}
 	// normalises the pheromone values (it has the effect of
 	// evaporation for edges that have not being updated)
 

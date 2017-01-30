@@ -45,6 +45,7 @@ import myra.datamining.Dataset;
 import myra.datamining.IntervalBuilder;
 import myra.rule.BacktrackPruner;
 import myra.rule.GreedyPruner;
+import myra.rule.OptimizedBacktrackPruner;
 import myra.rule.Pruner;
 import myra.rule.irl.ArchivePhermonePolicy;
 import myra.rule.irl.ArchiveRuleFactory;
@@ -68,9 +69,9 @@ public class AntMinerMA extends AntMiner {
 	// default configuration values
 
 	CONFIG.set(DEFAULT_BUILDER, new MDLSplit(new BoundarySplit(), false));
-	CONFIG.set(DEFAULT_PRUNER, new BacktrackPruner());
+	CONFIG.set(DEFAULT_PRUNER, new OptimizedBacktrackPruner());
 	CONFIG.set(UNCOVERED, 10);
-	CONFIG.set(ARCHIVE_SIZE, 10);
+	CONFIG.set(ARCHIVE_SIZE, 5);
 	CONFIG.set(Q, DEFAULT_Q);
 	CONFIG.set(CONVERGENCE, DEFAULT_CONVERGENCE);
     }

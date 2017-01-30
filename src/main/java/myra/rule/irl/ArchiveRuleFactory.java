@@ -25,6 +25,7 @@ import static myra.rule.Graph.START_INDEX;
 import static myra.rule.Heuristic.DEFAULT_HEURISTIC;
 import static myra.rule.Heuristic.DYNAMIC_HEURISTIC;
 
+import myra.classification.rule.OptimisedClassificationRule;
 import myra.datamining.Dataset;
 import myra.datamining.IntervalBuilder;
 import myra.datamining.Attribute.Condition;
@@ -64,13 +65,13 @@ public class ArchiveRuleFactory implements RuleFactory {
 	Term last = null;
 
 	// the rule being created (empty at the start)
-	Rule rule = Rule.newInstance(graph.size() / 2);
+	OptimisedClassificationRule rule = new OptimisedClassificationRule();
 	int ruleCovered = rule.apply(dataset, instances);
 	int previous = START_INDEX;
 
 	double[] pheromone = new double[graph.size()];
 	boolean[] incompatible = new boolean[graph.size()];
-	incompatible[START_INDEX] = true;
+	//incompatible[START_INDEX] = true;
 
 	// the rule creation process starts with an empty rule and adds new
 	// terms to the antecedent while the number of covered cases is greater
@@ -91,7 +92,7 @@ public class ArchiveRuleFactory implements RuleFactory {
 		for (int i = 0; i < neighbours.length; i++) {
 		    if (!incompatible[i] && neighbours[i] != null) {
 			pheromone[i] =
-				neighbours[i].value(0) * heuristic[i].value(0);
+				neighbours[i].value(0) ;
 
 			total += pheromone[i];
 
@@ -141,6 +142,12 @@ public class ArchiveRuleFactory implements RuleFactory {
 			selected = i;
 			break;
 		    }
+		}
+		
+		if(selected == START_INDEX)
+		{
+			selected = -1;
+			break;
 		}
 
 		Vertex vertex = graph.vertices()[selected];
