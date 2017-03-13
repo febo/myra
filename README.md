@@ -201,8 +201,10 @@ There is no specific way to cite the MYRA repository. If you would like to make 
     author  = {F.E.B. Otero and A.A. Freitas},
     title   = {Improving the Interpretability of Classification Rules Discovered by an Ant Colony Algorithm: Extended Results},
     journal = {Evolutionary Computation},
-    year    = {2015},
-    note    = {Accepted for publication}
+    year    = {2016},
+    volume  = {24},
+    number  = {3},
+    pages   = {385--409}
 }
 ```
 
