@@ -293,7 +293,7 @@ public class ARFFReader {
 	int index = 0;
 
 	while (tokens.hasMoreTokens()) {
-	    String value = tokens.nextToken();
+	    String value = tokens.nextToken().trim();
 	    // value.replaceAll("'|\"", "");
 	    values[index] = value;
 	    index++;
