@@ -51,7 +51,7 @@ A decision tree induction algorithm that uses an ACO procedure to creates decisi
 
 ### Running the algorithms
 
-All algorihtm can be used in the command line:
+All algorihtms can be used in the command line:
 
 ```
 java -cp myra-<version>.jar <main class> -f <arff training file>
@@ -195,14 +195,16 @@ There is no specific way to cite the MYRA repository. If you would like to make 
 
 ##### Unordered *c*Ant-Miner<sub>PB</sub>
 
-* F.E.B. Otero and A.A. Freitas. Improving the Interpretability of Classification Rules Discovered by an Ant Colony Algorithm: Extended Results. Evolutionary Computation (accepted for publication), MIT Press, 2015.
+* F.E.B. Otero and A.A. Freitas. Improving the Interpretability of Classification Rules Discovered by an Ant Colony Algorithm: Extended Results. Evolutionary Computation, Volume 24, Issue 3, pp. 385&ndash;409. MIT Press, 2015.
 ```
 @ARTICLE{Otero15evco,
     author  = {F.E.B. Otero and A.A. Freitas},
     title   = {Improving the Interpretability of Classification Rules Discovered by an Ant Colony Algorithm: Extended Results},
     journal = {Evolutionary Computation},
-    year    = {2015},
-    note    = {Accepted for publication}
+    year    = {2016},
+    volume  = {24},
+    number  = {3},
+    pages   = {385--409}
 }
 ```
 
