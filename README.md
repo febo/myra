@@ -1,6 +1,6 @@
 # MYRA
 
-MYRA is a collection of Ant Colony Optimization (ACO) algorithms for the data mining classification task. It includes popular rule induction and decision tree induction algorithms. The algorithms are ready to be used from the command line or can be easily called from your own Java code. They are implemented using a modular architecture, so they can be easily extended to incorporate different procedures and/or use different parameter values.
+MYRA is a collection of Ant Colony Optimization (ACO) algorithms for the data mining classification and regression task. It includes popular rule induction and decision tree induction algorithms. The algorithms are ready to be used from the command line or can be easily called from your own Java code. They are implemented using a modular architecture, so they can be easily extended to incorporate different procedures and/or use different parameter values.
 
 This repository contains a complete rewrite of the code (by the same author) from the MYRA project hosted at [sourceforge](http://sourceforge.net/projects/myra/). The computational time has been significantly improved &mdash; tasks that used to take minutes, now are done in seconds &mdash; although it was not possible to maintain backward compatibility. You will find that the overall architecture is very similar, but most of the data structures have changed.
 
@@ -8,7 +8,7 @@ While this repository is a fresh start, the versioning is maintained &mdash; ver
 
 ###### Latest Release
 
-* [MYRA 4.1.1 (jar file)](https://sourceforge.net/projects/myra/files/myra/4.1.1/myra-4.1.1.jar/download)
+* [MYRA 4.5 (jar file)](https://sourceforge.net/projects/myra/files/myra/4.5/myra-4.5.jar/download)
 
 ### Algorithms
 
@@ -49,6 +49,13 @@ Main class: myra.classification.tree.AntTreeMiner
 
 A decision tree induction algorithm that uses an ACO procedure to creates decision trees. Trees are created in a top-down fashion, similar to C4.5 strategy, but instead of using a greedy procedure based on the information gain, it select decision nodes using an ACO procedure.
 
+##### Ant-Miner-Reg
+```
+Main class: myra.regression.rule.impl.AntMinerReg
+```
+
+The first rule induction ACO regression algorithm. Ant-Miner-Reg uses a sequentical covering strategy combined with an ACO search to create a list of regression rules.
+
 ### Running the algorithms
 
 All algorihtms can be used in the command line:
@@ -57,10 +64,10 @@ All algorihtms can be used in the command line:
 java -cp myra-<version>.jar <main class> -f <arff training file>
 ```
 
-where `<version>` is MYRA version number (e.g., `4.1.1`), `<main class>` is the main class name of the algorithm and `<aff training file>` is the path to the ARFF file to be used as training data. The minimum requirement to run an algorihtm is a training file. If no training file is specified, a list of options is printed:
+where `<version>` is MYRA version number (e.g., `4.5`), `<main class>` is the main class name of the algorithm and `<aff training file>` is the path to the ARFF file to be used as training data. The minimum requirement to run an algorihtm is a training file. If no training file is specified, a list of options is printed:
 
 ```
-[febo@uok myra]$ java -cp myra-4.1.1.jar myra.classification.rule.impl.cAntMinerPB
+[febo@uok myra]$ java -cp myra-4.5.jar myra.classification.rule.impl.cAntMinerPB
 
 Usage: cAntMinerPB -f <arff_training_file> [-t <arff_test_file>] [options]
 
@@ -232,5 +239,19 @@ There is no specific way to cite the MYRA repository. If you would like to make 
     volume  = {12},
     number  = {11},
     pages   = {3615--3626}
+}
+```
+
+##### Ant-Miner-Reg
+
+* J. Brookhouse and F.E.B. Otero. Discovering Regression Rules with Ant Colony Optimization. In: Proceedings of the Genetic and Evolutionary Computation Conference Companion (GECCO '15 Companion), pp. 1005&ndash;1012, 2015.
+```
+@INPROCEEDINGS{Brookhouse15regression,
+    author    = {J. Brookhouse and F.E.B. Otero},
+    title     = {Discovering Regression Rules with Ant Colony Optimization},
+    booktitle = {Proceedings of the Genetic and Evolutionary Computation Conference Companion (GECCO '15 Companion)},
+    publisher = {ACM Press},
+    pages     = {1005--1012},
+    year      = {2015}
 }
 ```
