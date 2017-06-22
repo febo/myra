@@ -1,6 +1,6 @@
 # MYRA
 
-MYRA is a collection of Ant Colony Optimization (ACO) algorithms for the data mining classification and regression task. It includes popular rule induction and decision tree induction algorithms. The algorithms are ready to be used from the command line or can be easily called from your own Java code. They are implemented using a modular architecture, so they can be easily extended to incorporate different procedures and/or use different parameter values.
+MYRA is a collection of Ant Colony Optimization (ACO) algorithms for the data mining classification and regression tasks. It includes popular rule induction and decision tree induction algorithms. The algorithms are ready to be used from the command line or can be easily called from your own Java code. They are implemented using a modular architecture, so they can be easily extended to incorporate different procedures and/or use different parameter values.
 
 This repository contains a complete rewrite of the code (by the same author) from the MYRA project hosted at [sourceforge](http://sourceforge.net/projects/myra/). The computational time has been significantly improved &mdash; tasks that used to take minutes, now are done in seconds &mdash; although it was not possible to maintain backward compatibility. You will find that the overall architecture is very similar, but most of the data structures have changed.
 
@@ -40,14 +40,14 @@ Main class: myra.classification.rule.impl.cAntMinerPB
 Main class: myra.classification.rule.impl.UcAntMinerPB
 ```
 
-An extension to the cAnt-MinerPB in order to discover unordered rules to improve the interpretation of individual rules. In an ordered list of rules, the effect (meaning) of a rule depends on all previous rules in the list, since a rule is only used if all previous rules do not cover the example. On the other hand, in an unordered set of rules, an example is shown to all rules and, depending on the conflict resolution strategy, a single rule is used to make a prediction.
+An extension to the *c*Ant-Miner<sub>PB</sub> in order to discover unordered rules to improve the interpretation of individual rules. In an ordered list of rules, the effect (meaning) of a rule depends on all previous rules in the list, since a rule is only used if all previous rules do not cover the example. On the other hand, in an unordered set of rules, an example is shown to all rules and, depending on the conflict resolution strategy, a single rule is used to make a prediction.
 
 ##### Ant-Tree-Miner
 ```
 Main class: myra.classification.tree.AntTreeMiner
 ```
 
-A decision tree induction algorithm that uses an ACO procedure to creates decision trees. Trees are created in a top-down fashion, similar to C4.5 strategy, but instead of using a greedy procedure based on the information gain, it select decision nodes using an ACO procedure.
+A decision tree induction algorithm that uses an ACO procedure to creates decision trees. Trees are created in a top-down fashion, similar to C4.5 strategy, but instead of using a greedy procedure based on the information gain, it selects decision nodes using an ACO procedure.
 
 ##### Ant-Miner-Reg
 ```
