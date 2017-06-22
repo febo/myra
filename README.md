@@ -8,7 +8,7 @@ While this repository is a fresh start, the versioning is maintained &mdash; ver
 
 ###### Latest Release
 
-* [MYRA 4.5 (jar file)](https://sourceforge.net/projects/myra/files/myra/4.5/myra-4.5.jar/download)
+* [MYRA 4.1.1 (jar file)](https://sourceforge.net/projects/myra/files/myra/4.1.1/myra-4.1.1.jar/download)
 
 ### Algorithms
 
@@ -57,10 +57,10 @@ All algorihtms can be used in the command line:
 java -cp myra-<version>.jar <main class> -f <arff training file>
 ```
 
-where `<version>` is MYRA version number (e.g., `4.5`), `<main class>` is the main class name of the algorithm and `<aff training file>` is the path to the ARFF file to be used as training data. The minimum requirement to run an algorihtm is a training file. If no training file is specified, a list of options is printed:
+where `<version>` is MYRA version number (e.g., `4.1.1`), `<main class>` is the main class name of the algorithm and `<aff training file>` is the path to the ARFF file to be used as training data. The minimum requirement to run an algorihtm is a training file. If no training file is specified, a list of options is printed:
 
 ```
-[febo@uok myra]$ java -cp myra-4.5.jar myra.classification.rule.impl.cAntMinerPB
+[febo@uok myra]$ java -cp myra-4.1.1.jar myra.classification.rule.impl.cAntMinerPB
 
 Usage: cAntMinerPB -f <arff_training_file> [-t <arff_test_file>] [options]
 
@@ -197,7 +197,7 @@ There is no specific way to cite the MYRA repository. If you would like to make 
 
 * F.E.B. Otero and A.A. Freitas. Improving the Interpretability of Classification Rules Discovered by an Ant Colony Algorithm: Extended Results. Evolutionary Computation, Volume 24, Issue 3, pp. 385&ndash;409. MIT Press, 2015.
 ```
-@ARTICLE{Otero15evco,
+@ARTICLE{Otero16evco,
     author  = {F.E.B. Otero and A.A. Freitas},
     title   = {Improving the Interpretability of Classification Rules Discovered by an Ant Colony Algorithm: Extended Results},
     journal = {Evolutionary Computation},
