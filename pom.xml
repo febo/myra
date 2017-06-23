@@ -11,7 +11,7 @@
     <packaging>jar</packaging>
 
     <name>MYRA</name>
-    <description>MYRA is a collection of Ant Colony Optimization (ACO) algorithms for the data mining classification task.</description>
+    <description>MYRA is a collection of Ant Colony Optimization (ACO) algorithms for the data mining classification and regression tasks.</description>
     <url>https://github.com/febo/myra</url>
 
     <licenses>
