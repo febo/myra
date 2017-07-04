@@ -98,7 +98,11 @@ public enum ConflictResolution {
 		}
 	    }
 
-	    return new Label(predicted);
+	    // when no rules are active, or in the unlikely event that no
+	    // rule has a laplace value greater than 0, null value is returned
+	    // (there is no better value to return, since we need to flag that
+	    // no prediction could be made)
+	    return (predicted == -1) ? null : new Label(predicted);
 	}
     },
     /**
