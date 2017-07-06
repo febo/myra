@@ -24,12 +24,12 @@ import static myra.Config.CONFIG;
 import java.util.Arrays;
 
 import myra.Config.ConfigKey;
-import myra.datamining.Attribute;
-import myra.datamining.Dataset;
-import myra.datamining.Prediction;
-import myra.datamining.Attribute.Condition;
-import myra.datamining.Dataset.Instance;
 import myra.Cost;
+import myra.datamining.Attribute;
+import myra.datamining.Attribute.Condition;
+import myra.datamining.Dataset;
+import myra.datamining.Dataset.Instance;
+import myra.datamining.Prediction;
 import myra.util.ObjectFactory;
 
 /**
@@ -47,22 +47,22 @@ public abstract class Rule implements Comparable<Rule> {
     /**
      * The quality (cost) of the rule during training.
      */
-    private Cost quality;
+    protected Cost quality;
 
     /**
      * The list of terms in the antecedent of the rule.
      */
-    private Term[] terms;
+    protected Term[] terms;
 
     /**
      * The number of active terms.
      */
-    private int size;
+    protected int size;
 
     /**
      * The index of the function that evaluated the rule.
      */
-    private int function;
+    protected int function;
 
     /**
      * Default constructor.
@@ -432,16 +432,6 @@ public abstract class Rule implements Comparable<Rule> {
 	} else {
 	    Attribute target = dataset.attributes()[dataset.classIndex()];
 	    buffer.append(getConsequent().toString(target));
-	    /*
-	     * buffer.append(" (");
-	     * 
-	     * for (int i = 0; i < dataset.classLength(); i++) { if (i > 0) {
-	     * buffer.append(","); }
-	     * 
-	     * buffer.append(covered[i]); }
-	     * 
-	     * buffer.append(")");
-	     */
 	}
 
 	return buffer.toString();
