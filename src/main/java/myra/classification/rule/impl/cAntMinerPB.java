@@ -45,7 +45,6 @@ import myra.Option.DoubleOption;
 import myra.Option.IntegerOption;
 import myra.Scheduler;
 import myra.classification.ClassificationModel;
-import myra.classification.Classifier;
 import myra.classification.attribute.BoundarySplit;
 import myra.classification.attribute.C45Split;
 import myra.classification.attribute.MDLSplit;
@@ -54,6 +53,7 @@ import myra.classification.rule.EntropyHeuristic;
 import myra.classification.rule.ListAccuracy;
 import myra.classification.rule.MajorityAssignator;
 import myra.classification.rule.PessimisticAccuracy;
+import myra.classification.rule.RuleClassifier;
 import myra.classification.rule.function.Laplace;
 import myra.classification.rule.function.SensitivitySpecificity;
 import myra.datamining.Dataset;
@@ -103,7 +103,7 @@ import myra.rule.pittsburgh.FindRuleListActivity;
  * 
  * @author Fernando Esteban Barril Otero
  */
-public class cAntMinerPB extends Classifier {
+public class cAntMinerPB extends RuleClassifier {
     @Override
     protected void defaults() {
 	super.defaults();

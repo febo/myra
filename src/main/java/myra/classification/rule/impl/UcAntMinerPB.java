@@ -49,11 +49,11 @@ import myra.Option.DoubleOption;
 import myra.Option.IntegerOption;
 import myra.Scheduler;
 import myra.classification.ClassificationModel;
-import myra.classification.Classifier;
 import myra.classification.rule.ClassificationRule;
 import myra.classification.rule.ListAccuracy;
 import myra.classification.rule.NoClassAssignator;
 import myra.classification.rule.PessimisticAccuracy;
+import myra.classification.rule.RuleClassifier;
 import myra.classification.rule.function.Laplace;
 import myra.classification.rule.function.SensitivitySpecificity;
 import myra.classification.rule.unordered.ClassFrequencyHeuristic;
@@ -92,7 +92,7 @@ import myra.rule.RuleList;
  * 
  * @author Fernando Esteban Barril Otero
  */
-public class UcAntMinerPB extends Classifier {
+public class UcAntMinerPB extends RuleClassifier {
     @Override
     protected void defaults() {
 	super.defaults();

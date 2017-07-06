@@ -43,11 +43,11 @@ import myra.Option;
 import myra.Option.BooleanOption;
 import myra.Option.IntegerOption;
 import myra.classification.ClassificationModel;
-import myra.classification.Classifier;
 import myra.classification.attribute.C45Split;
 import myra.classification.rule.ClassificationRule;
 import myra.classification.rule.EntropyHeuristic;
 import myra.classification.rule.MajorityAssignator;
+import myra.classification.rule.RuleClassifier;
 import myra.classification.rule.function.Accuracy;
 import myra.classification.rule.function.Laplace;
 import myra.classification.rule.function.SensitivitySpecificity;
@@ -99,7 +99,7 @@ import myra.rule.irl.VertexRuleFactory;
  * 
  * @author Fernando Esteban Barril Otero
  */
-public class AntMiner extends Classifier {
+public class AntMiner extends RuleClassifier {
     @Override
     protected void defaults() {
 	super.defaults();
