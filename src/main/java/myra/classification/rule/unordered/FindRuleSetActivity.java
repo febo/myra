@@ -208,7 +208,6 @@ public class FindRuleSetActivity extends IterativeActivity<RuleList> {
 
     @Override
     public RuleSet getBest() {
-	// TODO Auto-generated method stub
 	return (RuleSet) super.getBest();
     }
 }
