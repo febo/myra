@@ -88,7 +88,7 @@ public abstract class Classifier extends Algorithm {
 		       attributes[dataset.classIndex()].value(i));
 	}
 
-	Logger.log("  <-- classified as \n");
+	Logger.log("  <-- classified as %n");
 
 	for (int i = 0; i < matrix.length; i++) {
 	    for (int j = 0; j < matrix.length; j++) {
