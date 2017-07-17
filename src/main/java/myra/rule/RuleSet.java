@@ -27,8 +27,8 @@ import myra.classification.Label;
 import myra.classification.rule.ClassificationRule;
 import myra.classification.rule.unordered.ConflictResolution;
 import myra.datamining.Dataset;
-import myra.datamining.Prediction;
 import myra.datamining.Dataset.Instance;
+import myra.datamining.Prediction;
 
 /**
  * This class represent an unordered list of rules. While the rules are
@@ -78,5 +78,29 @@ public class RuleSet extends RuleList {
 	}
 
 	return predicted;
+    }
+
+    @Override
+    public String export(Dataset dataset) {
+	StringBuffer buffer = new StringBuffer();
+	buffer.append(super.export(dataset));
+	buffer.append(String.format("%n"));
+
+	for (int i = 0; i < rules.length; i++) {
+	    ClassificationRule c = (ClassificationRule) rules[i];
+	    buffer.append(String.format("%n("));
+
+	    for (int j = 0; j < c.covered().length; j++) {
+		if (j > 0) {
+		    buffer.append(",");
+		}
+
+		buffer.append(c.covered()[j]);
+	    }
+
+	    buffer.append(")");
+	}
+
+	return buffer.toString();
     }
 }

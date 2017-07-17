@@ -62,4 +62,9 @@ public final class RegressionModel implements Model {
     public String toString(Dataset dataset) {
 	return model.toString(dataset);
     }
+    
+    @Override
+    public String export(Dataset dataset) {
+        return model.export(dataset);
+    }
 }

@@ -30,9 +30,9 @@ import java.util.LinkedList;
 import myra.Cost;
 import myra.classification.Label;
 import myra.datamining.Attribute;
+import myra.datamining.Attribute.Condition;
 import myra.datamining.Dataset;
 import myra.datamining.Model;
-import myra.datamining.Attribute.Condition;
 
 /**
  * This class represents a decision tree.
@@ -276,7 +276,8 @@ public class Tree implements Model, Comparable<Tree> {
      */
     public String toString(Dataset dataset) {
 	StringBuffer buffer = new StringBuffer();
-	buffer.append(toString(dataset, root, ""));
+	buffer.append(export(dataset));
+	buffer.append(System.lineSeparator());
 
 	int size = size();
 
@@ -292,6 +293,11 @@ public class Tree implements Model, Comparable<Tree> {
 	}
 
 	return buffer.toString();
+    }
+
+    @Override
+    public String export(Dataset dataset) {
+	return toString(dataset, root, "");
     }
 
     /**
@@ -371,6 +377,11 @@ public class Tree implements Model, Comparable<Tree> {
 	    String name = node.getName();
 
 	    for (int i = 0; i < internal.conditions.length; i++) {
+		// if we are not the first branch
+		if (i > 0) {
+		    buffer.append(System.lineSeparator());
+		}
+
 		buffer.append(indent);
 		Condition condition = internal.conditions[i];
 
@@ -434,7 +445,7 @@ public class Tree implements Model, Comparable<Tree> {
 	    }
 
 	    buffer.append(")");
-	    buffer.append(System.lineSeparator());
+	    //buffer.append(System.lineSeparator());
 	}
 
 	return buffer.toString();

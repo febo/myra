@@ -27,9 +27,9 @@ import java.util.Arrays;
 import myra.Config;
 import myra.Cost;
 import myra.datamining.Dataset;
+import myra.datamining.Dataset.Instance;
 import myra.datamining.Model;
 import myra.datamining.Prediction;
-import myra.datamining.Dataset.Instance;
 
 /**
  * This class represents a list of classification rules. When classifying a new
@@ -226,6 +226,21 @@ public class RuleList implements Model, Comparable<RuleList> {
 	if (quality != null) {
 	    buffer.append(String.format("List quality: %f%n", quality.raw()));
 	    buffer.append(String.format("List iteration: %d", iteration));
+	}
+
+	return buffer.toString();
+    }
+
+    @Override
+    public String export(Dataset dataset) {
+	StringBuffer buffer = new StringBuffer();
+
+	for (int i = 0; i < rules.length; i++) {
+	    if (i > 0) {
+		buffer.append("\n");
+	    }
+
+	    buffer.append(rules[i].toString(dataset));
 	}
 
 	return buffer.toString();

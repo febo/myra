@@ -63,4 +63,18 @@ public final class ClassificationModel implements Model {
     public String toString(Dataset dataset) {
 	return model.toString(dataset);
     }
+    
+    @Override
+    public String export(Dataset dataset) {
+        return model.export(dataset);
+    }
+    
+    /**
+     * Returns the inner model.
+     * 
+     * @return the inner model.
+     */
+    public Model raw() {
+	return model;
+    }
 }

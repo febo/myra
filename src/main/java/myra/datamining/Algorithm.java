@@ -22,6 +22,9 @@ package myra.datamining;
 import static myra.Config.CONFIG;
 import static myra.datamining.Attribute.Type.NOMINAL;
 
+import java.io.File;
+import java.io.FileWriter;
+import java.io.IOException;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
@@ -59,6 +62,11 @@ public abstract class Algorithm {
     public final static ConfigKey<String> TRAINING_FILE = new ConfigKey<>();
 
     /**
+     * The config key for the export file.
+     */
+    public final static ConfigKey<String> EXPORT_FILE = new ConfigKey<>();
+
+    /**
      * The config key for the random number generator.
      */
     public final static ConfigKey<Random> RANDOM_GENERATOR = new ConfigKey<>();
@@ -89,6 +97,12 @@ public abstract class Algorithm {
 	options.add(new Option<String>(TEST_FILE,
 				       "t",
 				       "Path of the (optional) test file"));
+
+	options.add(new Option<String>(EXPORT_FILE,
+				       "-export",
+				       "Path of the file to save the model",
+				       false,
+				       "file"));
 
 	// random seed
 	options.add(new Option<Long>(RANDOM_SEED,
@@ -207,7 +221,22 @@ public abstract class Algorithm {
 	    }
 
 	    Logger.log("%nRunning time (seconds): %.2f%n", elapsed);
-	    Logger.close();
+
+	    if (CONFIG.isPresent(EXPORT_FILE)) {
+		FileWriter writer = null;
+		try {
+		    writer = new FileWriter(new File(CONFIG.get(EXPORT_FILE)));
+		    writer.write(model.export(dataset));
+		} catch (IOException e) {
+		    Logger.log("%nCould not export model: %s", e.getMessage());
+		} finally {
+		    if (writer != null) {
+			writer.close();
+		    }
+		}
+
+		Logger.close();
+	    }
 	} else {
 	    usage();
 	}
@@ -459,7 +488,7 @@ public abstract class Algorithm {
 
 	    if (properties.containsKey("git.commit.id.describe")) {
 		return String
-			.format("[build %s]",
+			.format("[%s]",
 				properties
 					.getProperty("git.commit.id.describe"));
 
