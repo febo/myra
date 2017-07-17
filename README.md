@@ -119,14 +119,16 @@ Usinng command-line options you can tweak the parameters of an algorithm. Note t
 
 If you publish material based on algorithms from MYRA, please include a reference to the paper describing the algorithm. All papers are available [online](http://cs.kent.ac.uk/~febo).
 
-There is no specific way to cite the MYRA repository. If you would like to make a referecence to the repository, please either include a note in your acknowledgements and/or a citation to:
+If you also would like to make a reference to the MYRA repository, please include a citation to:
 ```
-@MISC{otero:myra,
-    author = "F.E.B. Otero",
-    year   = "2015",
-    title  = "{MYRA}: an {ACO} framework for classification",
-    url    = "https://github.com/febo/myra",
-    note   = "Available online at: https://github.com/febo/myra"
+@INPROCEEDINGS{otero:myra,
+    author    = "F.E.B. Otero",
+    year      = "2017",
+    title     = "{MYRA}: {A} {J}ava {A}nt {C}olony {O}ptimization {F}ramework for {C}lassification {A}lgorithms",
+    booktitle = {Proceedings of the Genetic and Evolutionary Computation Conference Companion (GECCO '17 Companion)},
+    publisher = {ACM Press},
+    pages     = {1247--1254},
+    year      = {2017}
 }
 ```
 
