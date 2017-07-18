@@ -249,6 +249,15 @@ public final class Dataset {
 		    }
 		}
 
+		// sanity check: did we find the value that we are looking
+		// for or not?
+		if (index == MISSING_VALUE_INDEX) {
+		    throw new IllegalArgumentException(String
+			    .format("Value for attribute %s not found: %s",
+				    attributes[i].getName(),
+				    values[i]));
+		}
+
 		instance[i] = index;
 	    }
 	}
