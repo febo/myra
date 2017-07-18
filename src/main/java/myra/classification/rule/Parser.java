@@ -42,6 +42,7 @@ import java.util.StringTokenizer;
 
 import myra.Cost;
 import myra.classification.Label;
+import myra.datamining.ARFFReader;
 import myra.datamining.Attribute;
 import myra.datamining.Dataset;
 import myra.datamining.Attribute.Condition;
@@ -50,7 +51,6 @@ import myra.rule.PredictionExplanationSize;
 import myra.rule.Rule;
 import myra.rule.RuleList;
 import myra.rule.RuleSet;
-import myra.util.ARFFReader;
 
 /**
  * Utility to parse a list of rule from different algorihtms' output.

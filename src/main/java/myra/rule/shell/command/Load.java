@@ -23,12 +23,12 @@ import static myra.datamining.Dataset.NOT_COVERED;
 
 import java.io.IOException;
 
+import myra.datamining.ARFFReader;
 import myra.datamining.Dataset;
 import myra.datamining.Dataset.Instance;
 import myra.rule.shell.Command;
 import myra.rule.shell.Memory;
 import myra.rule.shell.Memory.Location;
-import myra.util.ARFFReader;
 
 /**
  * Loads a dataset into the shell's memory.

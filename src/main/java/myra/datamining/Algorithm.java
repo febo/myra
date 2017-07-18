@@ -40,7 +40,6 @@ import java.util.TreeMap;
 import myra.Config.ConfigKey;
 import myra.Option;
 import myra.Option.BooleanOption;
-import myra.util.ARFFReader;
 import myra.util.Logger;
 
 /**

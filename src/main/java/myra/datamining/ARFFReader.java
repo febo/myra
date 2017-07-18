@@ -17,7 +17,7 @@
  * limitations under the License.
  */
 
-package myra.util;
+package myra.datamining;
 
 import java.io.BufferedReader;
 import java.io.File;
@@ -27,8 +27,6 @@ import java.io.Reader;
 import java.util.Arrays;
 import java.util.StringTokenizer;
 
-import myra.datamining.Attribute;
-import myra.datamining.Dataset;
 import myra.datamining.Attribute.Type;
 
 /**
@@ -298,13 +296,13 @@ public class ARFFReader {
 
 	dataset.add(values);
     }
-    
+
     /**
-     * Removes spaces from the beginning and end of the string. This method
-     * will also remove single quotes usually created by WEKA discretisation
-     * process.
+     * Removes spaces from the beginning and end of the string. This method will
+     * also remove single quotes usually created by WEKA discretisation process.
      * 
-     * @param value the string to trim.
+     * @param value
+     *            the string to trim.
      * 
      * @return a string without spaces at the beginning and end.
      */

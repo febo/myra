@@ -22,8 +22,8 @@ package myra.io;
 import java.io.InputStreamReader;
 
 import junit.framework.TestCase;
+import myra.datamining.ARFFReader;
 import myra.datamining.Dataset;
-import myra.util.ARFFReader;
 
 /**
  * <code>Dataset</code> class test.

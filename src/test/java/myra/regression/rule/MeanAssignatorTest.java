@@ -22,9 +22,9 @@ package myra.regression.rule;
 import java.io.InputStreamReader;
 
 import junit.framework.TestCase;
+import myra.datamining.ARFFReader;
 import myra.datamining.Dataset;
 import myra.datamining.Dataset.Instance;
-import myra.util.ARFFReader;
 
 /**
  * <code>MeanAssignatorTest</code> class test.

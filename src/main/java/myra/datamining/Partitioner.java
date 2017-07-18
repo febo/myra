@@ -17,7 +17,7 @@
  * limitations under the License.
  */
 
-package myra.util;
+package myra.datamining;
 
 import static myra.Config.CONFIG;
 import static myra.datamining.Algorithm.RANDOM_GENERATOR;
@@ -27,7 +27,6 @@ import static myra.datamining.Dataset.NOT_COVERED;
 import java.util.ArrayList;
 import java.util.HashMap;
 
-import myra.datamining.Dataset;
 import myra.datamining.Dataset.Instance;
 
 /**
