@@ -1,8 +1,8 @@
 /*
- * SequentialCovering.java
+ * ArchiveSequentialCovering.java
  * (this file is part of MYRA)
  * 
- * Copyright 2008-2015 Fernando Esteban Barril Otero
+ * Copyright 2008-2017 Fernando Esteban Barril Otero
  * 
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -23,11 +23,11 @@ import static myra.Config.CONFIG;
 import static myra.datamining.Dataset.NOT_COVERED;
 import static myra.rule.Assignator.ASSIGNATOR;
 
+import myra.Scheduler;
 import myra.Config.ConfigKey;
 import myra.datamining.Dataset;
 import myra.datamining.Model;
 import myra.datamining.Dataset.Instance;
-import myra.Scheduler;
 import myra.rule.Graph;
 import myra.rule.Rule;
 import myra.rule.RuleList;
@@ -36,27 +36,27 @@ import myra.rule.Graph.Vertex;
 import myra.util.Logger;
 
 /**
- * This class represents a trditional sequential covering strategy to create a
- * list of rules.
- * 
- * @author Fernando Esteban Barril Otero
+ * @author amh58
+ *
  */
-public class SequentialCovering {
-    /**
+public class ArchiveSequentialCovering {
+	 /**
      * The config key for the number of uncovered instances.
      */
     public final static ConfigKey<Integer> UNCOVERED = new ConfigKey<Integer>();
 
     public Model train(Dataset dataset) {
+    	
 	final int uncovered = CONFIG.get(UNCOVERED);
 	Instance[] instances = Instance.newArray(dataset.size());
 	Instance.markAll(instances, NOT_COVERED);
 
-	Graph graph = new Graph(dataset);
+	// initialising the graph and using initialise function ( which is used with archive implementation )
+	Graph graph = new Graph();
+	graph.initalize(dataset);
 
 	RuleList discovered = new RuleList();
 	int available = dataset.size();
-	
 	Scheduler<Rule> scheduler = Scheduler.newInstance(1);
 
 	while (available >= uncovered) {
@@ -72,7 +72,6 @@ public class SequentialCovering {
 	    best.apply(dataset, instances);
 	    
 	    
-	   
 
 	    // adds the rule to the list
 	    discovered.add(best);

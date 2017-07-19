@@ -22,6 +22,7 @@ package myra.datamining;
 import static myra.Config.CONFIG;
 import static myra.datamining.Algorithm.RANDOM_GENERATOR;
 import static myra.datamining.Attribute.EQUAL_TO;
+import static myra.datamining.Attribute.IN_RANGE;
 import static myra.datamining.Attribute.Condition;
 
 import myra.Archive.DefaultArchive;
@@ -43,11 +44,21 @@ public abstract class AttributeArchive {
      * The config key for the weight calculation parameter <i>q</i>.
      */
     public static final ConfigKey<Double> Q = new ConfigKey<>();
+    
+    /**
+     * The config key for the weight calculation parameter <i>q</i>.
+     */
+    public static final ConfigKey<Double> CONVERGENCE = new ConfigKey<>();
 
     /**
      * Default value for the weight calculation parameter <i>q</i>.
      */
     public static final double DEFAULT_Q = 0.05099;
+    
+    /**
+     * Default value for the weight calculation parameter <i>q</i>.
+     */
+    public static final double DEFAULT_CONVERGENCE = 0.6795;
 
     /**
      * The attribute values' archive.
@@ -58,6 +69,11 @@ public abstract class AttributeArchive {
      * The attribute index.
      */
     protected int index;
+    
+    /**
+     * The weight vector
+     */
+    protected double[] weights;
 
     /**
      * Default constructor.
@@ -65,6 +81,8 @@ public abstract class AttributeArchive {
     public AttributeArchive(int index) {
 	this.index = index;
 	archive = new DefaultArchive<Condition>(CONFIG.get(ARCHIVE_SIZE));
+	weights = new double[CONFIG.get(ARCHIVE_SIZE)];
+	initaliseweights();
     }
 
     /**
@@ -83,49 +101,258 @@ public abstract class AttributeArchive {
      * @param condition
      *            the condition to add.
      */
-    public void add(Condition condition) {
-	archive.add(condition);
+    public int add(Condition condition) {
+	return archive.adds(condition);
     }
 
     /**
-     * Updates the archive weights.
+     * initalise the archive weights.
      */
-    public void update() {
+    public void initaliseweights() {
 	double q = CONFIG.get(Q);
-	double k = CONFIG.get(ARCHIVE_SIZE);
-	Object[] solutions = archive.solutions();
+	double k = (double) CONFIG.get(ARCHIVE_SIZE);
 
-	for (int i = 0; i < solutions.length; i++) {
-	    // ugly, but necessary
-	    Condition c = (Condition) solutions[i];
-
+	for (int i = 0; i < k; i++) {
 	    double exp = -Math.pow((i + 1) - 1, 2) / (2 * q * q * k * k);
-	    c.weight = (1 / (q * k * Math.sqrt(2 * Math.PI)))
+	    weights[i] = (1 / (q * k * Math.sqrt(2 * Math.PI)))
 		    * Math.pow(Math.E, exp);
-	}
+		}
     }
+    
+    
+    /**
+	 * Returns the weights of the solutions in the archive.
+	 * 
+	 * @return the weights of the solutions  in the archive.
+	 */
+	public double[] weights() {
+	    return weights;
+	}
+    
 
     /**
      * This class represents the archive for continuous attributes.
      */
     public static class Continuous extends AttributeArchive {
 
+    	/**
+    	 * The number of values in the nominal attribute domain.
+    	 */
+    	private double min;
+    	
+    	/**
+    	 * The number of values in the nominal attribute domain.
+    	 */
+    	private double max;
+    	
 	/**
 	 * Default constructor.
 	 * 
 	 * @param index
 	 *            the attribute index.
 	 */
-	public Continuous(int index) {
-	    super(index);
+    	
+	public Continuous(int index, double min, double max) {
+		super(index);
+		this.min = min;
+		this.max = max;  
 	}
 
 	@Override
 	public Condition sample() {
-	    return null;
+		 // Creating a condition for continuous attribute
+		 Condition condition = new Condition();
+		 condition.attribute = index;
+		 // sampling the operator using categorical sampling from the archive
+		 condition = relationsample(condition);
+		 // if the archive is not full
+		 if (!archive.isFull()) {
+			// random sampling, since archive is not complete for the continuous attribute
+			condition.value[0]= (CONFIG.get(RANDOM_GENERATOR).nextDouble() * (max - min)) + min;
+			// if the relation  is In range we need to sample another value
+			if(condition.relation == IN_RANGE){
+				condition.value[1]= (CONFIG.get(RANDOM_GENERATOR).nextDouble() * (max - condition.value[0])) + condition.value[0];
+			}	
+		} 
+		else {
+			// Sampling from the archive the first value of the attribute
+			condition = sampleConditionValue(condition,0);
+			// if the relation is in range we need to sample another value
+			if(condition.relation == IN_RANGE){
+				condition = sampleConditionValue(condition,1);
+			}
+		}
+		return condition;
 	}
-    }
+	
+	public Condition sampleConditionValue(Condition condition,int index){
+		// selecting the index of the random solution with same condition.
+		int selectedindex = selectRandomSolution(condition);
+		
+		Object[] solutions = archive.solutions();
+		double std = 0;
+		int count = 0;
+		final double convergence = CONFIG.get(CONVERGENCE);
+		// if the relation choosen was found in the archive
+		if(selectedindex != -1)
+		{
+			// ugly, but necessary
+			Condition c1 = (Condition) solutions[selectedindex];
+			
+			for (int j = 0; j < solutions.length; j++) {
+				// ugly, but necessary
+				Condition c = (Condition) solutions[j];
+				// if this is the relation, we get the std and count 
+				if(c.relation == condition.relation){
+					std += Math.abs(c.value[index]- c1.value[index]);
+					count++;
+				}
+			}
+			
+			if (count != 0) {	
+				std = std / count;
+				std *= convergence;
+				// calculating an gussian using the std and mean
+				condition.value[index] = (CONFIG.get(RANDOM_GENERATOR).nextGaussian() * std ) + c1.value[index];
+			}
+			else
+			{
+				// if there is not values in archive using a random generated value
+				condition.value[index]= (CONFIG.get(RANDOM_GENERATOR).nextDouble() * (max - min)) + min;
+			}
+		} 
+		else // if the relation operator was not found in archive
+		{	
+			// a random value for the limits will be used
+			condition.value[index]= (CONFIG.get(RANDOM_GENERATOR).nextDouble() * (max - min)) + min;
+		}
+		return condition;
+	}
+	
+	
+	/**
+	 * Randomly selecting a solution in the archive with the same condition
+	 * @param condition
+	 * @return the index of selected solution
+	 */
+	public int selectRandomSolution(Condition condition){
+		// archive size
+		int size = archive.size();
+		Object[] solutions = archive.solutions();
+		double[] probabilities = new double[size];
+		double total =0;
+		// applying roulette wheel selection
+		for (int i = 0; i < size; i++) 
+		{
+			Condition c = (Condition) solutions[i];
+			if(c.relation == condition.relation)
+			{
+				probabilities[i]= weights[i];
+				total += probabilities[i];	
+			}
+			else
+				probabilities[i] = 0;
+			
+		}
+		double cumulative = 0.0;
+		double slot = CONFIG.get(RANDOM_GENERATOR).nextDouble();
+		int selected = - 1;
+		
+		for (int i = 0; i < 2; i++) {
+		    probabilities[i] = cumulative + (probabilities[i] / total);
+		    cumulative = probabilities[i];
 
+		    if (slot <= probabilities[i]) {
+		    	selected = i;
+			break;
+		    }
+		}
+		return selected;
+		
+	}
+	
+	/**
+	 * sampling a condition using the categorical sampling process
+	 * @param condition
+	 * @return condition 
+	 */
+	public Condition relationsample(Condition condition){
+		
+		if (!archive.isFull()) {
+			// random sampling, since archive is not complete
+			condition.relation = (short) (CONFIG.get(RANDOM_GENERATOR).nextInt(3) + 1);
+			
+		    } else {
+			double[] probabilities = new double[3];
+			Object[] solutions = archive.solutions();
+
+			double[] weight =  new double[3];
+			
+			
+			int n = 0;
+
+			for (int i = 0; i < 3; i++) {
+			    for (int j = 0; j < solutions.length; j++) {
+				// ugly, but necessary
+				Condition c = (Condition) solutions[j];
+
+				if (i == c.relation) {
+				    if (weight[i] == 0) {
+					// highest quality solution that uses value i
+					weight[i] = weights[j];
+				    }
+
+				    // number of solutions that use value i
+				    probabilities[i]++;
+				}
+			    }
+
+			    // number of unused values
+			    n += (probabilities[i] == 0) ? 1 : 0;
+			}
+
+			// calculates the weight of each value
+
+			final double q = CONFIG.get(Q);
+			double total = 0;
+
+			for (int i = 0; i < 3; i++) {
+			    if (n > 0) {
+				if (probabilities[i] > 0) {
+				    probabilities[i] =
+					    (weight[i] / probabilities[i]) + (q / n);
+				} else {
+				    probabilities[i] = (q / n);
+				}
+			    } else if (probabilities[i] > 0) {
+				probabilities[i] = (weight[i] / probabilities[i]);
+			    }
+
+			    total += probabilities[i];
+			}
+
+			// roulette selection based on the weight of each value
+
+			condition.relation = 3;
+			double slot = CONFIG.get(RANDOM_GENERATOR).nextDouble();
+			double cumulative = 0.0;
+
+			for (int i = 0; i < 2; i++) {
+			    probabilities[i] = cumulative + (probabilities[i] / total);
+			    cumulative = probabilities[i];
+
+			    if (slot <= probabilities[i]) {
+				condition.relation = (short) i;
+				break;
+			    }
+			}
+		    }
+
+		    return condition;
+		}
+	}
+	
+    
     /**
      * This class represents the archive for nominal attributes.
      */
@@ -161,22 +388,24 @@ public abstract class AttributeArchive {
 		double[] probabilities = new double[size];
 		Object[] solutions = archive.solutions();
 
-		double[] weight = new double[size];
+		double[] weight =  new double[size];
+		
+		
 		int n = 0;
 
 		for (int i = 0; i < size; i++) {
 		    for (int j = 0; j < solutions.length; j++) {
 			// ugly, but necessary
-			Condition c = (Condition) solutions[i];
+			Condition c = (Condition) solutions[j];
 
-			if (j == c.value[0]) {
-			    if (weight[j] == 0) {
+			if (i == c.value[0]) {
+			    if (weight[i] == 0) {
 				// highest quality solution that uses value i
-				weight[j] = c.weight;
+				weight[i] = weights[j];
 			    }
 
 			    // number of solutions that use value i
-			    probabilities[j]++;
+			    probabilities[i]++;
 			}
 		    }
 

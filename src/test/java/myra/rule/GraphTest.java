@@ -1,5 +1,5 @@
 /*
- * AttributeArchiveTest.java
+ * GraphTest.java
  * (this file is part of MYRA)
  * 
  * Copyright 2008-2017 Fernando Esteban Barril Otero
@@ -17,7 +17,7 @@
  * limitations under the License.
  */
 
-package myra.datamining;
+package myra.rule;
 
 import static myra.Config.CONFIG;
 import static myra.datamining.Algorithm.RANDOM_GENERATOR;
@@ -25,15 +25,16 @@ import static myra.datamining.Algorithm.RANDOM_GENERATOR;
 import java.util.Random;
 
 import junit.framework.TestCase;
+import myra.datamining.AttributeArchive;
 import myra.datamining.Attribute.Condition;
 import myra.datamining.AttributeArchive.Nominal;
 
 /**
- * @author Fernando Esteban Barril Otero
+ * @author amh58
+ *
  */
-public class AttributeArchiveTest extends TestCase {
-
-    @Override
+public class GraphTest extends TestCase {
+	@Override
     protected void setUp() throws Exception {
 	super.setUp();
 
@@ -41,22 +42,10 @@ public class AttributeArchiveTest extends TestCase {
 	CONFIG.set(AttributeArchive.Q, AttributeArchive.DEFAULT_Q);
 	CONFIG.set(RANDOM_GENERATOR, new Random());
     }
-
-    public void testNominalSampling() {
-	Nominal archive = new Nominal(0, 3);
-
-	for (int i = 0; i < 10; i++) {
-        	Condition condition = archive.sample();
-        	assertNotNull(condition);
-        	condition.quality = CONFIG.get(RANDOM_GENERATOR).nextDouble();
-        	
-        	archive.add(condition);
+	
+	
+	public void testinitalize() {
+		Graph graph = new Graph();
+		
 	}
-
-	
-	// archive is complete now
-	
-	Condition condition = archive.sample();
-	assertNotNull(condition);
-    }
 }
