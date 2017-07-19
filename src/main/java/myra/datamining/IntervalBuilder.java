@@ -108,12 +108,12 @@ public abstract class IntervalBuilder {
     public static double minimumCases(Dataset dataset, double length) {
 	double minimum = (dataset.getTarget().getType() == Type.NOMINAL
 		? 0.1 * (length / (double) dataset.classLength())
-		: CONFIG.get(MINIMUM_CASES));
+		: (double) CONFIG.get(MINIMUM_CASES));
 
 	if (minimum < CONFIG.get(MINIMUM_CASES)) {
-	    minimum = CONFIG.get(MINIMUM_CASES);
+	    minimum = (double) CONFIG.get(MINIMUM_CASES);
 	} else if (minimum > CONFIG.get(MAXIMUM_LIMIT)) {
-	    minimum = CONFIG.get(MAXIMUM_LIMIT);
+	    minimum = (double) CONFIG.get(MAXIMUM_LIMIT);
 	}
 
 	return minimum;

@@ -82,24 +82,29 @@ public class ArchivePhermonePolicy  implements PheromonePolicy {
 	for (int i = 0; i < terms.length; i++) {
 		int to = terms[i].index();
 	    Entry entry = matrix[from][to];
-	    double value = entry.value(0);
-	    entry.set(0, value + (value * q));
+	   
+	   
 	    
 	    //setting the quality of the rule to the condition 
 	    Condition condition = terms[i].condition();
 	    condition.quality = q;
 	    
-	    //Adding the condition to the archive to have conditions in the archive
-	    vertices[to].archive.add(condition);
 	    
+	    //Adding the condition to the archive to have conditions in the archive
+	    int p = vertices[to].archive.add(condition);
+	    if(p > 0){
+	    double k = vertices[to].archive.weights()[p -1];
+	    double value = entry.value(0);
+	    entry.set(0, value + (value * k));
+	    }
 	    from = to;
 	}
 	// updating the last term of the matrix
-	if(terms.length > 0){
-		Entry entry = matrix[from][START_INDEX];
-		double value = entry.value(0);
-		entry.set(0, value + (value * q));
-	}
+//	if(terms.length > 0){
+//		Entry entry = matrix[from][START_INDEX];
+//		double value = entry.value(0);
+//		entry.set(0, value + (value * q));
+//	}
 	// normalises the pheromone values (it has the effect of
 	// evaporation for edges that have not being updated)
 

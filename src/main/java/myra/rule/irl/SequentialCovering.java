@@ -31,6 +31,9 @@ import myra.Scheduler;
 import myra.rule.Graph;
 import myra.rule.Rule;
 import myra.rule.RuleList;
+import myra.rule.Graph.Entry;
+import myra.rule.Graph.Vertex;
+import myra.util.Logger;
 
 /**
  * This class represents a trditional sequential covering strategy to create a
@@ -53,7 +56,7 @@ public class SequentialCovering {
 
 	RuleList discovered = new RuleList();
 	int available = dataset.size();
-
+	
 	Scheduler<Rule> scheduler = Scheduler.newInstance(1);
 
 	while (available >= uncovered) {
@@ -67,6 +70,9 @@ public class SequentialCovering {
 
 	    Rule best = activity.getBest();
 	    best.apply(dataset, instances);
+	    
+	    
+	   
 
 	    // adds the rule to the list
 	    discovered.add(best);

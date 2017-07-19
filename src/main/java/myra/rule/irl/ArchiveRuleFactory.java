@@ -92,7 +92,7 @@ public class ArchiveRuleFactory implements RuleFactory {
 		for (int i = 0; i < neighbours.length; i++) {
 		    if (!incompatible[i] && neighbours[i] != null) {
 			pheromone[i] =
-				neighbours[i].value(0) ;
+				neighbours[i].value(0) * heuristic[i].value(0);
 
 			total += pheromone[i];
 
@@ -144,11 +144,11 @@ public class ArchiveRuleFactory implements RuleFactory {
 		    }
 		}
 		
-		if(selected == START_INDEX)
-		{
-			selected = -1;
-			break;
-		}
+	//	if(selected == START_INDEX)
+	//	{
+	//		selected = -1;
+	//		break;
+	//	}
 
 		Vertex vertex = graph.vertices()[selected];
 		
@@ -219,7 +219,6 @@ public class ArchiveRuleFactory implements RuleFactory {
 	    // to the rule and later removed
 	    rule.apply(dataset, instances);
 	}
-
 	return rule;
     }
 }

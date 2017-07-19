@@ -25,7 +25,9 @@ import static myra.datamining.Dataset.RULE_COVERED;
 
 import java.util.Arrays;
 
+import myra.datamining.Attribute;
 import myra.datamining.Dataset;
+import myra.datamining.Attribute.Condition;
 import myra.datamining.Dataset.Instance;
 import myra.rule.Rule.Term;
 
@@ -168,4 +170,51 @@ public class OptimisedClassificationRule extends ClassificationRule {
     int termslength = size();
 	return uncovered[termslength];
     }
+    
+    
+    
+    public String toString(Dataset dataset) {
+    	StringBuffer buffer = new StringBuffer();
+    	buffer.append("IF ");
+
+    	if (size() == 0) {
+    	    buffer.append("<empty>");
+    	} else {
+    	    for (int i = 0; i < size(); i++) {
+    		if (!terms()[i].isEnabeld()) {
+    		    throw new IllegalStateException("A rule should not contain disabled terms.");
+    		}
+
+    		if (i > 0) {
+    		    buffer.append(" AND ");
+    		}
+
+    		Condition condition = terms()[i].condition();
+    		buffer.append(condition.toString(dataset));
+    	    }
+    	}
+
+    	buffer.append(" THEN ");
+
+    	if (getConsequent() == null) {
+    	    buffer.append("<undefined>");
+    	} else {
+    	    Attribute target = dataset.attributes()[dataset.classIndex()];
+    	    buffer.append(getConsequent().toString(target));
+    	    
+    	      buffer.append(" (");
+    	      
+    	      for (int i = 0; i < dataset.classLength(); i++) { if (i > 0) {
+    	      buffer.append(","); }
+    	      
+    	      buffer.append(covered()[i]); }
+    	      
+    	      buffer.append(")");
+    	      
+    	      buffer.append(String.format(" Q  = %f",getQuality().raw()));
+    	     
+    	}
+
+    	return buffer.toString();
+        }
 }

@@ -101,8 +101,8 @@ public abstract class AttributeArchive {
      * @param condition
      *            the condition to add.
      */
-    public void add(Condition condition) {
-	archive.add(condition);
+    public int add(Condition condition) {
+	return archive.adds(condition);
     }
 
     /**
@@ -110,7 +110,7 @@ public abstract class AttributeArchive {
      */
     public void initaliseweights() {
 	double q = CONFIG.get(Q);
-	double k = CONFIG.get(ARCHIVE_SIZE);
+	double k = (double) CONFIG.get(ARCHIVE_SIZE);
 
 	for (int i = 0; i < k; i++) {
 	    double exp = -Math.pow((i + 1) - 1, 2) / (2 * q * q * k * k);

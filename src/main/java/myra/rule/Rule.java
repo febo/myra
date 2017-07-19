@@ -432,16 +432,17 @@ public abstract class Rule implements Comparable<Rule> {
 	} else {
 	    Attribute target = dataset.attributes()[dataset.classIndex()];
 	    buffer.append(getConsequent().toString(target));
-	    /*
-	     * buffer.append(" (");
-	     * 
-	     * for (int i = 0; i < dataset.classLength(); i++) { if (i > 0) {
-	     * buffer.append(","); }
-	     * 
-	     * buffer.append(covered[i]); }
-	     * 
-	     * buffer.append(")");
-	     */
+
+
+//	     * buffer.append(" (");
+//	     * 
+//	     * for (int i = 0; i < dataset.classLength(); i++) { if (i > 0) {
+//	     * buffer.append(","); }
+//	     * 
+//	     * buffer.append(covered[i]); }
+//	     * 
+//	     * buffer.append(")");
+//	     */
 	}
 
 	return buffer.toString();

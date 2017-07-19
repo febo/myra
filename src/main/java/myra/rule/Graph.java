@@ -23,6 +23,7 @@ import static myra.datamining.Attribute.EQUAL_TO;
 
 import java.util.Arrays;
 
+import javafx.scene.chart.PieChart.Data;
 import myra.datamining.Attribute;
 import myra.datamining.Dataset;
 import myra.datamining.Attribute.Condition;
@@ -195,7 +196,7 @@ public class Graph {
     	    Vertex current = vertices[i];
 
     	    for (int j = 0; j < termsCount; j++) {
-    		if (i != j ) {
+    		if (i != j && j > 0) {
     		    Vertex other = vertices[j];
 
     		    if (current.attribute != other.attribute) {
@@ -398,9 +399,8 @@ public class Graph {
 		    buffer.append(",");
 		}
 
-		buffer.append(values[i]);
+		buffer.append(String.format("%.4f", values[i]));
 	    }
-
 	    buffer.append(">");
 	    return buffer.toString();
 	}
@@ -479,5 +479,19 @@ public class Graph {
 	    this.attribute = -1;
 	    this.condition = null;
 	}
+	@Override
+	public String toString() {
+	    StringBuffer buffer = new StringBuffer();
+	    buffer.append("<");
+
+	    if(condition != null)
+	    	buffer.append(String.format("A = %d and  V1= %f",attribute,condition.value[0]));
+	    else
+	    	buffer.append(String.format("A = %d ",attribute));
+	    
+	    buffer.append(">");
+	    return buffer.toString();
+	}
+	
     }
 }

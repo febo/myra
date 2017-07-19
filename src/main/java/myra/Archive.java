@@ -180,6 +180,45 @@ public interface Archive<E extends Comparable<E>> {
 
 	    return true;
 	}
+	
+	
+
+	public int adds(E e) {
+		int position = -1;
+	    if (size == 0 || (size < solutions.length
+		    && e.compareTo(solutions[size - 1]) <= 0)) {
+		solutions[size] = e;
+		size++;
+	    } else if (e.compareTo(solutions[size - 1]) > 0) {
+		E previous = null;
+		
+
+		// finds the position to insert the new element (insertion sort)
+		for (int i = 0; i < solutions.length; i++) {
+		    if (solutions[i] == null || e.compareTo(solutions[i]) > 0) {
+			previous = solutions[i];
+			position = i + 1;
+			// adds the new solution
+			solutions[i] = e;
+			break;
+		    }
+		}
+		// shift the remaining solutions
+		for (int i = position; i < solutions.length
+			&& previous != null; i++) {
+		    E element = solutions[i];
+		    solutions[i] = previous;
+		    previous = element;
+		}
+
+		if (size < solutions.length) {
+		    size++;
+		}
+	    } 
+
+	    return position;
+	}
+	
 
 	@Override
 	public int capacity() {

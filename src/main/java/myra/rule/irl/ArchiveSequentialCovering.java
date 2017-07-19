@@ -31,6 +31,9 @@ import myra.datamining.Dataset.Instance;
 import myra.rule.Graph;
 import myra.rule.Rule;
 import myra.rule.RuleList;
+import myra.rule.Graph.Entry;
+import myra.rule.Graph.Vertex;
+import myra.util.Logger;
 
 /**
  * @author amh58
@@ -54,7 +57,6 @@ public class ArchiveSequentialCovering {
 
 	RuleList discovered = new RuleList();
 	int available = dataset.size();
-
 	Scheduler<Rule> scheduler = Scheduler.newInstance(1);
 
 	while (available >= uncovered) {
@@ -68,6 +70,8 @@ public class ArchiveSequentialCovering {
 
 	    Rule best = activity.getBest();
 	    best.apply(dataset, instances);
+	    
+	    
 
 	    // adds the rule to the list
 	    discovered.add(best);
