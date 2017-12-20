@@ -36,7 +36,7 @@ public class SynchronizedArchiveTest extends TestCase {
 	Archive<Integer> pool = new SynchronizedArchive<Integer>(archive);
 
 	for (int i = 0; i < 5; i++) {
-	    pool.add(new Integer(i));
+	    pool.add(i);
 	}
 
 	assertEquals(5, archive.size());

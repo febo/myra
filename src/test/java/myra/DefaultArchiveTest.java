@@ -34,7 +34,7 @@ public class DefaultArchiveTest extends TestCase {
 	Archive<Integer> archive = new Archive.DefaultArchive<>(5);
 
 	for (int i = 0; i < 5; i++) {
-	    archive.add(new Integer(i));
+	    archive.add(i);
 	}
 
 	assertEquals(5, archive.size());
@@ -44,11 +44,11 @@ public class DefaultArchiveTest extends TestCase {
 	archive.add(5);
 	assertEquals(1, (int) archive.lowest());
 	
-	assertFalse(archive.add(new Integer(0)));
+	assertFalse(archive.add(0));
 	assertEquals(5, archive.size());
 	
 	for (int i = 6; i < 10; i++) {
-	    archive.add(new Integer(i));
+	    archive.add(i);
 	}
 	
 	assertEquals(5, archive.size());

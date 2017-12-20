@@ -46,16 +46,10 @@ public final class ObjectFactory {
      */
     public static <T> T create(Class<T> c) {
 	try {
-	    return c.newInstance();
-	} catch (InstantiationException e) {
+	    return c.getDeclaredConstructor().newInstance();
+	} catch (Exception e) {
 	    throw new IllegalArgumentException(c.getName()
 		    + " could not be instantiated", e);
-	} catch (IllegalAccessException e) {
-	    throw new IllegalArgumentException(c.getName()
-		    + " could not be instantiated", e);
-	} catch (NullPointerException e) {
-	    throw new IllegalArgumentException("Class name not specified: null",
-					       e);
 	}
     }
 
