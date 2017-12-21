@@ -87,7 +87,7 @@ public class EdgeRuleFactory implements RuleFactory {
 		int nominal = 0;
 
 		// calculates the probability of visiting vertex i by
-		// multipliying the pheromone and heuristic information (only
+		// multiplying the pheromone and heuristic information (only
 		// compatible vertices are considered)
 		for (int i = 0; i < neighbours.length; i++) {
 		    if (!incompatible[i] && neighbours[i] != null) {
@@ -178,7 +178,7 @@ public class EdgeRuleFactory implements RuleFactory {
 			    }
 			}
 
-			// copy the coverend instances information to the
+			// copy the covered instances information to the
 			// original instances array
 			System.arraycopy(clone, 0, instances, 0, clone.length);
 
@@ -186,7 +186,7 @@ public class EdgeRuleFactory implements RuleFactory {
 			ruleCovered = currentCovered;
 			last = null;
 
-			// recompute the heuristic infortation if we are
+			// recompute the heuristic information if we are
 			// using the dynamic heuristic
 			if (CONFIG.get(DYNAMIC_HEURISTIC)) {
 			    heuristic = CONFIG.get(DEFAULT_HEURISTIC)

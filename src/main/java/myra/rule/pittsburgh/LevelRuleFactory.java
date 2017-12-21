@@ -182,7 +182,7 @@ public class LevelRuleFactory {
 			    }
 			}
 
-			// copy the coverend instances information to the
+			// copy the covered instances information to the
 			// original instances array
 			System.arraycopy(clone, 0, instances, 0, clone.length);
 
@@ -190,7 +190,7 @@ public class LevelRuleFactory {
 			ruleCovered = currentCovered;
 			last = null;
 
-			// recompute the heuristic infortation if we are
+			// recompute the heuristic information if we are
 			// using the dynamic heuristic
 			if (CONFIG.get(DYNAMIC_HEURISTIC)) {
 			    heuristic = CONFIG.get(DEFAULT_HEURISTIC)
