@@ -24,8 +24,9 @@ package myra;
  * 
  * @author Fernando Esteban Barril Otero
  */
-public abstract class AbstractActivity<T extends Comparable<T>> implements Activity<T> {
-    /** 
+public abstract class AbstractActivity<T extends Comparable<T>>
+	implements Activity<T> {
+    /**
      * Default (empty) implementation.
      */
     @Override
