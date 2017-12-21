@@ -37,6 +37,9 @@ public class PessimisticAccuracy implements ListMeasure {
 	if (list.size() == 0) {
 	    return new Maximise();
 	}
+	
+	// updates the coverage of each rule
+	list.apply(dataset);
 
 	// we assume that we are dealing with classification rules, which
 	// should be the case; there is nothing we can do if this is not
