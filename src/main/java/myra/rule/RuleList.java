@@ -170,8 +170,39 @@ public class RuleList implements Model, Comparable<RuleList> {
 	Instance.markAll(instances, NOT_COVERED);
 
 	for (int i = 0; i < rules.length; i++) {
-	    rules[i].apply(dataset, instances);
-	    Dataset.markCovered(instances);
+	    if (rules[i].isEnabled()) {
+		rules[i].apply(dataset, instances);
+		Dataset.markCovered(instances);
+	    }
+	}
+    }
+
+    /**
+     * Removes rules that are not enabled from the rule list.
+     */
+    public void compact() {
+	int position = 0;
+
+	for (Rule rule : rules) {
+	    if (rule.isEnabled()) {
+		position++;
+	    }
+	}
+
+	if (position != size()) {
+	    Rule[] compact = (Rule[]) Array
+		    .newInstance(Config.CONFIG.get(Rule.DEFAULT_RULE),
+				 position);
+	    position = 0;
+
+	    for (int i = 0; i < rules.length; i++) {
+		if (rules[i].isEnabled()) {
+		    compact[position] = rules[i];
+		    position++;
+		}
+	    }
+
+	    rules = compact;
 	}
     }
 
@@ -187,7 +218,7 @@ public class RuleList implements Model, Comparable<RuleList> {
      */
     public Prediction predict(Dataset dataset, int instance) {
 	for (int i = 0; i < rules.length; i++) {
-	    if (rules[i].covers(dataset, instance)) {
+	    if (rules[i].isEnabled() && rules[i].covers(dataset, instance)) {
 		return rules[i].getConsequent();
 	    }
 	}

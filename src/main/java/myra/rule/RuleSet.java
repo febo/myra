@@ -50,7 +50,9 @@ public class RuleSet extends RuleList {
 	Instance.markAll(instances, NOT_COVERED);
 
 	for (int i = 0; i < rules.length; i++) {
-	    rules[i].apply(dataset, instances);
+	    if (rules[i].isEnabled()) {
+		rules[i].apply(dataset, instances);
+	    }
 	}
     }
 
@@ -62,7 +64,8 @@ public class RuleSet extends RuleList {
 	for (int i = 0; i < rules.length; i++) {
 	    if (rules[i].isEmpty()) {
 		defaultRule = i;
-	    } else if (rules[i].covers(dataset, instance)) {
+	    } else if (rules[i].isEnabled()
+		    && rules[i].covers(dataset, instance)) {
 		fired[i] = true;
 	    }
 	}

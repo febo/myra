@@ -36,10 +36,30 @@ public class RuleListTest extends TestCase {
 	Config.CONFIG.set(Rule.DEFAULT_RULE, ClassificationRule.class);
 	RuleList list = new RuleList();
 	assertTrue(list.rules() instanceof ClassificationRule[]);
-	
+
 	Config.CONFIG.set(Rule.DEFAULT_RULE, Rule.class);
 	list = new RuleList();
 	assertFalse(list.rules() instanceof ClassificationRule[]);
 	assertTrue(list.rules() instanceof Rule[]);
+    }
+
+    public void testCompact() {
+	Config.CONFIG.set(Rule.DEFAULT_RULE, ClassificationRule.class);
+	RuleList list = new RuleList();
+
+	list.add(Rule.newInstance());
+	list.add(Rule.newInstance());
+
+	assertEquals(2, list.size());
+
+	list.rules()[0].setEnabled(false);
+	list.compact();
+
+	assertEquals(1, list.size());
+
+	list.rules()[0].setEnabled(false);
+	list.compact();
+
+	assertEquals(0, list.size());
     }
 }

@@ -65,6 +65,11 @@ public abstract class Rule implements Comparable<Rule> {
     protected int function;
 
     /**
+     * Indicates if the rule is enabled or not.
+     */
+    protected boolean enabled;
+
+    /**
      * Default constructor.
      */
     public Rule() {
@@ -81,6 +86,7 @@ public abstract class Rule implements Comparable<Rule> {
 	terms = new Term[capacity];
 	size = 0;
 	function = -1;
+	enabled = true;
     }
 
     /**
@@ -157,6 +163,25 @@ public abstract class Rule implements Comparable<Rule> {
 	} else {
 	    throw new IllegalArgumentException("Invalid term index: " + index);
 	}
+    }
+
+    /**
+     * Returns <code>true</code> if the rule is enabled.
+     * 
+     * @return <code>true</code> if the rule is enabled.
+     */
+    public boolean isEnabled() {
+	return enabled;
+    }
+
+    /**
+     * Sets the enabled flag.
+     * 
+     * @param enabled
+     *            the flag to set.
+     */
+    public void setEnabled(boolean enabled) {
+	this.enabled = enabled;
     }
 
     /**

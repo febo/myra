@@ -20,6 +20,7 @@
 package myra.rule;
 
 import static myra.Config.CONFIG;
+import static myra.rule.Assignator.ASSIGNATOR;
 import static myra.rule.RuleFunction.DEFAULT_FUNCTION;
 
 import myra.Config.ConfigKey;
@@ -75,4 +76,18 @@ public abstract class Pruner {
 			      Rule rule,
 			      Instance[] instances,
 			      RuleFunction function);
+
+    /**
+     * A "no-pruner" procedure - i.e., it does not modify the rule.
+     */
+    public static class None extends Pruner {
+	@Override
+	public int prune(Dataset dataset,
+			 Rule rule,
+			 Instance[] instances,
+			 RuleFunction function) {
+	    Assignator assignator = CONFIG.get(ASSIGNATOR);
+	    return assignator.assign(dataset, rule, instances);
+	}
+    }
 }
