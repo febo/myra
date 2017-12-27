@@ -68,6 +68,7 @@ import myra.rule.Pruner;
 import myra.rule.Rule;
 import myra.rule.RuleFunction;
 import myra.rule.RuleList;
+import myra.rule.TopDownListPruner;
 import myra.rule.pittsburgh.FindRuleListActivity;
 
 /**
@@ -90,7 +91,7 @@ import myra.rule.pittsburgh.FindRuleListActivity;
  * suggested in:
  * 
  * <pre>
- * &#64;INPROCEEDINGS{Ledland12datamining,
+ * &#64;INPROCEEDINGS{Medland12datamining,
  *    author    = {M. Medland and F.E.B. Otero and A.A. Freitas},
  *    title     = {Improving the $c$Ant-Miner$_{\mathrm{PB}}$ Classification Algorithm},
  *    booktitle = {Swarm Intelligence, Lecture Notes in Computer Science 7461},
@@ -114,7 +115,6 @@ public class cAntMinerPB extends RuleClassifier {
 	CONFIG.set(P_BEST, 0.05);
 	CONFIG.set(IntervalBuilder.MAXIMUM_LIMIT, 25);
 	CONFIG.set(Rule.DEFAULT_RULE, ClassificationRule.class);
-	CONFIG.set(DEFAULT_LIST_PRUNER, new ListPruner.None());
 
 	// default configuration values
 
@@ -126,6 +126,7 @@ public class cAntMinerPB extends RuleClassifier {
 	CONFIG.set(UNCOVERED, 0.01);
 	CONFIG.set(STAGNATION, 40);
 	CONFIG.set(DEFAULT_PRUNER, new BacktrackPruner());
+	CONFIG.set(DEFAULT_LIST_PRUNER, new ListPruner.None());
 	CONFIG.set(DEFAULT_FUNCTION, new SensitivitySpecificity());
 	CONFIG.set(DEFAULT_HEURISTIC, new EntropyHeuristic());
 	CONFIG.set(DYNAMIC_HEURISTIC, Boolean.FALSE);
@@ -212,7 +213,19 @@ public class cAntMinerPB extends RuleClassifier {
 						   "method");
 	pruner.add("greedy", new GreedyPruner());
 	pruner.add("backtrack", CONFIG.get(DEFAULT_PRUNER));
+	pruner.add("none", new Pruner.None());
 	options.add(pruner);
+
+	// list rule pruner
+	Option<ListPruner> listPruner =
+		new Option<ListPruner>(DEFAULT_LIST_PRUNER,
+				       "z",
+				       "specify the rule list pruner %s",
+				       true,
+				       "method");
+	listPruner.add("none", CONFIG.get(DEFAULT_LIST_PRUNER));
+	listPruner.add("top-down", new TopDownListPruner());
+	options.add(listPruner);
 
 	// rule quality function
 	Option<RuleFunction> function =
@@ -226,29 +239,32 @@ public class cAntMinerPB extends RuleClassifier {
 	options.add(function);
 
 	// rule quality function
-	Option<ListMeasure> measure = new Option<ListMeasure>(DEFAULT_MEASURE,
-							      "l",
-							      "specify the rule list quality %s",
-							      true,
-							      "function");
+	Option<ListMeasure> measure =
+		new Option<ListMeasure>(DEFAULT_MEASURE,
+					"l",
+					"specify the rule list quality %s",
+					true,
+					"function");
 	measure.add("accuracy", new ListAccuracy());
 	measure.add("pessimistic", CONFIG.get(DEFAULT_MEASURE));
 	options.add(measure);
 
 	// heuristic information
-	Option<Heuristic> heuristic = new Option<Heuristic>(DEFAULT_HEURISTIC,
-							    "h",
-							    "specify the heuristic %s",
-							    true,
-							    "method");
+	Option<Heuristic> heuristic =
+		new Option<Heuristic>(DEFAULT_HEURISTIC,
+				      "h",
+				      "specify the heuristic %s",
+				      true,
+				      "method");
 	heuristic.add("gain", CONFIG.get(DEFAULT_HEURISTIC));
 	heuristic.add("none", new Heuristic.None());
 	options.add(heuristic);
 
 	// dynamic heuristic calculation
-	BooleanOption dynamic = new BooleanOption(DYNAMIC_HEURISTIC,
-						  "g",
-						  "enables the dynamic heuristic computation");
+	BooleanOption dynamic =
+		new BooleanOption(DYNAMIC_HEURISTIC,
+				  "g",
+				  "enables the dynamic heuristic computation");
 	options.add(dynamic);
 
 	// dynamic discretisation procedure
