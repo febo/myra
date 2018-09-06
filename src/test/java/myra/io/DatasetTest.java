@@ -23,6 +23,7 @@ import java.io.InputStreamReader;
 
 import junit.framework.TestCase;
 import myra.datamining.ARFFReader;
+import myra.datamining.Attribute;
 import myra.datamining.Dataset;
 
 /**
@@ -76,6 +77,9 @@ public class DatasetTest extends TestCase {
 	assertEquals(5, cDataset.distribution(1));
     }
     
+    /**
+     * Tests the number of classes.
+     */
     public void testClassLength() {
 	assertEquals(2,  cDataset.classLength());
 	
@@ -85,5 +89,18 @@ public class DatasetTest extends TestCase {
 	} catch (UnsupportedOperationException e) {
 	    // we are expecting an exception
 	}
+    }
+    
+    /**
+     * Tests the attributes of the dataset.
+     */
+    public void testAttribute() {
+	Attribute a = cDataset.getAttribute(1);
+	assertEquals(64.0, a.lower());
+	assertEquals(85.0, a.upper());
+	
+	a = rDataset.getAttribute(1);
+	assertEquals(65.0, a.lower());
+	assertEquals(96.0, a.upper());
     }
 }
