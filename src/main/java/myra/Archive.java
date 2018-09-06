@@ -102,6 +102,14 @@ public interface Archive<E extends Comparable<E>> {
     public E[] topN(int n);
 
     /**
+     * Returns <code>true</code> if the archive reached its capacity.
+     * 
+     * @return <code>true</code> if the archive reached its capacity;
+     *         <code>false</code> otherwise.
+     */
+    public boolean isFull();
+
+    /**
      * Default archive implementation. Solutions are stored in decreasing order.
      * 
      * @author Fernando Esteban Barril Otero
@@ -220,6 +228,20 @@ public interface Archive<E extends Comparable<E>> {
 	    System.arraycopy(solutions, 0, top, 0, n);
 	    return top;
 	}
+
+	@Override
+	public boolean isFull() {
+	    return size() == capacity();
+	}
+
+	/**
+	 * Returns the sorted solutions in the archive.
+	 * 
+	 * @return the sorted solutions in the archive.
+	 */
+	public Comparable<E>[] solutions() {
+	    return solutions;
+	}
     }
 
     /**
@@ -276,6 +298,11 @@ public interface Archive<E extends Comparable<E>> {
 	@Override
 	public synchronized E[] topN(int n) {
 	    return this.archive.topN(n);
+	}
+
+	@Override
+	public synchronized boolean isFull() {
+	    return size() == capacity();
 	}
     }
 }
