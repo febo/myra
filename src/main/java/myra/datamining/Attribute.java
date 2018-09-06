@@ -30,7 +30,8 @@ import java.util.Arrays;
  */
 public final class Attribute implements Cloneable {
     /**
-     * Constant representing the condition type <code>(attribute &lt;= v)</code>.
+     * Constant representing the condition type
+     * <code>(attribute &lt;= v)</code>.
      */
     public static final short LESS_THAN_OR_EQUAL_TO = 1;
 
@@ -56,7 +57,8 @@ public final class Attribute implements Cloneable {
     public static final short LESS_THAN = 5;
 
     /**
-     * Constant representing the condition type <code>(attribute &gt;= v)</code>.
+     * Constant representing the condition type
+     * <code>(attribute &gt;= v)</code>.
      */
     public static final short GREATER_THAN_OR_EQUAL_TO = 6;
 
@@ -87,6 +89,16 @@ public final class Attribute implements Cloneable {
     private int index;
 
     /**
+     * The lower bound value of continuous attributes.
+     */
+    private double lower;
+
+    /**
+     * The upper bound value of continuous attributes.
+     */
+    private double upper;
+
+    /**
      * Creates a new attribute.
      * 
      * @param type
@@ -99,6 +111,8 @@ public final class Attribute implements Cloneable {
 	this.name = name;
 	values = new String[0];
 	index = -1;
+	lower = Double.MAX_VALUE;
+	upper = Double.MIN_VALUE;
     }
 
     /**
@@ -223,6 +237,48 @@ public final class Attribute implements Cloneable {
     }
 
     /**
+     * Updates the lower bound of the attribute.
+     * 
+     * @param value
+     *            the candidate lower bound.
+     */
+    public void lower(double value) {
+	if (value < lower) {
+	    lower = value;
+	}
+    }
+
+    /**
+     * Returns the lower bound value of the attribute.
+     * 
+     * @return the lower bound value of the attribute.
+     */
+    public double lower() {
+	return lower;
+    }
+
+    /**
+     * Updates the upper bound of the attribute.
+     * 
+     * @param value
+     *            the candidate upper bound.
+     */
+    public void upper(double value) {
+	if (value > upper) {
+	    upper = value;
+	}
+    }
+
+    /**
+     * Returns the upper bound value of the attribute.
+     * 
+     * @return the upper bound value of the attribute.
+     */
+    public double upper() {
+	return upper;
+    }
+
+    /**
      * Enum of valid attribute types.
      * 
      * @author Fernando Esteban Barril Otero
@@ -236,7 +292,7 @@ public final class Attribute implements Cloneable {
      * 
      * @author Fernando Esteban Barril Otero
      */
-    public static class Condition {
+    public static class Condition implements Comparable<Condition> {
 	/**
 	 * The maximum number of decimal places in the output of double values.
 	 */
@@ -299,6 +355,16 @@ public final class Attribute implements Cloneable {
 	public int index;
 
 	/**
+	 * The quality of the condition.
+	 */
+	public double quality = Double.MIN_VALUE;
+
+	/**
+	 * The weight of the condition.
+	 */
+	public double weight = 0;
+
+	/**
 	 * Returns <code>true</code> if the specified value satisfies this
 	 * attribute condition.
 	 * 
@@ -353,6 +419,11 @@ public final class Attribute implements Cloneable {
 	}
 
 	@Override
+	public int compareTo(Condition o) {
+	    return Double.compare(quality, o.quality);
+	}
+
+	@Override
 	public String toString() {
 	    StringBuffer buffer = new StringBuffer();
 	    buffer.append("(");
@@ -377,8 +448,8 @@ public final class Attribute implements Cloneable {
 		break;
 
 	    case LESS_THAN_OR_EQUAL_TO:
-		buffer.append(String.format("%s <= %s", name,
-					    format(value[0])));
+		buffer.append(String
+			.format("%s <= %s", name, format(value[0])));
 		break;
 
 	    case GREATER_THAN:
@@ -386,17 +457,20 @@ public final class Attribute implements Cloneable {
 		break;
 
 	    case GREATER_THAN_OR_EQUAL_TO:
-		buffer.append(String.format("%s >= %s", name,
-					    format(value[0])));
+		buffer.append(String
+			.format("%s >= %s", name, format(value[0])));
 		break;
 
 	    case IN_RANGE:
-		buffer.append(String.format("%s < %s <= %s", format(value[0]),
-					    name, format(value[1])));
+		buffer.append(String.format("%s < %s <= %s",
+					    format(value[0]),
+					    name,
+					    format(value[1])));
 		break;
 
 	    case EQUAL_TO:
-		buffer.append(String.format("%s = %s", name,
+		buffer.append(String.format("%s = %s",
+					    name,
 					    dataset.attributes()[attribute]
 						    .value((int) value[0])));
 		break;
@@ -411,8 +485,9 @@ public final class Attribute implements Cloneable {
 		    }
 
 		    buffer.append(String
-			    .format("%s", dataset.attributes()[attribute]
-				    .value((int) value[j])));
+			    .format("%s",
+				    dataset.attributes()[attribute]
+					    .value((int) value[j])));
 		}
 
 		buffer.append("}");

@@ -298,6 +298,13 @@ public final class Dataset {
 	else if (attributes[classIndex()].getType() == CONTINUOUS) {
 	    mean += values[classIndex()];
 	}
+
+	for (int i = 0; i < values.length; i++) {
+	    if (attributes[i].getType() == CONTINUOUS) {
+		attributes[i].lower(values[i]);
+		attributes[i].upper(values[i]);
+	    }
+	}
     }
 
     /**
