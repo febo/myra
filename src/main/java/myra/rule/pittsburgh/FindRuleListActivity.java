@@ -30,9 +30,9 @@ import static myra.rule.Pruner.DEFAULT_PRUNER;
 
 import myra.Archive;
 import myra.Config.ConfigKey;
+import myra.IterativeActivity;
 import myra.datamining.Dataset;
 import myra.datamining.Dataset.Instance;
-import myra.IterativeActivity;
 import myra.rule.Graph;
 import myra.rule.Graph.Entry;
 import myra.rule.Rule;
@@ -66,6 +66,11 @@ public class FindRuleListActivity extends IterativeActivity<RuleList> {
     private LevelPheromonePolicy policy;
 
     /**
+     * The ACO rule factory.
+     */
+    private LevelRuleFactory factory;
+
+    /**
      * The convergence termination criteria counter.
      */
     private boolean reset;
@@ -85,8 +90,45 @@ public class FindRuleListActivity extends IterativeActivity<RuleList> {
      *            the current dataset.
      */
     public FindRuleListActivity(Graph graph, Dataset dataset) {
+	this(graph, dataset, new LevelRuleFactory());
+    }
+
+    /**
+     * Creates a new <code>FindRuleListActivity</code> object.
+     * 
+     * @param graph
+     *            the construction graph.
+     * @param dataset
+     *            the current dataset.
+     * @param factory
+     *            the rule factory.
+     */
+    public FindRuleListActivity(Graph graph,
+				Dataset dataset,
+				LevelRuleFactory factory) {
+	this(graph, dataset, factory, new LevelPheromonePolicy());
+    }
+
+    /**
+     * Creates a new <code>FindRuleListActivity</code> object.
+     * 
+     * @param graph
+     *            the construction graph.
+     * @param dataset
+     *            the current dataset.
+     * @param factory
+     *            the rule factory.
+     * @param policy
+     *            the pheromone policy.
+     */
+    public FindRuleListActivity(Graph graph,
+				Dataset dataset,
+				LevelRuleFactory factory,
+				LevelPheromonePolicy policy) {
 	this.graph = graph;
 	this.dataset = dataset;
+	this.factory = factory;
+	this.policy = policy;
     }
 
     @Override
@@ -118,7 +160,7 @@ public class FindRuleListActivity extends IterativeActivity<RuleList> {
 
 	    // creates a rule for the current level
 
-	    Rule rule = LevelRuleFactory
+	    Rule rule = factory
 		    .create(list.size(), graph, heuristic, dataset, instances);
 
 	    available =
@@ -158,8 +200,6 @@ public class FindRuleListActivity extends IterativeActivity<RuleList> {
     @Override
     public void initialise() {
 	super.initialise();
-
-	policy = new LevelPheromonePolicy();
 	policy.initialise(graph);
 
 	reset = true;
