@@ -177,6 +177,15 @@ public class ClassificationRule extends Rule {
     public int[] covered() {
 	return covered;
     }
+    
+    /**
+     * Sets the class distribution of the covered examples.
+     * 
+     * @param covered the class distribution of the covered examples.
+     */
+    public void covered(int[] covered) {
+	this.covered = covered;
+    }
 
     /**
      * Returns the class distribution of the uncovered examples.
@@ -185,5 +194,14 @@ public class ClassificationRule extends Rule {
      */
     public int[] uncovered() {
 	return uncovered;
+    }
+    
+    /**
+     * Sets the class distribution of the uncovered examples.
+     * 
+     * @param uncovered the class distribution of the uncovered examples.
+     */
+    public void uncovered(int[] uncovered) {
+	this.uncovered = uncovered;
     }
 }
