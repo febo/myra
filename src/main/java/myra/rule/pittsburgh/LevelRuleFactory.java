@@ -25,10 +25,10 @@ import static myra.rule.Graph.START_INDEX;
 import static myra.rule.Heuristic.DEFAULT_HEURISTIC;
 import static myra.rule.Heuristic.DYNAMIC_HEURISTIC;
 
-import myra.datamining.Dataset;
-import myra.datamining.IntervalBuilder;
 import myra.datamining.Attribute.Condition;
+import myra.datamining.Dataset;
 import myra.datamining.Dataset.Instance;
+import myra.datamining.IntervalBuilder;
 import myra.rule.Graph;
 import myra.rule.Graph.Entry;
 import myra.rule.Graph.Vertex;
@@ -59,11 +59,11 @@ public class LevelRuleFactory {
      * 
      * @return a classification rule.
      */
-    public static Rule create(int level,
-			      Graph graph,
-			      Entry[] heuristic,
-			      Dataset dataset,
-			      Instance[] instances) {
+    public Rule create(int level,
+		       Graph graph,
+		       Entry[] heuristic,
+		       Dataset dataset,
+		       Instance[] instances) {
 	// the rule must cover at least MINIMUM_CASES
 	final int minimum = CONFIG.get(IntervalBuilder.MINIMUM_CASES);
 	Term last = null;

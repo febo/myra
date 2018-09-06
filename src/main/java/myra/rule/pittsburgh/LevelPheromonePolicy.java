@@ -46,7 +46,7 @@ import myra.rule.RuleList;
  * 
  * @author Fernando Esteban Barril Otero
  */
-public final class LevelPheromonePolicy {
+public class LevelPheromonePolicy {
     /**
      * The config key for the evaporation factor.
      */
