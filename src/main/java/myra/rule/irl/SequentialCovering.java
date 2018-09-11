@@ -33,7 +33,7 @@ import myra.rule.Rule;
 import myra.rule.RuleList;
 
 /**
- * This class represents a trditional sequential covering strategy to create a
+ * This class represents a traditional sequential covering strategy to create a
  * list of rules.
  * 
  * @author Fernando Esteban Barril Otero
