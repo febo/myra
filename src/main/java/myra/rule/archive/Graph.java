@@ -131,13 +131,13 @@ public class Graph extends myra.rule.Graph {
 	 * The attribute-value solution archive array to support multiple
 	 * pheromone levels.
 	 */
-	public Variable[] archive;
+	Variable[] archive;
 
 	/**
 	 * The variable to initialise each pheromone level. This is not updated
 	 * throughout the run of the algorithm.
 	 */
-	public Variable initial;
+	Variable initial;
 
 	/**
 	 * Default constructor.
@@ -151,7 +151,8 @@ public class Graph extends myra.rule.Graph {
 	/**
 	 * Samples a new condition using the archive.
 	 * 
-	 * @param level the current archive level.
+	 * @param level
+	 *            the current archive level.
 	 * 
 	 * @return a new condition.
 	 */
@@ -167,18 +168,26 @@ public class Graph extends myra.rule.Graph {
 	    condition.attribute = attribute;
 	    return condition;
 	}
-	
+
 	/**
 	 * Updates the archive.
 	 * 
-	 * @param level the current archive level.
-	 * @param condition the condition.
-	 * @param quality the quality of the condition.
+	 * @param level
+	 *            the current archive level.
+	 * @param condition
+	 *            the condition.
+	 * @param quality
+	 *            the quality of the condition.
 	 */
 	public void update(int level, Condition condition, double quality) {
 	    if (archive.length <= level) {
+		int last = archive.length;
 		archive = Arrays.copyOf(archive, level + 1);
-		archive[level] = (Variable) initial.clone();
+		// make sure to set values for all previous levels
+		for (int i = last; i < level; i++) {
+		    archive[i] = initial.clone();
+		}
+		archive[level] = initial.clone();
 	    }
 
 	    archive[level].add(condition, quality);
