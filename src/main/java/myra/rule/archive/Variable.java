@@ -102,8 +102,12 @@ public abstract class Variable implements Cloneable {
 
 	@Override
 	public void add(Condition condition, double quality) {
+	    // operator archive
 	    operator.add(Integer.valueOf(condition.relation), quality);
+	    operator.update();
+	    // value archive
 	    value.add(condition.value[0], quality);
+	    value.update();
 	}
 
 	@Override
@@ -146,6 +150,7 @@ public abstract class Variable implements Cloneable {
 	@Override
 	public void add(Condition condition, double quality) {
 	    value.add(Integer.valueOf((int) condition.value[0]), quality);
+	    value.update();
 	}
 
 	@Override
