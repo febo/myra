@@ -21,6 +21,7 @@ package myra;
 
 import junit.framework.TestCase;
 import myra.Archive.SynchronizedArchive;
+import myra.DefaultArchiveTest.WInteger;
 
 /**
  * <code>SynchronizedArchive</code> class test.
@@ -32,15 +33,15 @@ public class SynchronizedArchiveTest extends TestCase {
      * Tests the addition of elements to the archive.
      */
     public void testAdd() {
-	Archive<Integer> archive = new Archive.DefaultArchive<>(5);
-	Archive<Integer> pool = new SynchronizedArchive<Integer>(archive);
+	Archive<WInteger> archive = new Archive.DefaultArchive<>(5);
+	Archive<WInteger> pool = new SynchronizedArchive<>(archive);
 
 	for (int i = 0; i < 5; i++) {
-	    pool.add(i);
+	    pool.add(new WInteger(i));
 	}
 
 	assertEquals(5, archive.size());
-	assertEquals(0, (int) archive.lowest());
-	assertEquals(4, (int) archive.highest());
+	assertEquals(0, archive.lowest().intValue());
+	assertEquals(4, archive.highest().intValue());
     }
 }

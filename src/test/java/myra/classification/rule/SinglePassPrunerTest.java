@@ -29,6 +29,7 @@ import java.io.InputStreamReader;
 import java.util.Random;
 
 import junit.framework.TestCase;
+import myra.Archive;
 import myra.classification.rule.function.Accuracy;
 import myra.datamining.ARFFReader;
 import myra.datamining.Dataset;
@@ -56,7 +57,7 @@ public class SinglePassPrunerTest extends TestCase {
 
     @Override
     protected void setUp() throws Exception {
-	CONFIG.set(VariableArchive.ARCHIVE_SIZE, 5);
+	CONFIG.set(Archive.ARCHIVE_SIZE, 5);
 	CONFIG.set(VariableArchive.PRECISION, 2.0);
 	CONFIG.set(RANDOM_GENERATOR, new Random(System.currentTimeMillis()));
 	CONFIG.set(Rule.DEFAULT_RULE, ClassificationRule.class);
@@ -91,11 +92,18 @@ public class SinglePassPrunerTest extends TestCase {
 
 	SinglePassPruner pruner = new SinglePassPruner();
 	pruner.prune(dataset, rule, instances, new Accuracy());
+	ClassificationRule cRule = (ClassificationRule) rule;
+	
+	assertNotNull(cRule.getConsequent());
 
 	if (rule.isEmpty()) {
-	    assertNull(rule.getConsequent());
-	} else {
-	    assertNotNull(rule.getConsequent());
+	    int total = 0;
+	    
+	    for (int i : cRule.covered()) {
+		total += i;
+	    }
+	    
+	    assertEquals(dataset.size(), total);
 	}
     }
 }

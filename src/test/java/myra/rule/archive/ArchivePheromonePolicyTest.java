@@ -35,6 +35,7 @@ import java.io.InputStreamReader;
 import java.util.Random;
 
 import junit.framework.TestCase;
+import myra.Archive;
 import myra.classification.rule.ClassificationRule;
 import myra.classification.rule.ListAccuracy;
 import myra.classification.rule.MajorityAssignator;
@@ -66,7 +67,8 @@ public class ArchivePheromonePolicyTest extends TestCase {
 
     @Override
     protected void setUp() throws Exception {
-	CONFIG.set(VariableArchive.ARCHIVE_SIZE, 5);
+	CONFIG.set(Archive.ARCHIVE_SIZE, 5);
+	CONFIG.set(Archive.Q, Archive.DEFAULT_Q);
 	CONFIG.set(VariableArchive.PRECISION, 2.0);
 	CONFIG.set(UNCOVERED, 0.01);
 	CONFIG.set(RANDOM_GENERATOR, new Random(System.currentTimeMillis()));
@@ -97,7 +99,7 @@ public class ArchivePheromonePolicyTest extends TestCase {
 
 	activity.initialise();
 	RuleList list = activity.create();
-	
+
 	ArchivePheromonePolicy policy = new ArchivePheromonePolicy();
 	policy.update(graph, list);
     }
