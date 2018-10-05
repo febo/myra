@@ -309,7 +309,10 @@ public class Graph {
 	    if (level < values.length) {
 		values[level] = value;
 	    } else {
+		int last = values.length;
 		values = Arrays.copyOf(values, level + 1);
+		// make sure to set values for all previous levels
+		Arrays.fill(values, last, level, initial);
 		values[level] = value;
 	    }
 	}
