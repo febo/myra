@@ -31,7 +31,7 @@ package myra;
  * @param <T>
  *            the type of solution created by the activity.
  */
-public interface Activity<T extends Comparable<T>> {
+public interface Activity<T extends Weighable<T>> {
     /**
      * Creates a single solution to the problem. This implementation must be
      * thread-safe in order to be executed by the {@link ParallelScheduler}.

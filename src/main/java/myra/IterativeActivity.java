@@ -28,7 +28,7 @@ import myra.Config.ConfigKey;
  * 
  * @author Fernando Esteban Barril Otero
  */
-public abstract class IterativeActivity<T extends Comparable<T>>
+public abstract class IterativeActivity<T extends Weighable<T>>
 	extends AbstractActivity<T> {
     /**
      * The config key for the maximum number of iterations.

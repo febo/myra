@@ -56,7 +56,7 @@ import myra.Config.ConfigKey;
  * 
  * @see Activity
  */
-public class Scheduler<T extends Comparable<T>> {
+public class Scheduler<T extends Weighable<T>> {
     /**
      * The config key for the size of the colony.
      */
@@ -221,7 +221,7 @@ public class Scheduler<T extends Comparable<T>> {
      *         {@link #PARALLEL} configuration is set; otherwise a (sequential)
      *         <code>Scheduler</code> instance.
      */
-    public static <V extends Comparable<V>> Scheduler<V> newInstance() {
+    public static <V extends Weighable<V>> Scheduler<V> newInstance() {
 	if (CONFIG.isPresent(PARALLEL)) {
 	    return new ParallelScheduler<V>();
 	}
@@ -242,7 +242,7 @@ public class Scheduler<T extends Comparable<T>> {
      *         {@link #PARALLEL} configuration is set; otherwise a (sequential)
      *         <code>Scheduler</code> instance.
      */
-    public static <V extends Comparable<V>> Scheduler<V> newInstance(int capacity) {
+    public static <V extends Weighable<V>> Scheduler<V> newInstance(int capacity) {
 	Scheduler<V> scheduler = newInstance();
 	scheduler.setCapacity(capacity);
 	return scheduler;

@@ -19,11 +19,14 @@
 
 package myra.datamining;
 
+import static myra.Archive.ARCHIVE_SIZE;
+import static myra.Archive.Q;
 import static myra.Config.CONFIG;
 import static myra.datamining.Algorithm.RANDOM_GENERATOR;
 
 import myra.Archive.DefaultArchive;
 import myra.Config.ConfigKey;
+import myra.Weighable;
 
 /**
  * This class represents a local archive&mdash;i.e., a variable of a solution,
@@ -34,21 +37,6 @@ import myra.Config.ConfigKey;
  */
 public abstract class VariableArchive<E extends Number & Comparable<E>>
 	implements Cloneable {
-    /**
-     * The config key for the archive size.
-     */
-    public static final ConfigKey<Integer> ARCHIVE_SIZE = new ConfigKey<>();
-
-    /**
-     * The config key for the weight calculation parameter <i>q</i>.
-     */
-    public static final ConfigKey<Double> Q = new ConfigKey<>();
-
-    /**
-     * Default value for the weight calculation parameter <i>q</i>.
-     */
-    public static final double DEFAULT_Q = 0.05099;
-
     /**
      * The config key for the convergence speed parameter.
      */
@@ -93,26 +81,6 @@ public abstract class VariableArchive<E extends Number & Comparable<E>>
      * Updates the archive weights.
      */
     public abstract void update();
-
-    /**
-     * Updates the archive weights.
-     * 
-     * @param archive
-     *            the solution archive.
-     */
-    private void update(DefaultArchive<? extends Entry<E>> archive) {
-	double q = CONFIG.get(Q);
-	double k = CONFIG.get(ARCHIVE_SIZE);
-	Object[] solutions = archive.solutions();
-
-	for (int i = 0; i < solutions.length; i++) {
-	    Entry<?> c = (Entry<?>) solutions[i];
-
-	    double exp = -Math.pow((i + 1) - 1, 2) / (2 * q * q * k * k);
-	    c.weight = (1 / (q * k * Math.sqrt(2 * Math.PI)))
-		    * Math.pow(Math.E, exp);
-	}
-    }
 
     /**
      * This class represents the archive for continuous attributes.
@@ -200,7 +168,7 @@ public abstract class VariableArchive<E extends Number & Comparable<E>>
 
 	@Override
 	public void update() {
-	    super.update(archive);
+	    archive.update();
 	}
 
 	/**
@@ -281,16 +249,16 @@ public abstract class VariableArchive<E extends Number & Comparable<E>>
 
 		for (int i = 0; i < length; i++) {
 		    for (int j = 0; j < solutions.length; j++) {
-			Entry<Integer> s = (Entry<Integer>) solutions[i];
+			Entry<Integer> s = (Entry<Integer>) solutions[j];
 
-			if (j == s.value) {
-			    if (weight[j] == 0) {
+			if (i == s.value) {
+			    if (weight[i] == 0) {
 				// highest quality solution that uses value i
-				weight[j] = s.weight;
+				weight[i] = s.weight;
 			    }
 
 			    // number of solutions that use value i
-			    probabilities[j]++;
+			    probabilities[i]++;
 			}
 		    }
 
@@ -340,7 +308,7 @@ public abstract class VariableArchive<E extends Number & Comparable<E>>
 
 	@Override
 	public void update() {
-	    super.update(archive);
+	    archive.update();
 	}
 
 	@Override
@@ -352,7 +320,7 @@ public abstract class VariableArchive<E extends Number & Comparable<E>>
     /**
      * This class represents an entry on the archive.
      */
-    private static class Entry<T> implements Comparable<Entry<T>> {
+    private static class Entry<T> implements Weighable<Entry<T>> {
 	/**
 	 * The value of the attribute.
 	 */
@@ -384,6 +352,16 @@ public abstract class VariableArchive<E extends Number & Comparable<E>>
 	@Override
 	public int compareTo(Entry<T> o) {
 	    return Double.compare(quality, o.quality);
+	}
+	
+	@Override
+	public double getWeight() {
+	    return weight;
+	}
+	
+	@Override
+	public void setWeight(double weight) {
+	    this.weight = weight;
 	}
     }
 }
