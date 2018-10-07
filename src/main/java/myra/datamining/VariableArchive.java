@@ -105,7 +105,7 @@ public abstract class VariableArchive<E extends Number & Comparable<E>>
 	double k = CONFIG.get(ARCHIVE_SIZE);
 	Object[] solutions = archive.solutions();
 
-	for (int i = 0; i < solutions.length; i++) {
+	for (int i = 0; i < archive.size() ; i++) {
 	    Entry<?> c = (Entry<?>) solutions[i];
 
 	    double exp = -Math.pow((i + 1) - 1, 2) / (2 * q * q * k * k);
@@ -281,16 +281,16 @@ public abstract class VariableArchive<E extends Number & Comparable<E>>
 
 		for (int i = 0; i < length; i++) {
 		    for (int j = 0; j < solutions.length; j++) {
-			Entry<Integer> s = (Entry<Integer>) solutions[i];
+			Entry<Integer> s = (Entry<Integer>) solutions[j];
 
-			if (j == s.value) {
-			    if (weight[j] == 0) {
+			if (i == s.value) {
+			    if (weight[i] == 0) {
 				// highest quality solution that uses value i
-				weight[j] = s.weight;
+				weight[i] = s.weight;
 			    }
 
 			    // number of solutions that use value i
-			    probabilities[j]++;
+			    probabilities[i]++;
 			}
 		    }
 

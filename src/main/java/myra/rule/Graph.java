@@ -34,7 +34,7 @@ import myra.datamining.Attribute.Condition;
  * 
  * @author Fernando Esteban Barril Otero
  */
-public class Graph {
+public class Graph extends GraphFactory {
     /**
      * The index of the (initial) start vertex.
      */

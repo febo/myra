@@ -178,7 +178,10 @@ public class Graph extends myra.rule.Graph {
 	public void update(int level, Condition condition, double quality) {
 	    if (archive.length <= level) {
 		archive = Arrays.copyOf(archive, level + 1);
-		archive[level] = (Variable) initial.clone();
+		for(int i = level; i >= 0; i--){
+		    if(archive[i] == null)
+			archive[i] = (Variable) initial.clone();
+		}
 	    }
 
 	    archive[level].add(condition, quality);

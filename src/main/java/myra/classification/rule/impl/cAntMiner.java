@@ -21,6 +21,7 @@ package myra.classification.rule.impl;
 
 import static myra.Config.CONFIG;
 import static myra.datamining.IntervalBuilder.DEFAULT_BUILDER;
+import static myra.rule.Heuristic.DEFAULT_HEURISTIC;
 import static myra.rule.Pruner.DEFAULT_PRUNER;
 import static myra.rule.irl.PheromonePolicy.DEFAULT_POLICY;
 import static myra.rule.irl.RuleFactory.DEFAULT_FACTORY;
@@ -28,17 +29,20 @@ import static myra.rule.irl.RuleFactory.DEFAULT_FACTORY;
 import java.util.ArrayList;
 import java.util.Collection;
 
+import myra.rule.Graph;
+
 import myra.Option;
 import myra.classification.attribute.BoundarySplit;
 import myra.classification.attribute.C45Split;
 import myra.classification.attribute.MDLSplit;
+import myra.classification.rule.EntropyHeuristic;
 import myra.datamining.IntervalBuilder;
 import myra.rule.BacktrackPruner;
 import myra.rule.GreedyPruner;
 import myra.rule.Pruner;
 import myra.rule.irl.EdgePheromonePolicy;
 import myra.rule.irl.EdgeRuleFactory;
-
+import static myra.rule.GraphFactory.DEFAULT_GRAPH;
 /**
  * Default executable class file for the <code><i>c</i>Ant-Miner</code>
  * algorithm. This implementation corresponds to the
@@ -80,9 +84,9 @@ public class cAntMiner extends AntMiner {
 
 	CONFIG.set(DEFAULT_FACTORY, new EdgeRuleFactory());
 	CONFIG.set(DEFAULT_POLICY, new EdgePheromonePolicy());
-
+	CONFIG.set(DEFAULT_GRAPH, Graph.class);
 	// default configuration values
-
+	
 	CONFIG.set(DEFAULT_BUILDER, new MDLSplit(new BoundarySplit(), false));
 	CONFIG.set(DEFAULT_PRUNER, new BacktrackPruner());
     }

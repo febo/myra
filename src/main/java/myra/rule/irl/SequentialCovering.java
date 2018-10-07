@@ -23,12 +23,14 @@ import static myra.Config.CONFIG;
 import static myra.datamining.Dataset.NOT_COVERED;
 import static myra.rule.Assignator.ASSIGNATOR;
 
+
 import myra.Config.ConfigKey;
 import myra.datamining.Dataset;
 import myra.datamining.Model;
 import myra.datamining.Dataset.Instance;
 import myra.Scheduler;
 import myra.rule.Graph;
+import myra.rule.GraphFactory;
 import myra.rule.Rule;
 import myra.rule.RuleList;
 
@@ -49,7 +51,7 @@ public class SequentialCovering {
 	Instance[] instances = Instance.newArray(dataset.size());
 	Instance.markAll(instances, NOT_COVERED);
 
-	Graph graph = new Graph(dataset);
+	Graph graph = (Graph)GraphFactory.newInstance(dataset);
 
 	RuleList discovered = new RuleList();
 	int available = dataset.size();

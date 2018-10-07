@@ -150,8 +150,11 @@ public class ArchiveRuleFactory extends LevelRuleFactory {
 	    // make the vertex unavailable
 	    incompatible[selected] = true;
 	}
+	
 
 	rule.compact();
+	Instance[] clone = Instance.copyOf(instances);
+	rule.apply(dataset, clone);
 
 	return rule;
     }
