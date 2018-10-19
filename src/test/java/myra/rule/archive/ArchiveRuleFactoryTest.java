@@ -27,6 +27,7 @@ import java.io.InputStreamReader;
 import java.util.Random;
 
 import junit.framework.TestCase;
+import myra.Archive;
 import myra.classification.rule.ClassificationRule;
 import myra.datamining.ARFFReader;
 import myra.datamining.Dataset;
@@ -52,7 +53,7 @@ public class ArchiveRuleFactoryTest extends TestCase {
 
     @Override
     protected void setUp() throws Exception {
-	CONFIG.set(VariableArchive.ARCHIVE_SIZE, 5);
+	CONFIG.set(Archive.ARCHIVE_SIZE, 5);
 	CONFIG.set(VariableArchive.PRECISION, 2.0);
 	CONFIG.set(RANDOM_GENERATOR, new Random(System.currentTimeMillis()));
 	CONFIG.set(Rule.DEFAULT_RULE, ClassificationRule.class);
@@ -82,6 +83,6 @@ public class ArchiveRuleFactoryTest extends TestCase {
 
 	Rule rule = new ArchiveRuleFactory()
 		.create(0, graph, heuristic, dataset, instances);
-	System.out.println(rule.toString(dataset));
+	assertTrue(!rule.isEmpty());
     }
 }

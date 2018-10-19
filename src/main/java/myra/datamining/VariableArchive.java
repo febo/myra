@@ -19,11 +19,14 @@
 
 package myra.datamining;
 
+import static myra.Archive.ARCHIVE_SIZE;
+import static myra.Archive.Q;
 import static myra.Config.CONFIG;
 import static myra.datamining.Algorithm.RANDOM_GENERATOR;
 
 import myra.Archive.DefaultArchive;
 import myra.Config.ConfigKey;
+import myra.Weighable;
 
 /**
  * This class represents a local archive&mdash;i.e., a variable of a solution,
@@ -34,21 +37,6 @@ import myra.Config.ConfigKey;
  */
 public abstract class VariableArchive<E extends Number & Comparable<E>>
 	implements Cloneable {
-    /**
-     * The config key for the archive size.
-     */
-    public static final ConfigKey<Integer> ARCHIVE_SIZE = new ConfigKey<>();
-
-    /**
-     * The config key for the weight calculation parameter <i>q</i>.
-     */
-    public static final ConfigKey<Double> Q = new ConfigKey<>();
-
-    /**
-     * Default value for the weight calculation parameter <i>q</i>.
-     */
-    public static final double DEFAULT_Q = 0.05099;
-
     /**
      * The config key for the convergence speed parameter.
      */
@@ -95,6 +83,7 @@ public abstract class VariableArchive<E extends Number & Comparable<E>>
     public abstract void update();
 
     /**
+<<<<<<< HEAD
      * Updates the archive weights.
      * 
      * @param archive
@@ -115,6 +104,8 @@ public abstract class VariableArchive<E extends Number & Comparable<E>>
     }
 
     /**
+=======
+>>>>>>> fd4533537d053be354b9ac28eecfb4ad78d3ccf7
      * This class represents the archive for continuous attributes.
      */
     public static class Continuous extends VariableArchive<Double> {
@@ -200,7 +191,7 @@ public abstract class VariableArchive<E extends Number & Comparable<E>>
 
 	@Override
 	public void update() {
-	    super.update(archive);
+	    archive.update();
 	}
 
 	/**
@@ -340,7 +331,7 @@ public abstract class VariableArchive<E extends Number & Comparable<E>>
 
 	@Override
 	public void update() {
-	    super.update(archive);
+	    archive.update();
 	}
 
 	@Override
@@ -352,7 +343,7 @@ public abstract class VariableArchive<E extends Number & Comparable<E>>
     /**
      * This class represents an entry on the archive.
      */
-    private static class Entry<T> implements Comparable<Entry<T>> {
+    private static class Entry<T> implements Weighable<Entry<T>> {
 	/**
 	 * The value of the attribute.
 	 */
@@ -384,6 +375,16 @@ public abstract class VariableArchive<E extends Number & Comparable<E>>
 	@Override
 	public int compareTo(Entry<T> o) {
 	    return Double.compare(quality, o.quality);
+	}
+	
+	@Override
+	public double getWeight() {
+	    return weight;
+	}
+	
+	@Override
+	public void setWeight(double weight) {
+	    this.weight = weight;
 	}
     }
 }

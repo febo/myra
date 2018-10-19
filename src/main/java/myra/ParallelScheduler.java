@@ -34,7 +34,8 @@ import myra.Archive.SynchronizedArchive;
  * 
  * @author Fernando Esteban Barril Otero
  */
-public class ParallelScheduler<T extends Comparable<T>> extends Scheduler<T> {
+public class ParallelScheduler<T extends Weighable<T>> extends Scheduler<T>
+{
     /**
      * Tasks executor service.
      */

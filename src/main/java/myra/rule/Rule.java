@@ -25,6 +25,7 @@ import java.util.Arrays;
 
 import myra.Config.ConfigKey;
 import myra.Cost;
+import myra.Weighable;
 import myra.datamining.Attribute;
 import myra.datamining.Attribute.Condition;
 import myra.datamining.Dataset;
@@ -37,7 +38,7 @@ import myra.util.ObjectFactory;
  * 
  * @author Fernando Esteban Barril Otero
  */
-public abstract class Rule implements Comparable<Rule> {
+public abstract class Rule implements Weighable<Rule> {
     /**
      * The config key for the default rule implementation class.
      */
@@ -68,6 +69,11 @@ public abstract class Rule implements Comparable<Rule> {
      * Indicates if the rule is enabled or not.
      */
     protected boolean enabled;
+    
+    /**
+     * The solution weight.
+     */
+    private double weight;
 
     /**
      * Default constructor.
@@ -460,6 +466,16 @@ public abstract class Rule implements Comparable<Rule> {
 	}
 
 	return buffer.toString();
+    }
+    
+    @Override
+    public double getWeight() {
+        return weight;
+    }
+    
+    @Override
+    public void setWeight(double weight) {
+	this.weight = weight;
     }
 
     /**

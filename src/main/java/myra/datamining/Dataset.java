@@ -344,12 +344,10 @@ public final class Dataset {
 	for (int removed : indexes) {
 	    if (attributes[classIndex()].getType() == NOMINAL) {
 		// updates the class frequency
-		distribution[(int) value(removed * attributes.length,
-					 classIndex())]--;
+		distribution[(int) value(removed, classIndex())]--;
 	    } else if (attributes[classIndex()].getType() == CONTINUOUS) {
 		// updates the mean
-		mean -= distribution[(int) value(removed * attributes.length,
-						 classIndex())];
+		mean -= distribution[(int) value(removed, classIndex())];
 	    }
 
 	    if (current == removed) {

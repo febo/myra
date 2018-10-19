@@ -26,6 +26,7 @@ import java.io.InputStreamReader;
 import java.util.Random;
 
 import junit.framework.TestCase;
+import myra.Archive;
 import myra.datamining.ARFFReader;
 import myra.datamining.Dataset;
 import myra.datamining.VariableArchive;
@@ -42,7 +43,7 @@ public class GraphTest extends TestCase {
 	dataset = reader.read(new InputStreamReader(getClass()
 		.getResourceAsStream("/weather.arff")));
 	
-	CONFIG.set(VariableArchive.ARCHIVE_SIZE, 5);
+	CONFIG.set(Archive.ARCHIVE_SIZE, 5);
 	CONFIG.set(VariableArchive.PRECISION, 2.0);
 	CONFIG.set(RANDOM_GENERATOR, new Random(System.currentTimeMillis()));
     }

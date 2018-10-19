@@ -24,6 +24,7 @@ import static myra.datamining.Dataset.NOT_COVERED;
 import java.lang.reflect.Array;
 import java.util.Arrays;
 
+import myra.AbstractWeighable;
 import myra.Config;
 import myra.Cost;
 import myra.datamining.Dataset;
@@ -38,7 +39,7 @@ import myra.datamining.Prediction;
  * 
  * @author Fernando Esteban Barril Otero
  */
-public class RuleList implements Model, Comparable<RuleList> {
+public class RuleList extends AbstractWeighable<RuleList> implements Model {
     /**
      * The quality of the rule list.
      */

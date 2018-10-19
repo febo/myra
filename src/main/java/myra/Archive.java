@@ -19,8 +19,12 @@
 
 package myra;
 
+import static myra.Config.CONFIG;
+
 import java.util.Arrays;
 import java.util.Comparator;
+
+import myra.Config.ConfigKey;
 
 /**
  * This interface represents a solution archive. The archive holds the solutions
@@ -38,7 +42,22 @@ import java.util.Comparator;
  * @param <E>
  *            the elements' type in the solution archive.
  */
-public interface Archive<E extends Comparable<E>> {
+public interface Archive<E extends Weighable<E>> {
+
+    /**
+     * The config key for the archive size.
+     */
+    public static final ConfigKey<Integer> ARCHIVE_SIZE = new ConfigKey<>();
+
+    /**
+     * The config key for the weight calculation parameter <i>q</i>.
+     */
+    public static final ConfigKey<Double> Q = new ConfigKey<>();
+
+    /**
+     * Default value for the weight calculation parameter <i>q</i>.
+     */
+    public static final double DEFAULT_Q = 0.05099;
 
     /**
      * Adds a new solution to the archive.
@@ -110,11 +129,16 @@ public interface Archive<E extends Comparable<E>> {
     public boolean isFull();
 
     /**
+     * Updates the archive weights.
+     */
+    public void update();
+
+    /**
      * Default archive implementation. Solutions are stored in decreasing order.
      * 
      * @author Fernando Esteban Barril Otero
      */
-    public class DefaultArchive<E extends Comparable<E>> implements Archive<E> {
+    public class DefaultArchive<E extends Weighable<E>> implements Archive<E> {
 	/**
 	 * The solutions in the archive.
 	 */
@@ -138,7 +162,7 @@ public interface Archive<E extends Comparable<E>> {
 			+ capacity);
 	    }
 
-	    solutions = (E[]) new Comparable[capacity];
+	    solutions = (E[]) new Weighable[capacity];
 	    size = 0;
 	}
 
@@ -239,9 +263,26 @@ public interface Archive<E extends Comparable<E>> {
 	 * 
 	 * @return the sorted solutions in the archive.
 	 */
-	public Comparable<E>[] solutions() {
+	public E[] solutions() {
 	    return solutions;
 	}
+
+	/**
+	 * Updates the archive weights.
+	 */
+	public void update() {
+	    double q = CONFIG.get(Q);
+	    double k = size();
+
+	    for (int i = 0; i < size(); i++) {
+		E c = (E) solutions[i];
+
+		double exp = -Math.pow((i + 1) - 1, 2) / (2 * q * q * k * k);
+		c.setWeight((1 / (q * k * Math.sqrt(2 * Math.PI)))
+			* Math.pow(Math.E, exp));
+	    }
+	}
+
     }
 
     /**
@@ -249,7 +290,7 @@ public interface Archive<E extends Comparable<E>> {
      * 
      * @author Fernando Esteban Barril Otero
      */
-    public class SynchronizedArchive<E extends Comparable<E>>
+    public class SynchronizedArchive<E extends Weighable<E>>
 	    implements Archive<E> {
 	/**
 	 * The backing archive.
@@ -303,6 +344,11 @@ public interface Archive<E extends Comparable<E>> {
 	@Override
 	public synchronized boolean isFull() {
 	    return size() == capacity();
+	}
+
+	@Override
+	public synchronized void update() {
+	    this.archive.update();
 	}
     }
 }

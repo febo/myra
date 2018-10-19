@@ -1,8 +1,8 @@
 /*
- * AbstractActivity.java
+ * AbstractWeighable.java
  * (this file is part of MYRA)
  * 
- * Copyright 2008-2015 Fernando Esteban Barril Otero
+ * Copyright 2008-2018 Fernando Esteban Barril Otero
  * 
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -20,17 +20,26 @@
 package myra;
 
 /**
- * Skeleton activity implementation.
+ * Skeleton implementation for weighable archive solutions.
  * 
  * @author Fernando Esteban Barril Otero
+ * 
+ * @see Weighable
  */
-public abstract class AbstractActivity<T extends Weighable<T>>
-	implements Activity<T> {
+public abstract class AbstractWeighable<T> implements Weighable<T> {
     /**
-     * Default (empty) implementation.
+     * The solution weight. The weight based on the rank of the solution
+     * in the archive.
      */
+    protected double weight;
+    
     @Override
-    public boolean search(Archive<T> archive) {
-	return false;
+    public double getWeight() {
+	return weight;
+    }
+
+    @Override
+    public void setWeight(double weight) {
+	this.weight = weight;
     }
 }

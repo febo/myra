@@ -19,20 +19,19 @@
 
 package myra.datamining;
 
+import static myra.Archive.ARCHIVE_SIZE;
+import static myra.Archive.DEFAULT_Q;
+import static myra.Archive.Q;
 import static myra.Config.CONFIG;
 import static myra.datamining.Algorithm.RANDOM_GENERATOR;
-import static myra.datamining.VariableArchive.ARCHIVE_SIZE;
 import static myra.datamining.VariableArchive.CONVERGENCE_SPEED;
 import static myra.datamining.VariableArchive.DEFAULT_CONVERGENCE_SPEED;
 import static myra.datamining.VariableArchive.DEFAULT_PRECISION;
-import static myra.datamining.VariableArchive.DEFAULT_Q;
 import static myra.datamining.VariableArchive.PRECISION;
-import static myra.datamining.VariableArchive.Q;
 
 import java.util.Random;
 
 import junit.framework.TestCase;
-import myra.datamining.VariableArchive;
 
 /**
  * @author Fernando Esteban Barril Otero

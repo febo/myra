@@ -27,6 +27,7 @@ import static myra.datamining.Attribute.Type.CONTINUOUS;
 
 import java.util.LinkedList;
 
+import myra.AbstractWeighable;
 import myra.Cost;
 import myra.classification.Label;
 import myra.datamining.Attribute;
@@ -39,7 +40,7 @@ import myra.datamining.Model;
  * 
  * @author Fernando Esteban Barril Otero
  */
-public class Tree implements Model, Comparable<Tree> {
+public class Tree extends AbstractWeighable<Tree> implements Model {
     /**
      * The root node of the tree.
      */
@@ -445,7 +446,7 @@ public class Tree implements Model, Comparable<Tree> {
 	    }
 
 	    buffer.append(")");
-	    //buffer.append(System.lineSeparator());
+	    // buffer.append(System.lineSeparator());
 	}
 
 	return buffer.toString();
