@@ -77,7 +77,8 @@ public class ArchiveFindRuleListActivity extends IterativeActivity<RuleList> {
      * the {@link #initialise()} method.
      */
     private Entry[] INITIAL_HEURISTIC;
-
+    
+    private int counter = 0;
     /**
      * Creates a new <code>FindRuleListActivity</code> object.
      * 

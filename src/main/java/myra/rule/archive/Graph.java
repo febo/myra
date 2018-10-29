@@ -183,18 +183,13 @@ public class Graph extends myra.rule.Graph {
 	    if (archive.length <= level) {
 		int last = archive.length;
 		archive = Arrays.copyOf(archive, level + 1);
-<<<<<<< HEAD
-		for(int i = level; i >= 0; i--){
-		    if(archive[i] == null)
-			archive[i] = (Variable) initial.clone();
-		}
-=======
+
 		// make sure to set values for all previous levels
 		for (int i = last; i < level; i++) {
 		    archive[i] = initial.clone();
 		}
 		archive[level] = initial.clone();
->>>>>>> fd4533537d053be354b9ac28eecfb4ad78d3ccf7
+
 	    }
 
 	    archive[level].add(condition, quality);

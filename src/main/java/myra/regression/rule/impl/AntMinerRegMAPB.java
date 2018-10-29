@@ -1,5 +1,5 @@
 /*
- * AntMinerMA.java
+ * AntMinerRegMAPB.java
  * (this file is part of MYRA)
  * 
  * Copyright 2008-2018 Fernando Esteban Barril Otero
@@ -17,17 +17,17 @@
  * limitations under the License.
  */
 
-package myra.classification.rule.impl;
+package myra.regression.rule.impl;
 
+import static myra.Archive.ARCHIVE_SIZE;
+import static myra.Archive.Q;
 import static myra.Config.CONFIG;
 import static myra.IterativeActivity.MAX_ITERATIONS;
 import static myra.IterativeActivity.STAGNATION;
 import static myra.Scheduler.COLONY_SIZE;
 import static myra.Scheduler.PARALLEL;
 import static myra.datamining.IntervalBuilder.DEFAULT_BUILDER;
-import static myra.Archive.ARCHIVE_SIZE;
 import static myra.datamining.VariableArchive.CONVERGENCE_SPEED;
-import static myra.Archive.Q;
 import static myra.datamining.VariableArchive.PRECISION;
 import static myra.rule.Assignator.ASSIGNATOR;
 import static myra.rule.Heuristic.DEFAULT_HEURISTIC;
@@ -39,7 +39,6 @@ import static myra.rule.RuleFunction.DEFAULT_FUNCTION;
 import static myra.rule.archive.ArchiveFindRuleListActivity.UNCOVERED;
 import static myra.rule.pittsburgh.LevelPheromonePolicy.EVAPORATION_FACTOR;
 import static myra.rule.pittsburgh.LevelPheromonePolicy.P_BEST;
-
 
 import java.util.ArrayList;
 import java.util.Collection;
@@ -53,19 +52,22 @@ import myra.classification.ClassificationModel;
 import myra.classification.attribute.BoundarySplit;
 import myra.classification.attribute.C45Split;
 import myra.classification.attribute.MDLSplit;
-import myra.classification.rule.ClassificationRule;
 import myra.classification.rule.EntropyHeuristic;
 import myra.classification.rule.ListAccuracy;
-import myra.classification.rule.MajorityAssignator;
 import myra.classification.rule.PessimisticAccuracy;
-import myra.classification.rule.RuleClassifier;
 import myra.classification.rule.SinglePassPruner;
 import myra.classification.rule.function.Laplace;
-import myra.classification.rule.function.SensitivitySpecificity;
 import myra.datamining.Dataset;
 import myra.datamining.IntervalBuilder;
 import myra.datamining.Model;
-import myra.rule.archive.Graph;
+import myra.regression.RRMSE;
+import myra.regression.RRMSEListMeasure;
+import myra.regression.RegressionModel;
+import myra.regression.Regressor;
+import myra.regression.SinglePassRegPruner;
+import myra.regression.rule.MeanAssignator;
+import myra.regression.rule.RegressionRule;
+import myra.regression.rule.function.RRMSECoverage;
 import myra.rule.BacktrackPruner;
 import myra.rule.GreedyPruner;
 import myra.rule.Heuristic;
@@ -77,22 +79,22 @@ import myra.rule.RuleFunction;
 import myra.rule.RuleList;
 import myra.rule.TopDownListPruner;
 import myra.rule.archive.ArchiveFindRuleListActivity;
-
+import myra.rule.archive.Graph;
 
 /**
  * @author amh58
  */
-public class AntMinerMAPB extends RuleClassifier {
+public class AntMinerRegMAPB extends Regressor {
     @Override
     protected void defaults() {
 	super.defaults();
 
 	// configuration not set via command line
 
-	CONFIG.set(ASSIGNATOR, new MajorityAssignator());
+	CONFIG.set(ASSIGNATOR, new MeanAssignator());
 	CONFIG.set(P_BEST, 0.05);
 	CONFIG.set(IntervalBuilder.MAXIMUM_LIMIT, 25);
-	CONFIG.set(Rule.DEFAULT_RULE, ClassificationRule.class);
+	CONFIG.set(Rule.DEFAULT_RULE, RegressionRule.class);
 
 	// default configuration values
 
@@ -104,12 +106,12 @@ public class AntMinerMAPB extends RuleClassifier {
 	CONFIG.set(MAX_ITERATIONS, 500);
 	CONFIG.set(IntervalBuilder.MINIMUM_CASES, 10);
 	CONFIG.set(EVAPORATION_FACTOR, 0.9);
-	CONFIG.set(DEFAULT_MEASURE, new PessimisticAccuracy());
+	CONFIG.set(DEFAULT_MEASURE, new RRMSEListMeasure());
 	CONFIG.set(UNCOVERED, 0.01);
 	CONFIG.set(STAGNATION, 40);
-	CONFIG.set(DEFAULT_PRUNER, new SinglePassPruner());
+	CONFIG.set(DEFAULT_PRUNER, new SinglePassRegPruner());
 	CONFIG.set(DEFAULT_LIST_PRUNER, new ListPruner.None());
-	CONFIG.set(DEFAULT_FUNCTION, new SensitivitySpecificity());
+	CONFIG.set(DEFAULT_FUNCTION, new RRMSECoverage());
 	CONFIG.set(DEFAULT_HEURISTIC, new EntropyHeuristic.None());
 	CONFIG.set(DYNAMIC_HEURISTIC, Boolean.FALSE);
 	CONFIG.set(DEFAULT_BUILDER, new MDLSplit(new BoundarySplit()));
@@ -127,7 +129,7 @@ public class AntMinerMAPB extends RuleClassifier {
 	scheduler.setActivity(activity);
 	scheduler.run();
 
-	return new ClassificationModel(activity.getBest());
+	return new RegressionModel(activity.getBest());
     }
 
     @Override
@@ -208,8 +210,7 @@ public class AntMinerMAPB extends RuleClassifier {
 				       "specify the rule list pruner %s",
 				       true,
 				       "method");
-	listPruner.add("none", CONFIG.get(DEFAULT_LIST_PRUNER));
-	listPruner.add("top-down", new TopDownListPruner());
+
 	options.add(listPruner);
 
 	// rule quality function
@@ -219,8 +220,7 @@ public class AntMinerMAPB extends RuleClassifier {
 					 "specify the rule quality %s",
 					 true,
 					 "function");
-	function.add("laplace", new Laplace());
-	function.add("sen_spe", CONFIG.get(DEFAULT_FUNCTION));
+
 	options.add(function);
 
 	// rule quality function
@@ -230,8 +230,7 @@ public class AntMinerMAPB extends RuleClassifier {
 					"specify the rule list quality %s",
 					true,
 					"function");
-	measure.add("accuracy", new ListAccuracy());
-	measure.add("pessimistic", CONFIG.get(DEFAULT_MEASURE));
+
 	options.add(measure);
 
 	// heuristic information
@@ -241,8 +240,7 @@ public class AntMinerMAPB extends RuleClassifier {
 				      "specify the heuristic %s",
 				      true,
 				      "method");
-	heuristic.add("gain", CONFIG.get(DEFAULT_HEURISTIC));
-	heuristic.add("none", new Heuristic.None());
+
 	options.add(heuristic);
 
 	// dynamic heuristic calculation
@@ -259,8 +257,7 @@ public class AntMinerMAPB extends RuleClassifier {
 					    "specify the discretisation",
 					    true,
 					    "method");
-	builder.add("c45", new C45Split());
-	builder.add("mdl", CONFIG.get(DEFAULT_BUILDER));
+
 	options.add(builder);
 
 	return options;
@@ -268,11 +265,11 @@ public class AntMinerMAPB extends RuleClassifier {
 
     @Override
     public String description() {
-	return "Pittsburgh-based with Archive Ant-MinerMA";
+	return "Pittsburgh-based with Archive Ant-Miner-RegMA";
     }
 
     /**
-     * <code><i>c</i>Ant-Miner<sub>MA<sub>PB</sub></sub></code> entry point.
+     * <code><i>c</i>Ant-Miner-Reg<sub>MA<sub>PB</sub></sub></code> entry point.
      * 
      * @param args
      *            command-line arguments.
@@ -281,7 +278,7 @@ public class AntMinerMAPB extends RuleClassifier {
      *             If an error occurs &mdash; e.g., I/O error.
      */
     public static void main(String[] args) throws Exception {
-	AntMinerMAPB algorithm = new AntMinerMAPB();
+	AntMinerRegMAPB algorithm = new AntMinerRegMAPB();
 	algorithm.run(args);
     }
 }

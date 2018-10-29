@@ -153,8 +153,8 @@ public class ArchiveRuleFactory extends LevelRuleFactory {
 	
 
 	rule.compact();
-	Instance[] clone = Instance.copyOf(instances);
-	rule.apply(dataset, clone);
+	//Instance[] clone = Instance.copyOf(instances);
+	//rule.apply(dataset, clone);
 
 	return rule;
     }

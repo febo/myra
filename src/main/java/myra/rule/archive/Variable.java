@@ -107,10 +107,9 @@ public abstract class Variable implements Cloneable {
 	    operator.update();
 	    // value archive
 	    value.add(condition.value[0], quality);
-<<<<<<< HEAD
+
 	    operator.update();
-=======
->>>>>>> fd4533537d053be354b9ac28eecfb4ad78d3ccf7
+
 	    value.update();
 	}
 

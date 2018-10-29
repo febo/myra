@@ -1,5 +1,5 @@
 /*
- * SinglePassPruner.java
+ * SinglePassRegPruner.java
  * (this file is part of MYRA)
  * 
  * Copyright 2008-2018 Fernando Esteban Barril Otero
@@ -17,108 +17,83 @@
  * limitations under the License.
  */
 
-package myra.classification.rule;
+package myra.regression;
 
 import static myra.Config.CONFIG;
 import static myra.datamining.Dataset.COVERED;
+import static myra.datamining.Dataset.RULE_COVERED;
 import static myra.datamining.IntervalBuilder.MINIMUM_CASES;
 import static myra.rule.Assignator.ASSIGNATOR;
 
 import myra.Cost;
-import myra.datamining.Attribute.Condition;
+import myra.regression.rule.RegressionRule;
 import myra.datamining.Dataset;
+import myra.datamining.Attribute.Condition;
 import myra.datamining.Dataset.Instance;
 import myra.rule.Assignator;
 import myra.rule.Pruner;
 import myra.rule.Rule;
-import myra.rule.Rule.Term;
 import myra.rule.RuleFunction;
+import myra.rule.Rule.Term;
 
 /**
- * This class represents a pruning procedure that evaluates all terms at once
- * (single pass over the dataset) and removes terms, from the end to the start
- * of the rule, as long as the quality improves.
- * <p>
- * Note that the rule might be empty at the end of the pruning, meaning that no
- * term covered the minimum number of instances required.
- * </p>
- * 
- * @author Fernando Esteban Barril Otero
+ * @author amh58
  */
-public class SinglePassPruner extends Pruner {
+public class SinglePassRegPruner extends Pruner {
     @Override
     public int prune(Dataset dataset,
 		     Rule rule,
 		     Instance[] instances,
 		     RuleFunction function) {
 	Term[] terms = rule.terms();
-	Coverage[] coverage = new Coverage[terms.length];
-
-	for (int j = 0; j < coverage.length; j++) {
-	    coverage[j] = new Coverage(dataset.classLength());
+	
+	Coverage[] coverage = new Coverage[rule.terms().length];
+	
+	for(int i = 0; i < coverage.length; i++)
+	{
+	    coverage[i] = new Coverage(instances.length);
 	}
-
+	
 	// (1) determines the coverage of each term
 
-	int start = 0;
+	for (int i = 0; i < dataset.size(); i++) {
+	    // only considers instances not covered
+	    if (instances[i].flag != COVERED) {
 
-	while (start < coverage.length) {
-	    for (int i = 0; i < dataset.size(); i++) {
-		// only considers instances not covered
-		if (instances[i].flag != COVERED) {
-		    int c = (int) dataset.value(i, dataset.classIndex());
+		for (int j = 0; j < terms.length; j++) {
+		    if (terms[j].isEnabeld()) {
+			Condition condition = terms[j].condition();
+			double v = dataset.value(i, condition.attribute);
 
-		    for (int j = start; j < terms.length; j++) {
-			if (terms[j].isEnabeld()) {
-			    Condition condition = terms[j].condition();
-			    double v = dataset.value(i, condition.attribute);
-
-			    if (condition.satisfies(v)) {
-				coverage[j].covered[c]++;
-			    } else {
-				coverage[j].uncovered[c]++;
-				// stops checking the remaining terms
-				break;
-			    }
+			if (condition.satisfies(v)) {
+			    coverage[j].covered[i].flag = RULE_COVERED;
+			}
+			else
+			{
+			    break;
 			}
 		    }
 		}
-	    }
-
-	    // checks that the first term of the rule cover the minimum number
-	    // of cases,
-	    // otherwise disables it and repeat the coverage of the rule
-	    if (coverage[start].total() < CONFIG.get(MINIMUM_CASES)) {
-		terms[start].setEnabeld(false);
-		start++;
-		// reset coverage for all terms
-		for (int j = 0; j < coverage.length; j++) {
-		    coverage[j] = new Coverage(dataset.classLength());
-		}
-	    } else {
-		// when the rule covers the minimum number of cases, stop the
-		// coverage test
-		break;
 	    }
 	}
 
 	// (2) determines the quality of each term
 
 	Assignator assignator = CONFIG.get(ASSIGNATOR);
-	ClassificationRule cRule = (ClassificationRule) rule;
 
+	
 	int selected = -1;
 	Cost best = null;
 
-	for (int i = start; i < coverage.length; i++) {
+	for (int i = 0; i < coverage.length; i++) {
 	    // the rule must cover a minimum number of cases, therefore
 	    // only terms that cover more than the limit are considered
 	    if (coverage[i].total() >= CONFIG.get(MINIMUM_CASES)) {
-		cRule.covered(coverage[i].covered);
-		cRule.uncovered(coverage[i].uncovered);
-		assignator.assign(dataset, rule, instances);
+		
+		
+		assignator.assign(dataset, rule, coverage[i].covered);
 
-		Cost current = function.evaluate(dataset, rule, instances);
+		Cost current = function.evaluate(dataset, rule, coverage[i].covered);
 
 		if (best == null || current.compareTo(best) >= 0) {
 		    selected = i;
@@ -143,7 +118,6 @@ public class SinglePassPruner extends Pruner {
 
 	return assignator.assign(dataset, rule, instances);
     }
-
     /**
      * Class to store the coverage information of a term.
      * 
@@ -153,13 +127,9 @@ public class SinglePassPruner extends Pruner {
 	/**
 	 * Covered instances information.
 	 */
-	int[] covered;
+	Instance [] covered;
 
-	/**
-	 * Uncovered instances information.
-	 */
-	int[] uncovered;
-
+	
 	/**
 	 * Default constructor.
 	 * 
@@ -167,8 +137,11 @@ public class SinglePassPruner extends Pruner {
 	 *            the number of classes.
 	 */
 	Coverage(int length) {
-	    covered = new int[length];
-	    uncovered = new int[length];
+	    covered = new Instance[length];
+	    for(int i=0 ; i < length ; i++)
+	    {
+		covered[i] = new Instance();
+	    }
 	}
 
 	/**
@@ -180,7 +153,8 @@ public class SinglePassPruner extends Pruner {
 	    int total = 0;
 
 	    for (int i = 0; i < covered.length; i++) {
-		total += covered[i];
+		if(covered[i].flag == RULE_COVERED)
+		    total ++;
 	    }
 
 	    return total;

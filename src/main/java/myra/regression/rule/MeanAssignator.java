@@ -19,6 +19,7 @@
 
 package myra.regression.rule;
 
+import static myra.datamining.Dataset.COVERED;
 import static myra.datamining.Dataset.RULE_COVERED;
 
 import myra.datamining.Dataset;
@@ -38,16 +39,21 @@ public class MeanAssignator implements Assignator {
     public int assign(Dataset dataset, Rule rule, Instance[] instances) {
 	double total = 0;
 	int count = 0;
+	int available = 0;
 
 	for (int i = 0; i < instances.length; i++) {
-	    if (instances[i].flag == RULE_COVERED) {
-		total += dataset.value(i, dataset.classIndex());
-		count++;
+	    if (instances[i].flag != COVERED) {
+		available++;
+
+		if (instances[i].flag == RULE_COVERED) {
+		    total += dataset.value(i, dataset.classIndex());
+		    count++;
+		}
 	    }
 	}
 
 	rule.setConsequent(new Real(total / count));
 
-	return instances.length - count;
+	return available - count;
     }
 }
