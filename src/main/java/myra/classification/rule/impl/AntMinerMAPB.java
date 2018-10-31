@@ -126,7 +126,7 @@ public class AntMinerMAPB extends RuleClassifier {
 	Scheduler<RuleList> scheduler = Scheduler.newInstance(1);
 	scheduler.setActivity(activity);
 	scheduler.run();
-
+	
 	return new ClassificationModel(activity.getBest());
     }
 

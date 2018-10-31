@@ -128,6 +128,8 @@ public class ArchiveFindRuleListActivity extends IterativeActivity<RuleList> {
 	this.factory = factory;
 	this.policy = policy;
     }
+    
+
 
     @Override
     public RuleList create() {
@@ -137,7 +139,7 @@ public class ArchiveFindRuleListActivity extends IterativeActivity<RuleList> {
 
 	RuleList list = new RuleList();
 	list.setIteration(iteration);
-
+	
 	int available = dataset.size();
 	int uncovered = (int) ((dataset.size() * CONFIG.get(UNCOVERED)) + 0.5);
 
@@ -166,7 +168,7 @@ public class ArchiveFindRuleListActivity extends IterativeActivity<RuleList> {
 
 	    list.add(rule);
 
-	    if (rule.size() == 0) {
+	    if (rule.size() == 0) {		
 		break;
 	    }
 
