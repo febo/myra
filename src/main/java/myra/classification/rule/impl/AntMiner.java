@@ -114,7 +114,7 @@ public class AntMiner extends RuleClassifier {
 
 	// default configuration values
 
-	CONFIG.set(COLONY_SIZE, 60);
+	CONFIG.set(COLONY_SIZE, 10);
 	CONFIG.set(MAX_ITERATIONS, 1500);
 	CONFIG.set(MINIMUM_CASES, 10);
 	CONFIG.set(MAXIMUM_LIMIT, 25);

@@ -21,6 +21,7 @@ package myra.regression.rule.function;
 
 import static myra.Config.CONFIG;
 import static myra.datamining.Dataset.RULE_COVERED;
+import static myra.datamining.Dataset.COVERED;
 
 import myra.Config.ConfigKey;
 import myra.Cost;
@@ -70,22 +71,30 @@ public class RRMSECoverage extends RegressionRuleFunction {
 	double lDefault = 0;
 	double coverage = 0;
 
+	double available = 0;
+	
 	for (int i = 0; i < dataset.size(); i++) {
-	    double actual = dataset.value(i, dataset.classIndex());
-
-	    lRMSE += Math.pow(actual - predicted, 2);
-	    lDefault += Math.pow(actual - mean, 2);
-
-	    if (instances[i].flag == RULE_COVERED) {
-		coverage += instances[i].weight;
+	    if(instances[i].flag != COVERED)
+	    {
+		    available ++;
+		    double actual = dataset.value(i, dataset.classIndex());
+        
+        	    if (instances[i].flag == RULE_COVERED) {
+        		lDefault += Math.pow(actual - mean, 2);
+        		lRMSE += Math.pow(actual - predicted, 2);
+        		coverage ++;
+        	    }
 	    }
 	}
+	
+	double RRMSE = Math.sqrt(lRMSE / coverage)
+		/ Math.sqrt(lDefault / coverage);
+	
+	RRMSE  = RRMSE * RRMSE;
 
-	double RRMSE =
-		CONFIG.get(ALPHA) * (1 - (Math.sqrt(lRMSE / dataset.size())
-			/ Math.sqrt(lDefault / dataset.size())));
+	RRMSE = CONFIG.get(ALPHA) * (1 - RRMSE);
 
-	coverage = (1 - CONFIG.get(ALPHA)) * coverage;
+	coverage = (1 - CONFIG.get(ALPHA)) * (coverage/available);
 
 	return new Maximise(RRMSE + coverage);
     }

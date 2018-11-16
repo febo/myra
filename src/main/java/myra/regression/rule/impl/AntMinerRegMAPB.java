@@ -98,9 +98,9 @@ public class AntMinerRegMAPB extends Regressor {
 
 	// default configuration values
 
-	CONFIG.set(COLONY_SIZE, 5);
-	CONFIG.set(ARCHIVE_SIZE, 30);
-	CONFIG.set(Q, 0.05099);
+	CONFIG.set(COLONY_SIZE, 10);
+	CONFIG.set(ARCHIVE_SIZE, 10);
+	CONFIG.set(Q, 0.369);
 	CONFIG.set(CONVERGENCE_SPEED, 0.6795);
 	CONFIG.set(PRECISION, 2.0);
 	CONFIG.set(MAX_ITERATIONS, 500);

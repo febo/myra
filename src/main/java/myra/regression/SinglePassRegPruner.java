@@ -21,6 +21,7 @@ package myra.regression;
 
 import static myra.Config.CONFIG;
 import static myra.datamining.Dataset.COVERED;
+import static myra.datamining.Dataset.NOT_COVERED;
 import static myra.datamining.Dataset.RULE_COVERED;
 import static myra.datamining.IntervalBuilder.MINIMUM_CASES;
 import static myra.rule.Assignator.ASSIGNATOR;
@@ -50,7 +51,7 @@ public class SinglePassRegPruner extends Pruner {
 	
 	for(int i = 0; i < coverage.length; i++)
 	{
-	    coverage[i] = new Coverage(instances.length);
+	    coverage[i] = new Coverage(instances);
 	}
 	
 	// (1) determines the coverage of each term
@@ -59,7 +60,6 @@ public class SinglePassRegPruner extends Pruner {
         	for (int i = 0; i < dataset.size(); i++) {
         	    // only considers instances not covered
         	    if (instances[i].flag != COVERED) {
-        
         		for (int j = start; j < terms.length; j++) {
         		    if (terms[j].isEnabeld()) {
         			Condition condition = terms[j].condition();
@@ -76,7 +76,7 @@ public class SinglePassRegPruner extends Pruner {
         		}
         	    }
         	}
-	   // checks that the first term of the rule cover the minimum number
+	    // checks that the first term of the rule cover the minimum number
 	    // of cases,
 	    // otherwise disables it and repeat the coverage of the rule
 	    if (coverage[start].total() < CONFIG.get(MINIMUM_CASES)) {
@@ -84,7 +84,7 @@ public class SinglePassRegPruner extends Pruner {
 		start++;
 		// reset coverage for all terms
 		for (int j = 0; j < coverage.length; j++) {
-		    coverage[j] = new Coverage(instances.length);
+		    coverage[j] = new Coverage(instances);
 		}
 	    } else {
 		// when the rule covers the minimum number of cases, stop the
@@ -105,12 +105,17 @@ public class SinglePassRegPruner extends Pruner {
 	for (int i = 0; i < coverage.length; i++) {
 	    // the rule must cover a minimum number of cases, therefore
 	    // only terms that cover more than the limit are considered
+
+	    
 	    if (coverage[i].total() >= CONFIG.get(MINIMUM_CASES)) {
-		
+	
 		
 		assignator.assign(dataset, rule, coverage[i].covered);
+		
 
 		Cost current = function.evaluate(dataset, rule, coverage[i].covered);
+		
+		
 
 		if (best == null || current.compareTo(best) >= 0) {
 		    selected = i;
@@ -132,8 +137,12 @@ public class SinglePassRegPruner extends Pruner {
 	rule.setQuality(best);
 	rule.compact();
 	rule.apply(dataset, instances);
-
-	return assignator.assign(dataset, rule, instances);
+	
+	int covered = assignator.assign(dataset, rule, instances);
+	
+	
+	
+	return covered;
     }
     /**
      * Class to store the coverage information of a term.
@@ -153,12 +162,11 @@ public class SinglePassRegPruner extends Pruner {
 	 * @param length
 	 *            the number of classes.
 	 */
-	Coverage(int length) {
-	    covered = new Instance[length];
-	    for(int i=0 ; i < length ; i++)
-	    {
-		covered[i] = new Instance();
-	    }
+	Coverage(Instance[] instances) {
+	    int length = instances.length;
+	    covered = Instance.newArray(length);
+	    Instance.markAll(covered, NOT_COVERED);
+	    covered = Instance.copyOf(instances); 
 	}
 
 	/**

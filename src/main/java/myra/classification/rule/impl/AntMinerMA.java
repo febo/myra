@@ -1,8 +1,8 @@
 /*
- * cAntMiner.java
+ * AntMinerMA.java
  * (this file is part of MYRA)
  * 
- * Copyright 2008-2015 Fernando Esteban Barril Otero
+ * Copyright 2008-2018 Fernando Esteban Barril Otero
  * 
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -19,9 +19,12 @@
 
 package myra.classification.rule.impl;
 
+import static myra.Archive.ARCHIVE_SIZE;
+import static myra.Archive.Q;
 import static myra.Config.CONFIG;
 import static myra.datamining.IntervalBuilder.DEFAULT_BUILDER;
-import static myra.rule.Heuristic.DEFAULT_HEURISTIC;
+import static myra.datamining.VariableArchive.CONVERGENCE_SPEED;
+import static myra.datamining.VariableArchive.PRECISION;
 import static myra.rule.Pruner.DEFAULT_PRUNER;
 import static myra.rule.irl.PheromonePolicy.DEFAULT_POLICY;
 import static myra.rule.irl.RuleFactory.DEFAULT_FACTORY;
@@ -29,64 +32,47 @@ import static myra.rule.irl.RuleFactory.DEFAULT_FACTORY;
 import java.util.ArrayList;
 import java.util.Collection;
 
-import myra.rule.Graph;
-
 import myra.Option;
+import myra.classification.ClassificationModel;
 import myra.classification.attribute.BoundarySplit;
 import myra.classification.attribute.C45Split;
 import myra.classification.attribute.MDLSplit;
-import myra.classification.rule.EntropyHeuristic;
+import myra.classification.rule.SinglePassPruner;
+import myra.datamining.Dataset;
 import myra.datamining.IntervalBuilder;
-import myra.rule.BacktrackPruner;
-import myra.rule.GreedyPruner;
-import myra.rule.Pruner;
-import myra.rule.irl.EdgePheromonePolicy;
-import myra.rule.irl.EdgeRuleFactory;
+
+import myra.rule.irl.EdgeArchivePhermonePolicy;
+import myra.rule.irl.EdgeArchiveRuleFactory;
+import myra.rule.irl.SequentialCovering;
+import myra.rule.irl.SequentialCoveringArchive;
+
+
 /**
- * Default executable class file for the <code><i>c</i>Ant-Miner</code>
- * algorithm. This implementation corresponds to the
- * <code><i>c</i>Ant-Miner2-MDL</code> described in the following paper:
- *
- * <pre>
- * &#64;INPROCEEDINGS{Otero09datamining,
- *    author    = {F.E.B. Otero and A.A. Freitas and C.G. Johnson},
- *    title     = {Handling continuous attributes in ant colony classification algorithms},
- *    booktitle = {Proceedings of the 2009 IEEE Symposium on Computational Intelligence in Data Mining (CIDM 2009)},
- *    publisher = {IEEE},
- *    pages     = {225--231},
- *    year      = {2009}
- * }
- * </pre>
- * 
- * The original <code><i>c</i>Ant-Miner</code> algorithm is described in:
- * 
- * <pre>
- * &#64;INPROCEEDINGS{Otero08datamining,
- *    author    = {F.E.B. Otero and A.A. Freitas and C.G. Johnson},
- *    title     = {\emph{c}{A}nt-{M}iner: an ant colony classification algorithm to cope with continuous attributes},
- *    booktitle = {Proceedings of the 6th International Conference on Swarm Intelligence (ANTS 2008), Lecture Notes in Computer Science 5217},
- *    editor    = {M. Dorigo and M. Birattari and C. Blum and M. Clerc and T. St{\" u}tzle and A.F.T. Winfield},
- *    publisher = {Springer-Verlag},
- *    pages     = {48--59},
- *    year      = {2008}
- * }
- * </pre>
- * 
- * @author Fernando Esteban Barril Otero
+ * @author amh58
  */
-public class cAntMiner extends AntMiner {
+public class AntMinerMA  extends AntMiner {
     @Override
     protected void defaults() {
 	super.defaults();
 
 	// configuration not set via command line
 
-	CONFIG.set(DEFAULT_FACTORY, new EdgeRuleFactory());
-	CONFIG.set(DEFAULT_POLICY, new EdgePheromonePolicy());
+	CONFIG.set(DEFAULT_FACTORY, new EdgeArchiveRuleFactory());
+	CONFIG.set(DEFAULT_POLICY, new EdgeArchivePhermonePolicy());
+	CONFIG.set(ARCHIVE_SIZE, 10);
+	CONFIG.set(Q, 0.369);
+	CONFIG.set(CONVERGENCE_SPEED, 0.6795);
+	CONFIG.set(PRECISION, 2.0);
 	// default configuration values
-	
+	CONFIG.set(DEFAULT_PRUNER, new SinglePassPruner());
 	CONFIG.set(DEFAULT_BUILDER, new MDLSplit(new BoundarySplit(), false));
-	CONFIG.set(DEFAULT_PRUNER, new BacktrackPruner());
+	
+    }
+    
+    @Override
+    public ClassificationModel train(Dataset dataset) {
+	SequentialCoveringArchive seco = new SequentialCoveringArchive();
+	return new ClassificationModel(seco.train(dataset));
     }
 
     @Override
@@ -106,21 +92,14 @@ public class cAntMiner extends AntMiner {
 	builder.add("mdl", CONFIG.get(DEFAULT_BUILDER));
 	options.add(builder);
 
-	// replaces the default pruner method
-	for (Option<?> option : options) {
-	    if (option.getKey() == DEFAULT_PRUNER) {
-		Option<Pruner> pruner = (Option<Pruner>) option;
-		pruner.add("greedy", new GreedyPruner());
-		pruner.add("backtrack", CONFIG.get(DEFAULT_PRUNER));
-	    }
-	}
+	
 
 	return options;
     }
 
     @Override
     public String description() {
-	return "cAnt-Miner rule induction";
+	return "Ant-MinerMA rule induction";
     }
 
     /**
@@ -133,7 +112,7 @@ public class cAntMiner extends AntMiner {
      *             If an error occurs &mdash; e.g., I/O error.
      */
     public static void main(String[] args) throws Exception {
-	cAntMiner algorithm = new cAntMiner();
+	AntMinerMA algorithm = new AntMinerMA();
 	algorithm.run(args);
     }
 }

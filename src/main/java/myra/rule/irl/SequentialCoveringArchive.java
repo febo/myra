@@ -1,8 +1,8 @@
 /*
- * SequentialCovering.java
+ * SequentialCoveringArchive.java
  * (this file is part of MYRA)
  * 
- * Copyright 2008-2015 Fernando Esteban Barril Otero
+ * Copyright 2008-2018 Fernando Esteban Barril Otero
  * 
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -22,32 +22,27 @@ package myra.rule.irl;
 import static myra.Config.CONFIG;
 import static myra.datamining.Dataset.NOT_COVERED;
 import static myra.rule.Assignator.ASSIGNATOR;
+import static myra.rule.irl.SequentialCovering.UNCOVERED;
 
-
-import myra.Config.ConfigKey;
+import myra.Scheduler;
 import myra.datamining.Dataset;
 import myra.datamining.Model;
 import myra.datamining.Dataset.Instance;
-import myra.Scheduler;
-import myra.rule.Graph;
 import myra.rule.Rule;
 import myra.rule.RuleList;
+import myra.rule.archive.Graph;
 
 /**
- * This class represents a traditional sequential covering strategy to create a
- * list of rules.
- * 
- * @author Fernando Esteban Barril Otero
+ * @author amh58
  */
-public class SequentialCovering {
-    /**
-     * The config key for the number of uncovered instances.
-     */
-    public final static ConfigKey<Integer> UNCOVERED = new ConfigKey<Integer>();
+public class SequentialCoveringArchive {
+
 
     public Model train(Dataset dataset) {
+	
 	final int uncovered = CONFIG.get(UNCOVERED);
 	Instance[] instances = Instance.newArray(dataset.size());
+	
 	Instance.markAll(instances, NOT_COVERED);
 
 	Graph graph = new Graph(dataset);
@@ -56,8 +51,10 @@ public class SequentialCovering {
 	int available = dataset.size();
 
 	Scheduler<Rule> scheduler = Scheduler.newInstance(1);
+	
 
 	while (available >= uncovered) {
+	    
 	    FindRuleActivity activity =
 		    new FindRuleActivity(graph, instances, dataset);
 
@@ -68,10 +65,13 @@ public class SequentialCovering {
 
 	    Rule best = activity.getBest();
 	    best.apply(dataset, instances);
-
+	    
+	    
+	    
 	    // adds the rule to the list
 	    discovered.add(best);
-
+	    
+	 
 	    // marks the instances covered by the current rule as
 	    // COVERED, so they are not available for the next
 	    // iterations
@@ -92,5 +92,5 @@ public class SequentialCovering {
 	}
 
 	return discovered;
-    }
+}
 }

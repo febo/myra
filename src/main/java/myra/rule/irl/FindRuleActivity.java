@@ -95,8 +95,9 @@ public class FindRuleActivity extends IterativeActivity<Rule> {
 
 	Rule rule = CONFIG.get(DEFAULT_FACTORY)
 		.create(graph, heuristic, dataset, clone);
-
+	
 	CONFIG.get(DEFAULT_PRUNER).prune(dataset, rule, clone);
+
 	rule.setQuality(CONFIG.get(DEFAULT_FUNCTION).evaluate(dataset,
 							      rule,
 							      clone));
