@@ -20,6 +20,7 @@
 package myra.regression.rule.function;
 
 import static myra.Config.CONFIG;
+import static myra.datamining.Dataset.COVERED;
 import static myra.datamining.Dataset.RULE_COVERED;
 
 import myra.Config.ConfigKey;
@@ -64,29 +65,44 @@ public class RRMSECoverage extends RegressionRuleFunction {
 			 RegressionRule rule,
 			 Instance[] instances) {
 	double predicted = rule.getConsequent().value();
-	double mean = dataset.mean();
 
-	double lRMSE = 0;
+	// (1) calculates the mean over all uncovered instances
+
+	int available = 0;
+	double mean = 0;
+
+	for (int i = 0; i < dataset.size(); i++) {
+	    if (instances[i].flag != COVERED) {
+		available += instances[i].weight;
+		mean += dataset.value(i, dataset.classIndex());
+	    }
+	}
+
+	mean /= available;
+
+	// (2) calculates the error measures over the covered instances
+
+	double lSE = 0;
 	double lDefault = 0;
 	double coverage = 0;
 
 	for (int i = 0; i < dataset.size(); i++) {
-	    double actual = dataset.value(i, dataset.classIndex());
-
-	    lRMSE += Math.pow(actual - predicted, 2);
-	    lDefault += Math.pow(actual - mean, 2);
-
 	    if (instances[i].flag == RULE_COVERED) {
+		double actual = dataset.value(i, dataset.classIndex());
+		
+		lSE += Math.pow(actual - predicted, 2);
+		lDefault += Math.pow(actual - mean, 2);
+
 		coverage += instances[i].weight;
 	    }
 	}
+	
+	// (3) calculates the relative squared error (in a way equivalent to relative
+	// root mean squared error considering a simplified version of the equation)
 
-	double RRMSE =
-		CONFIG.get(ALPHA) * (1 - (Math.sqrt(lRMSE / dataset.size())
-			/ Math.sqrt(lDefault / dataset.size())));
+	double error = CONFIG.get(ALPHA) * (1 - (lSE / lDefault));
+	double relCoverage = (1 - CONFIG.get(ALPHA)) * (coverage / available);
 
-	coverage = (1 - CONFIG.get(ALPHA)) * coverage;
-
-	return new Maximise(RRMSE + coverage);
+	return new Maximise(error + relCoverage);
     }
 }
