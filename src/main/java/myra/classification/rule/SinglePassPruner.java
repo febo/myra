@@ -85,9 +85,9 @@ public class SinglePassPruner extends Pruner {
 		}
 	    }
 
-	    // checks that the first term of the rule cover the minimum number
-	    // of cases,
-	    // otherwise disables it and repeat the coverage of the rule
+	    // checks that the first term of the rule cover the minimum
+	    // number of cases, otherwise disables it and repeat the
+	    // coverage of the rule
 	    if (coverage[start].total() < CONFIG.get(MINIMUM_CASES)) {
 		terms[start].setEnabeld(false);
 		start++;
