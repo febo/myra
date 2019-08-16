@@ -56,7 +56,7 @@ public abstract class Variable implements Cloneable {
 	try {
 	    return (Variable) super.clone();
 	} catch (CloneNotSupportedException e) {
-	    throw new InternalError(e);
+	    throw new InternalError(e.getMessage());
 	}
     }
 
