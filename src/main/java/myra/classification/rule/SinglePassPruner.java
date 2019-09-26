@@ -62,7 +62,7 @@ public class SinglePassPruner extends Pruner {
 
 	int start = 0;
 
-	while (start < coverage.length) {
+	//while (start < coverage.length) {
 	    for (int i = 0; i < dataset.size(); i++) {
 		// only considers instances not covered
 		if (instances[i].flag != COVERED) {
@@ -88,19 +88,19 @@ public class SinglePassPruner extends Pruner {
 	    // checks that the first term of the rule cover the minimum number
 	    // of cases,
 	    // otherwise disables it and repeat the coverage of the rule
-	    if (coverage[start].total() < CONFIG.get(MINIMUM_CASES)) {
-		terms[start].setEnabeld(false);
-		start++;
+	 //   if (coverage[start].total() < CONFIG.get(MINIMUM_CASES)) {
+	//	terms[start].setEnabeld(false);
+	//	start++;
 		// reset coverage for all terms
-		for (int j = 0; j < coverage.length; j++) {
-		    coverage[j] = new Coverage(dataset.classLength());
-		}
-	    } else {
+	//	for (int j = 0; j < coverage.length; j++) {
+	//	    coverage[j] = new Coverage(dataset.classLength());
+	//	}
+	//    } else {
 		// when the rule covers the minimum number of cases, stop the
 		// coverage test
-		break;
-	    }
-	}
+	//	break;
+	 //   }
+	//}
 
 	// (2) determines the quality of each term
 

@@ -148,6 +148,12 @@ public class AntMiner extends RuleClassifier {
 				      "i",
 				      "set the maximum %s of iterations",
 				      "number"));
+	// minimum number of covered examples
+	options.add(new IntegerOption(MAXIMUM_LIMIT,
+					      "l",
+					      "set the maximum %s of covered examples per rule in the MDL",
+					      "number"));
+		
 
 	// support to parallel execution
 	options.add(new IntegerOption(PARALLEL,

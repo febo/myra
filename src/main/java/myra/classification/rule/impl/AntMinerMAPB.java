@@ -134,7 +134,25 @@ public class AntMinerMAPB extends RuleClassifier {
     protected Collection<Option<?>> options() {
 	ArrayList<Option<?>> options = new ArrayList<Option<?>>();
 	options.addAll(super.options());
-
+	// archive size 
+	options.add(new IntegerOption(ARCHIVE_SIZE,
+				"v",
+				"specify the size %s of the archive",
+				"size"));
+			
+			
+	// influence 
+	options.add(new DoubleOption(Q,
+						"q",
+						"specify influnce  %s of the high quality rules",
+						"influnce"));
+			
+	// convergence speed
+	options.add(new DoubleOption(CONVERGENCE_SPEED,
+					"s",
+					"specify the %s speed of conversion",
+					"size"));
+			
 	// colony size
 	options.add(new IntegerOption(COLONY_SIZE,
 				      "c",

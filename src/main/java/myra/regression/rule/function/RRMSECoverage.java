@@ -77,9 +77,8 @@ public class RRMSECoverage extends RegressionRuleFunction {
 	    if(instances[i].flag != COVERED)
 	    {
 		    available ++;
-		    double actual = dataset.value(i, dataset.classIndex());
-        
         	    if (instances[i].flag == RULE_COVERED) {
+        		double actual = dataset.value(i, dataset.classIndex());
         		lDefault += Math.pow(actual - mean, 2);
         		lRMSE += Math.pow(actual - predicted, 2);
         		coverage ++;
@@ -98,4 +97,5 @@ public class RRMSECoverage extends RegressionRuleFunction {
 
 	return new Maximise(RRMSE + coverage);
     }
+	
 }

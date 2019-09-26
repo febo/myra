@@ -35,12 +35,14 @@ import static myra.rule.RuleFunction.DEFAULT_FUNCTION;
 import static myra.rule.irl.PheromonePolicy.DEFAULT_POLICY;
 import static myra.rule.irl.RuleFactory.DEFAULT_FACTORY;
 import static myra.rule.irl.SequentialCovering.UNCOVERED;
+import static myra.regression.rule.function.RRMSECoverage.ALPHA;
 
 import java.util.ArrayList;
 import java.util.Collection;
 
 import myra.Option;
 import myra.Option.IntegerOption;
+import myra.Option.DoubleOption;
 import myra.datamining.Dataset;
 import myra.datamining.Model;
 import myra.regression.RegressionModel;
@@ -92,7 +94,7 @@ public class AntMinerReg extends Regressor {
 	CONFIG.set(DYNAMIC_HEURISTIC, Boolean.FALSE);
 
 	// default configuration values
-
+	CONFIG.set(ALPHA, 0.59);
 	CONFIG.set(COLONY_SIZE, 10);
 	CONFIG.set(MAX_ITERATIONS, 500);
 	CONFIG.set(MINIMUM_CASES, 10);
@@ -105,7 +107,14 @@ public class AntMinerReg extends Regressor {
     protected Collection<Option<?>> options() {
 	ArrayList<Option<?>> options = new ArrayList<Option<?>>();
 	options.addAll(super.options());
-
+	
+	
+	// maximum number of iterations
+	options.add(new DoubleOption(ALPHA,
+	                              "a",
+	                              "set the alpha %s value of RRMSECoverage",
+				      "percentage"));
+	
 	// colony size
 	options.add(new IntegerOption(COLONY_SIZE,
 				      "c",
@@ -142,6 +151,12 @@ public class AntMinerReg extends Regressor {
 				      "m",
 				      "set the minimum %s of covered examples per rule",
 				      "number"));
+	// minimum number of covered examples
+	options.add(new IntegerOption(MAXIMUM_LIMIT,
+				      "l",
+				      "set the maximum %s of covered examples per rule in the MDL",
+				      "number"));
+	
 
 	// number of uncovered examples
 	options.add(new IntegerOption(UNCOVERED,

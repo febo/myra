@@ -27,6 +27,7 @@ import static myra.Scheduler.PARALLEL;
 import static myra.datamining.IntervalBuilder.DEFAULT_BUILDER;
 import static myra.datamining.IntervalBuilder.MAXIMUM_LIMIT;
 import static myra.datamining.IntervalBuilder.MINIMUM_CASES;
+import static myra.regression.rule.function.RRMSECoverage.ALPHA;
 import static myra.rule.Assignator.ASSIGNATOR;
 import static myra.rule.Heuristic.DEFAULT_HEURISTIC;
 import static myra.rule.Heuristic.DYNAMIC_HEURISTIC;
@@ -37,6 +38,7 @@ import static myra.rule.RuleFunction.DEFAULT_FUNCTION;
 import static myra.rule.pittsburgh.FindRuleListActivity.UNCOVERED;
 import static myra.rule.pittsburgh.LevelPheromonePolicy.EVAPORATION_FACTOR;
 import static myra.rule.pittsburgh.LevelPheromonePolicy.P_BEST;
+
 
 import java.util.ArrayList;
 import java.util.Collection;
@@ -88,6 +90,7 @@ public class AntMinerRegPB extends Regressor {
 		CONFIG.set(P_BEST, 0.05);
 
 		// default configuration values
+		CONFIG.set(ALPHA, 0.59);
 		CONFIG.set(COLONY_SIZE, 10);
 		CONFIG.set(MAX_ITERATIONS, 500);
 		CONFIG.set(MINIMUM_CASES, 10);
@@ -132,7 +135,17 @@ public class AntMinerRegPB extends Regressor {
 		
 		// evaporation factor
 		options.add(new DoubleOption(EVAPORATION_FACTOR,"e","set the MAX-MIN evaporation %s","factor"));
-
+		
+		// minimum number of covered examples
+		options.add(new IntegerOption(MAXIMUM_LIMIT,
+					      "l",
+					      "set the maximum %s of covered examples per rule in the MDL",
+					      "number"));
+		// maximum number of iterations
+		options.add(new DoubleOption(ALPHA,
+		                              "a",
+		                              "set the alpha %s value of RRMSECoverage",
+					      "percentage"));
 		return options;
 	}
 

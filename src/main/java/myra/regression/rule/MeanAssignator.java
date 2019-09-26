@@ -42,7 +42,7 @@ public class MeanAssignator implements Assignator {
 	int available = 0;
 
 	for (int i = 0; i < instances.length; i++) {
-	    if (instances[i].flag != COVERED) {
+	   if (instances[i].flag != COVERED) {
 		available++;
 
 		if (instances[i].flag == RULE_COVERED) {

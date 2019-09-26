@@ -31,6 +31,7 @@ import static myra.datamining.IntervalBuilder.MAXIMUM_LIMIT;
 import static myra.datamining.IntervalBuilder.MINIMUM_CASES;
 import static myra.datamining.VariableArchive.CONVERGENCE_SPEED;
 import static myra.datamining.VariableArchive.PRECISION;
+import static myra.regression.rule.function.RRMSECoverage.ALPHA;
 import static myra.rule.Assignator.ASSIGNATOR;
 import static myra.rule.Heuristic.DEFAULT_HEURISTIC;
 import static myra.rule.Heuristic.DYNAMIC_HEURISTIC;
@@ -44,6 +45,7 @@ import java.util.ArrayList;
 import java.util.Collection;
 
 import myra.Option;
+import myra.Option.DoubleOption;
 import myra.Option.IntegerOption;
 import myra.datamining.Dataset;
 import myra.datamining.Model;
@@ -82,6 +84,7 @@ public class AntMinerRegMA extends Regressor {
 	CONFIG.set(DYNAMIC_HEURISTIC, Boolean.FALSE);
 
 	// default configuration values
+	CONFIG.set(ALPHA, 0.59);
 	CONFIG.set(ARCHIVE_SIZE, 10);
 	CONFIG.set(Q, 0.369);
 	CONFIG.set(CONVERGENCE_SPEED, 0.6795);
@@ -98,7 +101,25 @@ public class AntMinerRegMA extends Regressor {
     protected Collection<Option<?>> options() {
 	ArrayList<Option<?>> options = new ArrayList<Option<?>>();
 	options.addAll(super.options());
-
+	// archive size 
+	options.add(new IntegerOption(ARCHIVE_SIZE,
+		"v",
+		"specify the size %s of the archive",
+		"size"));
+	
+	
+	// influence 
+	options.add(new DoubleOption(Q,
+				"q",
+				"specify influnce  %s of the high quality rules",
+				"influnce"));
+	
+	// convergence speed
+	options.add(new DoubleOption(CONVERGENCE_SPEED,
+			"s",
+			"specify the %s speed of conversion",
+			"size"));
+	
 	// colony size
 	options.add(new IntegerOption(COLONY_SIZE,
 				      "c",
@@ -147,6 +168,17 @@ public class AntMinerRegMA extends Regressor {
 				      "x",
 				      "set the number of %s for convergence test",
 				      "iterations"));
+	
+	// minimum number of covered examples
+	options.add(new IntegerOption(MAXIMUM_LIMIT,
+		 "l",
+		"set the maximum %s of covered examples per rule in the MDL",
+		 "number"));
+	// maximum number of iterations
+	options.add(new DoubleOption(ALPHA,
+			"a",
+			"set the alpha %s value of RRMSECoverage",
+			"percentage"));
 
 	return options;
     }

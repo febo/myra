@@ -193,7 +193,7 @@ public class FindRuleListActivity extends IterativeActivity<RuleList> {
 	CONFIG.get(DEFAULT_LIST_PRUNER).prune(dataset, list);
 	// evaluates the list
 	list.setQuality(CONFIG.get(DEFAULT_MEASURE).evaluate(dataset, list));
-
+	
 	return list;
     }
 

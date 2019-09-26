@@ -464,7 +464,7 @@ public abstract class Rule implements Weighable<Rule> {
 	    Attribute target = dataset.attributes()[dataset.classIndex()];
 	    buffer.append(getConsequent().toString(target));
 	}
-
+	
 	return buffer.toString();
     }
     

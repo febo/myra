@@ -168,7 +168,9 @@ public class ArchiveFindRuleListActivity extends IterativeActivity<RuleList> {
 
 	    list.add(rule);
 
-	    if (rule.size() == 0) {		
+	    if (rule.size() == 0) {	
+		if(list.size() == 0)
+		    System.out.println("Empty List");
 		break;
 	    }
 
