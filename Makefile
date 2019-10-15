@@ -17,6 +17,7 @@ PACKAGES=\
 	myra/regression/rule/function\
 	myra/regression/rule/impl\
 	myra/rule\
+	myra/rule/archive\
 	myra/rule/irl\
 	myra/rule/pittsburgh\
 	myra/rule/shell\
