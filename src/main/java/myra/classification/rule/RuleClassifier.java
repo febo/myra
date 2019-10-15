@@ -29,7 +29,7 @@ import myra.rule.RuleList;
 import myra.util.Logger;
 
 /**
- * Base class for implementing rule-based classification algorithms. 
+ * Base class for implementing rule-based classification algorithms.
  * 
  * @author Fernnado Esteban Barril Otero
  */
@@ -38,7 +38,7 @@ public abstract class RuleClassifier extends Classifier {
     @Override
     protected void evaluate(Dataset dataset, Model model) {
 	super.evaluate(dataset, model);
-	
+
 	if (((ClassificationModel) model).raw() instanceof RuleList) {
 	    logRules(dataset, (RuleList) ((ClassificationModel) model).raw());
 	}
@@ -47,7 +47,10 @@ public abstract class RuleClassifier extends Classifier {
     /**
      * Logs information about the classification rules.
      * 
-     * @param list the <code>RuleList</code> model.
+     * @param dataset
+     *            the current dataset.
+     * @param list
+     *            the <code>RuleList</code> model.
      */
     protected void logRules(Dataset dataset, RuleList list) {
 	Logger.log("%n>>> Rule coverage:%n%n");
@@ -70,17 +73,17 @@ public abstract class RuleClassifier extends Classifier {
 	    Logger.log("%" + width[i] + "s ",
 		       attributes[dataset.classIndex()].value(i));
 	}
-	
+
 	Logger.log(" <-- class %n");
-	
+
 	for (int i = 0; i < rules.length; i++) {
 	    Logger.log("%" + position + "d ", i + 1);
 	    ClassificationRule c = (ClassificationRule) rules[i];
-	    
+
 	    for (int j = 0; j < width.length; j++) {
 		Logger.log("%" + width[j] + "d ", c.covered()[j]);
 	    }
-	    
+
 	    if (rules[i].isEmpty()) {
 		Logger.log(" (default rule)");
 	    }

@@ -109,8 +109,11 @@ public abstract class VariableArchive<E extends Number & Comparable<E>>
 	/**
 	 * Default constructor.
 	 * 
-	 * @param index
-	 *            the attribute index.
+	 * @param lower
+	 *            the lower bound of values in the attribute domain.
+	 * @param upper
+	 *            the upper bound of values in the attribute domain.
+	 * 
 	 */
 	public Continuous(double lower, double upper) {
 	    this.lower = lower;
@@ -353,12 +356,12 @@ public abstract class VariableArchive<E extends Number & Comparable<E>>
 	public int compareTo(Entry<T> o) {
 	    return Double.compare(quality, o.quality);
 	}
-	
+
 	@Override
 	public double getWeight() {
 	    return weight;
 	}
-	
+
 	@Override
 	public void setWeight(double weight) {
 	    this.weight = weight;

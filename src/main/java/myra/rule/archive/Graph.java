@@ -141,6 +141,9 @@ public class Graph extends myra.rule.Graph {
 
 	/**
 	 * Default constructor.
+	 * 
+	 * @param initial
+	 *            the variable to initialise each pheromone level.
 	 */
 	public Vertex(Variable initial) {
 	    super();
