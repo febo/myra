@@ -8,7 +8,7 @@ While this repository is a fresh start, the versioning is maintained &mdash; ver
 
 ###### Latest Release
 
-* [MYRA 4.5 (jar file)](https://sourceforge.net/projects/myra/files/myra/4.5/myra-4.5.jar/download)
+* [MYRA 4.6 (jar file)](https://sourceforge.net/projects/myra/files/myra/4.6/myra-4.6.jar/download)
 
 ### Algorithms
 
