@@ -126,10 +126,13 @@ public abstract class Algorithm {
      * 
      * @param args
      *            the array representing the command-line arguments.
+     * @param options
+     *            the algorithm's options.
      * 
      * @return a map of parameter [key, value] pairs from the command-line.
      */
-    protected Map<String, String> processCommandLine(String[] args) {
+    protected Map<String, String> processCommandLine(String[] args,
+						     Collection<Option<?>> options) {
 	Map<String, String> parameters =
 		new LinkedHashMap<String, String>(args.length, 1.0f);
 	String current = null;
@@ -159,7 +162,7 @@ public abstract class Algorithm {
 
 	// set options values
 
-	for (Option<?> option : options()) {
+	for (Option<?> option : options) {
 	    if (parameters.containsKey(option.getModifier())) {
 		option.set(parameters.get(option.getModifier()));
 	    }
@@ -187,14 +190,16 @@ public abstract class Algorithm {
     public void run(String[] args) throws Exception {
 	// sets property defaults
 	defaults();
+	// retrieves the algorithm options
+	Collection<Option<?>> options = options();
 	// reads command-line arguments
-	Map<String, String> parameters = processCommandLine(args);
+	Map<String, String> parameters = processCommandLine(args, options);
 
 	if (CONFIG.isPresent(TRAINING_FILE)) {
 	    ARFFReader reader = new ARFFReader();
 	    Dataset dataset = reader.read(CONFIG.get(TRAINING_FILE));
 
-	    logRuntime(dataset, parameters);
+	    logRuntime(dataset, parameters, options);
 
 	    long start = System.nanoTime();
 
@@ -396,8 +401,12 @@ public abstract class Algorithm {
      *            the training dataset.
      * @param parameters
      *            the command-line parameters.
+     * @param options
+     *            the algorithm's options.
      */
-    protected void logRuntime(Dataset dataset, Map<String, String> parameters) {
+    protected void logRuntime(Dataset dataset,
+			      Map<String, String> parameters,
+			      Collection<Option<?>> options) {
 	String description = description() + " " + version();
 	Logger.log("%s", description);
 
@@ -438,7 +447,7 @@ public abstract class Algorithm {
 	// default option values
 	Logger.log("%n%n[Runtime default values]%n");
 
-	for (Option<?> option : options()) {
+	for (Option<?> option : options) {
 	    if (!parameters.containsKey(option.getModifier())
 		    && CONFIG.isPresent(option.getKey())
 		    && !option.getModifier().equals("f")

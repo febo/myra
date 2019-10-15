@@ -106,8 +106,10 @@ public enum ConflictResolution {
 	}
     },
     /**
-     * The confidence resolution strategy. It consist in using the most accurate
-     * rule that covers the instance.
+     * The weighted frequent-class resolution strategy. It consist in adding up
+     * the class frequency of the rules that cover the instance using the
+     * confidence of the rule as a weight and then predict the majority class of
+     * this sum.
      */
     WEIGHTED_FREQUENCY() {
 	@Override
@@ -145,6 +147,30 @@ public enum ConflictResolution {
 	    }
 
 	    return new Label(majority);
+	}
+    },
+    /**
+     * The quality resolution strategy. It consist in using the most accurate
+     * rule that covers the instance.
+     */
+    QUALITY() {
+	@Override
+	public Label resolve(Dataset dataset,
+			     ClassificationRule[] rules,
+			     boolean[] active) {
+	    int best = -1;
+
+	    for (int i = 0; i < rules.length; i++) {
+		if (active[i]) {
+		    if (best == -1 || rules[best].getQuality()
+			    .compareTo(rules[i].getQuality()) < 0) {
+			best = i;
+		    }
+		}
+	    }
+
+	    return (best == -1) ? null
+		    : new Label(rules[best].getConsequent().value());
 	}
     };
 

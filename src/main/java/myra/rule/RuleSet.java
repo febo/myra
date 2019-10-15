@@ -44,6 +44,12 @@ public class RuleSet extends RuleList {
     public static final ConfigKey<ConflictResolution> CONFLICT_RESOLUTION =
 	    new ConfigKey<ConflictResolution>();
 
+    /**
+     * Applies the rule set to the specify dataset. The coverage of each rule is
+     * updated following the order of the rules.
+     * 
+     * @param dataset the current dataset.
+     */
     @Override
     public void apply(Dataset dataset) {
 	Instance[] instances = Instance.newArray(dataset.size());
@@ -52,6 +58,11 @@ public class RuleSet extends RuleList {
 	for (int i = 0; i < rules.length; i++) {
 	    if (rules[i].isEnabled()) {
 		rules[i].apply(dataset, instances);
+		// marks only the correctly covered instances, since
+		// this is how the set of rules were created
+		Dataset.markCorrect(dataset,
+				    instances,
+				    ((Label) rules[i].getConsequent()).value());
 	    }
 	}
     }

@@ -24,6 +24,7 @@ import static myra.IterativeActivity.MAX_ITERATIONS;
 import static myra.IterativeActivity.STAGNATION;
 import static myra.Scheduler.COLONY_SIZE;
 import static myra.Scheduler.PARALLEL;
+import static myra.classification.rule.unordered.ConflictResolution.QUALITY;
 import static myra.datamining.IntervalBuilder.DEFAULT_BUILDER;
 import static myra.rule.Assignator.ASSIGNATOR;
 import static myra.rule.Heuristic.DEFAULT_HEURISTIC;
@@ -32,13 +33,20 @@ import static myra.rule.ListMeasure.DEFAULT_MEASURE;
 import static myra.rule.ListPruner.DEFAULT_LIST_PRUNER;
 import static myra.rule.Pruner.DEFAULT_PRUNER;
 import static myra.rule.RuleFunction.DEFAULT_FUNCTION;
+import static myra.rule.RuleSet.CONFLICT_RESOLUTION;
 import static myra.rule.pittsburgh.FindRuleListActivity.UNCOVERED;
+import static myra.rule.pittsburgh.FindRuleSetActivity.UNORDERED;
 import static myra.rule.pittsburgh.LevelPheromonePolicy.EVAPORATION_FACTOR;
 import static myra.rule.pittsburgh.LevelPheromonePolicy.P_BEST;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collection;
+import java.util.Collections;
+import java.util.Comparator;
+import java.util.Map;
 
+import myra.IterativeActivity;
 import myra.Option;
 import myra.Option.BooleanOption;
 import myra.Option.DoubleOption;
@@ -55,6 +63,7 @@ import myra.classification.rule.MajorityAssignator;
 import myra.classification.rule.PessimisticAccuracy;
 import myra.classification.rule.RuleClassifier;
 import myra.classification.rule.function.Laplace;
+import myra.classification.rule.function.MEstimate;
 import myra.classification.rule.function.SensitivitySpecificity;
 import myra.datamining.Dataset;
 import myra.datamining.IntervalBuilder;
@@ -70,6 +79,7 @@ import myra.rule.RuleFunction;
 import myra.rule.RuleList;
 import myra.rule.TopDownListPruner;
 import myra.rule.pittsburgh.FindRuleListActivity;
+import myra.rule.pittsburgh.FindRuleSetActivity;
 
 /**
  * This class represents the <code><i>c</i>Ant-Miner<sub>PB</sub></code>
@@ -122,9 +132,9 @@ public class cAntMinerPB extends RuleClassifier {
 	CONFIG.set(MAX_ITERATIONS, 500);
 	CONFIG.set(IntervalBuilder.MINIMUM_CASES, 10);
 	CONFIG.set(EVAPORATION_FACTOR, 0.9);
-	CONFIG.set(DEFAULT_MEASURE, new PessimisticAccuracy());
 	CONFIG.set(UNCOVERED, 0.01);
 	CONFIG.set(STAGNATION, 40);
+	CONFIG.set(DEFAULT_MEASURE, new PessimisticAccuracy());
 	CONFIG.set(DEFAULT_PRUNER, new BacktrackPruner());
 	CONFIG.set(DEFAULT_LIST_PRUNER, new ListPruner.None());
 	CONFIG.set(DEFAULT_FUNCTION, new SensitivitySpecificity());
@@ -135,14 +145,71 @@ public class cAntMinerPB extends RuleClassifier {
 
     @Override
     protected ClassificationModel train(Dataset dataset) {
-	FindRuleListActivity activity =
-		new FindRuleListActivity(new Graph(dataset), dataset);
+	IterativeActivity<RuleList> activity = CONFIG.isPresent(UNORDERED)
+		? new FindRuleSetActivity(new Graph(dataset), dataset)
+		: new FindRuleListActivity(new Graph(dataset), dataset);
 
 	Scheduler<RuleList> scheduler = Scheduler.newInstance(1);
 	scheduler.setActivity(activity);
 	scheduler.run();
 
-	return new ClassificationModel(activity.getBest());
+	RuleList list = activity.getBest();
+
+	// if the list of rules was created in an unordered fashion, rules are ordered
+	// by quality an added to a (ordered) list of rules
+	if (CONFIG.isPresent(UNORDERED)) {
+	    ArrayList<Rule> rules =
+		    new ArrayList<Rule>(Arrays.asList(list.rules()));
+	    // sort rules in descending
+	    Collections.sort(rules, new Comparator<Rule>() {
+		@Override
+		public int compare(Rule o1, Rule o2) {
+		    return o2.compareTo(o1);
+		}
+	    });
+	
+	    RuleList ordered = new RuleList();
+	    ordered.setIteration(list.getIteration());
+	    ordered.setQuality(list.getQuality());
+	    
+	    for (Rule rule : rules) {
+		if (!rule.isEmpty()) {
+		    ordered.add(rule);
+		}
+	    }
+	    // make sure the default rule is the last rule on the list
+	    ordered.add(list.defaultRule());
+	    
+	    list = ordered;
+	}
+
+	return new ClassificationModel(list);
+    }
+
+    @Override
+    protected Map<String, String> processCommandLine(String[] args,
+						     Collection<Option<?>> options) {
+	Map<String, String> parameters =
+		super.processCommandLine(args, options);
+	// in case we are creating a list of rules in an unordered fashion,
+	// the default values are different than the ordered case
+	if (CONFIG.isPresent(UNORDERED)) {
+	    for (Option<?> option : options) {
+		if (option.getModifier().equals("l")
+			&& !parameters.containsKey("l")) {
+		    // sets the default list measure to accuracy
+		    option.set("accuracy");
+		} else if (option.getModifier().equals("r")
+			&& !parameters.containsKey("r")) {
+		    // sets the default rule function to MEstimate
+		    option.set("mestimate");
+		}
+	    }
+	    // always using the quality of rules to resolve conflicts
+	    CONFIG.set(CONFLICT_RESOLUTION, QUALITY);
+	}
+
+	return parameters;
     }
 
     @Override
@@ -235,6 +302,7 @@ public class cAntMinerPB extends RuleClassifier {
 					 true,
 					 "function");
 	function.add("laplace", new Laplace());
+	function.add("mestimate", new MEstimate());
 	function.add("sen_spe", CONFIG.get(DEFAULT_FUNCTION));
 	options.add(function);
 
@@ -277,6 +345,13 @@ public class cAntMinerPB extends RuleClassifier {
 	builder.add("c45", new C45Split());
 	builder.add("mdl", CONFIG.get(DEFAULT_BUILDER));
 	options.add(builder);
+
+	// unordered rule list discovery
+	BooleanOption unordered =
+		new BooleanOption(UNORDERED,
+				  "-unordered",
+				  "enables the unordered rule list creation");
+	options.add(unordered);
 
 	return options;
     }
