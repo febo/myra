@@ -377,13 +377,17 @@ public abstract class Rule implements Weighable<Rule> {
      */
     @Override
     public int compareTo(Rule o) {
+	// (1) if the quality of this rule is null
 	int c = (quality == null && o.quality != null) ? -1
+		// (2) if the quality of the other rule is null
 		: (quality != null && o.quality == null) ? 1
+			// (3) if both rules have null quality
 			: (quality == null && o.quality == null) ? 0
+				// (4) both rules have quality associated
 				: quality.compareTo(o.quality);
 
 	if (c == 0) {
-	    // smaller the better
+	    // smaller the better (occam's razor criteria)
 	    c = Double.compare(o.size(), size());
 	}
 
