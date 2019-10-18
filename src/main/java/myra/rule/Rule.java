@@ -69,7 +69,7 @@ public abstract class Rule implements Weighable<Rule> {
      * Indicates if the rule is enabled or not.
      */
     protected boolean enabled;
-    
+
     /**
      * The solution weight.
      */
@@ -371,12 +371,19 @@ public abstract class Rule implements Weighable<Rule> {
      * Compares this rule with the specified rule. The first criteria is the
      * quality; in the case that both rules have the same quality, their are
      * compared in terms of size (occam's razor criteria).
+     * 
+     * @param o
+     *            the rule to be compared.
      */
     @Override
     public int compareTo(Rule o) {
-	int c = (quality == null ? 0 : quality.compareTo(o.quality));
+	int c = (quality == null && o.quality != null) ? -1
+		: (quality != null && o.quality == null) ? 1
+			: (quality == null && o.quality == null) ? 0
+				: quality.compareTo(o.quality);
 
 	if (c == 0) {
+	    // smaller the better
 	    c = Double.compare(o.size(), size());
 	}
 
@@ -467,12 +474,12 @@ public abstract class Rule implements Weighable<Rule> {
 
 	return buffer.toString();
     }
-    
+
     @Override
     public double getWeight() {
-        return weight;
+	return weight;
     }
-    
+
     @Override
     public void setWeight(double weight) {
 	this.weight = weight;
