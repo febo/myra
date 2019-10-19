@@ -51,7 +51,7 @@ import myra.rule.RuleSet;
  */
 public class FindRuleSetActivity extends IterativeActivity<RuleList> {
     public static final ConfigKey<Boolean> UNORDERED = new ConfigKey<Boolean>();
-    
+
     /**
      * The current dataset.
      */
@@ -106,8 +106,8 @@ public class FindRuleSetActivity extends IterativeActivity<RuleList> {
      *            the rule factory.
      */
     public FindRuleSetActivity(Graph graph,
-					 Dataset dataset,
-					 LevelRuleFactory factory) {
+			       Dataset dataset,
+			       LevelRuleFactory factory) {
 	this(graph, dataset, factory, new LevelPheromonePolicy());
     }
 
@@ -124,9 +124,9 @@ public class FindRuleSetActivity extends IterativeActivity<RuleList> {
      *            the pheromone policy.
      */
     public FindRuleSetActivity(Graph graph,
-					 Dataset dataset,
-					 LevelRuleFactory factory,
-					 LevelPheromonePolicy policy) {
+			       Dataset dataset,
+			       LevelRuleFactory factory,
+			       LevelPheromonePolicy policy) {
 	this.graph = graph;
 	this.dataset = dataset;
 	this.factory = factory;
@@ -134,7 +134,7 @@ public class FindRuleSetActivity extends IterativeActivity<RuleList> {
     }
 
     @Override
-    public RuleList create() {
+    public RuleSet create() {
 	Instance[] instances = Instance.newArray(dataset.size());
 	Instance.markAll(instances, NOT_COVERED);
 	Entry[] heuristic = Entry.deepClone(INITIAL_HEURISTIC);
