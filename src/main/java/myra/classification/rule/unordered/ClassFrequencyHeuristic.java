@@ -62,7 +62,6 @@ public class ClassFrequencyHeuristic implements Heuristic {
 			   Dataset dataset,
 			   Instance[] instances,
 			   int target) {
-	// TODO Auto-generated method stub
 	return compute(graph, dataset, instances, new boolean[0], target);
     }
 
