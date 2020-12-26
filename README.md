@@ -4,11 +4,11 @@ MYRA is a collection of Ant Colony Optimization (ACO) algorithms for the data mi
 
 This repository contains a complete rewrite of the code (by the same author) from the MYRA project hosted at [sourceforge](http://sourceforge.net/projects/myra/). The computational time has been significantly improved &mdash; tasks that used to take minutes, now are done in seconds &mdash; although it was not possible to maintain backward compatibility. You will find that the overall architecture is very similar, but most of the data structures have changed.
 
-While this repository is a fresh start, the versioning is maintained &mdash; version `4.x` is the new version of the refactored code. If you are interested in the hierarchical multi-label algorithms (`3.x` versions), check the [sourceforge](http://sourceforge.net/projects/myra/) repository. These algorithms will eventually be refactored into this repository.
+While this repository is a fresh start, the versioning is maintained &mdash; the initial version of the refactored is `4.x`. Most algorithms from version `3.x` have been included in the refactored code, although the GUI is currently not available on version `5.x`.
 
 ###### Latest Release
 
-* [MYRA 4.6 (jar file)](https://sourceforge.net/projects/myra/files/myra/4.6/myra-4.6.jar/download)
+* [MYRA 5.0 (jar file)](https://sourceforge.net/projects/myra/files/myra/5.0/myra-5.0.jar/download)
 
 ### Algorithms
 
@@ -16,28 +16,28 @@ The following algorithms are implemented:
 
 ##### Ant-Miner
 ```
-Main class: myra.classification.rule.impl.AntMiner
+Main class: myra.algorithm.AntMiner
 ```
 
 The first rule induction ACO classification algorithm. Ant-Miner uses a sequentical covering strategy combined with an ACO search to create a list of rules. Ant-Miner only supports categorical attributes, continuous attributes need to be discretised in a pre-processing step.
 
-##### *c*Ant-Miner
+##### Continuous Ant-Miner (*c*Ant-Miner)
 ```
-Main class: myra.classification.rule.impl.cAntMiner
+Main class: myra.algorithm.ContinuousAntMiner
 ```
 
 An extension of Ant-Miner to cope with continuous attributes. It works essentially the same as Ant-Miner, but continuous attributes undergo a dynamic discretisation process when selected to be included in a rule.
 
-##### *c*Ant-Miner<sub>PB</sub>
+##### Pittsburgh Continuous Ant-Miner (*c*Ant-Miner<sub>PB</sub>)
 ```
-Main class: myra.classification.rule.impl.cAntMinerPB
+Main class: myra.algorithm.PittsburghContinuousAntMiner
 ```
 
 *c*Ant-Miner<sub>PB</sub> incorporates  a new strategy to discover a list of classification rules, which guides the search performed by the ACO algorithm using the quality of a candidate list of rules, instead of a single rule. The main motivation is to avoid the problem of rule interaction derived from the order in which the rules are discovered &mdash; i.e., the outcome of a rule affects the rules that can be discovered subsequently since the search space is modified due to the removal of examples covered by previous rules.
 
-##### Unordered *c*Ant-Miner<sub>PB</sub>
+##### Unordered Pittsburgh Continuous Ant-Miner (Unordered *c*Ant-Miner<sub>PB</sub>)
 ```
-Main class: myra.classification.rule.impl.UcAntMinerPB
+Main class: myra.algorithm.UnorderedPittsburghContinuousAntMiner
 ```
 
 An extension to the *c*Ant-Miner<sub>PB</sub> in order to discover unordered rules to improve the interpretation of individual rules. In an ordered list of rules, the effect (meaning) of a rule depends on all previous rules in the list, since a rule is only used if all previous rules do not cover the example. On the other hand, in an unordered set of rules, an example is shown to all rules and, depending on the conflict resolution strategy, a single rule is used to make a prediction.
@@ -56,6 +56,13 @@ Main class: myra.regression.rule.impl.AntMinerReg
 
 The first rule induction ACO regression algorithm. Ant-Miner-Reg uses a sequentical covering strategy combined with an ACO search to create a list of regression rules.
 
+##### Hierarchical Multi-Label Ant-Miner (*hm*Ant-Miner)
+```
+Main class: myra.regression.rule.impl.AntMinerReg
+```
+
+*hm*Ant-Miner is the first Ant-Miner variation for hierarchical multi-label classification problems. *hm*Ant-Miner uses a sequentical covering strategy combined with an ACO search to create a list of hierarchical classification rules that predict multiple class labels from a hierarchy.
+
 ### Running the algorithms
 
 All algorihtms can be used in the command line:
@@ -64,34 +71,29 @@ All algorihtms can be used in the command line:
 java -cp myra-<version>.jar <main class> -f <arff training file>
 ```
 
-where `<version>` is MYRA version number (e.g., `4.5`), `<main class>` is the main class name of the algorithm and `<aff training file>` is the path to the ARFF file to be used as training data. The minimum requirement to run an algorihtm is a training file. If no training file is specified, a list of options is printed:
+where `<version>` is MYRA version number (e.g., `5.0`), `<main class>` is the main class name of the algorithm and `<aff training file>` is the path to the ARFF file to be used as training data. The minimum requirement to run an algorihtm is a training file. If no training file is specified, a list of options is printed:
 
 ```
-[febo@uok myra]$ java -cp myra-4.5.jar myra.classification.rule.impl.cAntMinerPB
+[febo@uok myra]$ java -cp myra-4.5.jar myra.algorithm.ContinuousAntMiner
 
-Usage: cAntMinerPB -f <arff_training_file> [-t <arff_test_file>] [options]
+Usage: ContinuousAntMiner -f <arff_training_file> [-t <arff_test_file>] [options]
 
 The minimum required parameter is a training file to build the model from. If a 
-test file is specified, the model will be tested at the end of training. The 
-results are presented in a confusion matrix. 
+test file is specified, the model will be tested at the end of training. 
 
 The following options are available:
 
-  -c <size>             specify the size of the colony (default 5) 
+  -c <size>             specify the size of the colony (default 60) 
 
-  -d <method>           specify the discretisation [c45 | mdl] (default mdl) 
-
-  -e <factor>           set the MAX-MIN evaporation factor (default 0.9) 
+  -d <method>           specify the discretisation method [c45 | mdl] (default 
+                        mdl) 
 
   -g                    enables the dynamic heuristic computation 
 
   -h <method>           specify the heuristic method [gain | none] (default 
                         gain) 
 
-  -i <number>           set the maximum number of iterations (default 500) 
-
-  -l <function>         specify the rule list quality function [accuracy | 
-                        pessimistic] (default pessimistic) 
+  -i <number>           set the maximum number of iterations (default 1500) 
 
   -m <number>           set the minimum number of covered examples per rule 
                         (default 10) 
@@ -99,16 +101,18 @@ The following options are available:
   -p <method>           specify the rule pruner method [backtrack | greedy] 
                         (default backtrack) 
 
-  -r <function>         specify the rule quality function [laplace | sen_spe] 
-                        (default sen_spe) 
+  -r <function>         specify the rule quality function [accuracy | laplace | 
+                        sen_spe] (default sen_spe) 
 
   -s <seed>             Random seed value (default current time) 
 
-  -u <percentage>       set the percentage of allowed uncovered examples 
-                        (default 0.01) 
+  -u <number>           set the allowed number of uncovered examples (default 
+                        10) 
 
   -x <iterations>       set the number of iterations for convergence test 
-                        (default 40) 
+                        (default 10) 
+
+  --export <file>       Path of the file to save the model 
 
   --parallel <cores>    enable parallel execution in multiple cores; if no cores 
                         are specified, use all available cores 
@@ -147,7 +151,7 @@ If you also would like to make a reference to the MYRA repository, please includ
     pages   = {321--332}
 }
 ```
-##### *c*Ant-Miner
+##### Continuous Ant-Miner (*c*Ant-Miner)
 
 * F.E.B. Otero, A.A. Freitas and C.G. Johnson. cAnt-Miner: an ant colony classification algorithm to cope with continuous attributes. In: Ant Colony Optimization and Swarm Intelligence (Proc. ANTS 2008), Lecture Notes in Computer Science 5217, pp. 48&ndash;59. Springer, 2008.
 ```
@@ -174,7 +178,7 @@ If you also would like to make a reference to the MYRA repository, please includ
 }
 ```
 
-##### *c*Ant-Miner<sub>PB</sub>
+##### Pittsburgh Continuous Ant-Miner (*c*Ant-Miner<sub>PB</sub>)
 
 * F.E.B. Otero, A.A. Freitas and C.G. Johnson. A New Sequential Covering Strategy for Inducing Classification Rules with Ant Colony Algorithms. In: IEEE Transactions on Evolutionary Computation, Volume 17, Issue 1, pp. 64&ndash;74. IEEE, 2013.
 ```
@@ -202,7 +206,7 @@ If you also would like to make a reference to the MYRA repository, please includ
 }
 ```
 
-##### Unordered *c*Ant-Miner<sub>PB</sub>
+##### Unordered Pittsburgh Continuous Ant-Miner (Unordered *c*Ant-Miner<sub>PB</sub>)
 
 * F.E.B. Otero and A.A. Freitas. Improving the Interpretability of Classification Rules Discovered by an Ant Colony Algorithm: Extended Results. Evolutionary Computation, Volume 24, Issue 3, pp. 385&ndash;409. MIT Press, 2015.
 ```
@@ -255,5 +259,20 @@ If you also would like to make a reference to the MYRA repository, please includ
     publisher = {ACM Press},
     pages     = {1005--1012},
     year      = {2015}
+}
+```
+
+##### Hierarchical Multi-Label Ant-Miner (*hm*Ant-Miner)
+
+* F.E.B. Otero, A.A. Freitas and C.G. Johnson. Inducing Decision Trees with An Ant Colony Optimization Algorithm. Applied Soft Computing, Volume 12, Issue 11, pp. 3615&ndash;3626, 2012.
+```
+@ARTICLE{Otero10hierarchical,
+    author  = {F.E.B. Otero, A.A. Freitas and C.G. Johnson},
+    title   = {A Hierarchical Multi-Label Classification Ant Colony Algorithm for Protein Function Prediction},
+    journal = {Memetic Computing},
+    year    = {2010},
+    volume  = {2},
+    number  = {3},
+    pages   = {165–-181}
 }
 ```
