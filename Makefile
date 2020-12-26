@@ -2,11 +2,13 @@ SRC=src/main/java
 OUTPUT=target
 PACKAGES=\
 	myra\
+	myra/algorithm\
 	myra/classification\
 	myra/classification/attribute\
+	myra/classification/hierarchical\
 	myra/classification/rule\
 	myra/classification/rule/function\
-	myra/classification/rule/impl\
+	myra/classification/rule/hierarchical\
 	myra/classification/rule/unordered\
 	myra/classification/rule/unordered/attribute\
 	myra/classification/tree\
@@ -15,7 +17,6 @@ PACKAGES=\
 	myra/regression/attribute\
 	myra/regression/rule\
 	myra/regression/rule/function\
-	myra/regression/rule/impl\
 	myra/rule\
 	myra/rule/archive\
 	myra/rule/irl\
@@ -55,4 +56,4 @@ jar: $(CLASS_FILES)
 %.class: %.java
 	@mkdir -p $(OUTPUT)/classes
 	@echo "Compiling $<"
-	@$(JAVAC) -source 7 -target 7 -Xlint:-options -cp $(SRC) -d $(OUTPUT)/classes $<
+	@$(JAVAC) -source 8 -target 8 -Xlint:-options -cp $(SRC) -d $(OUTPUT)/classes $<
