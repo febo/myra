@@ -36,7 +36,7 @@ public interface RuleFactory {
      * The config key for the default rule factory instance.
      */
     public final static ConfigKey<RuleFactory> DEFAULT_FACTORY =
-	    new ConfigKey<RuleFactory>();
+            new ConfigKey<RuleFactory>();
 
     /**
      * Creates a classification rule. Note that this method does not need to set
@@ -54,7 +54,7 @@ public interface RuleFactory {
      * @return a classification rule.
      */
     public Rule create(Graph graph,
-		       Entry[] heuristic,
-		       Dataset dataset,
-		       Instance[] instances);
+                       Entry[] heuristic,
+                       Dataset dataset,
+                       Instance[] instances);
 }

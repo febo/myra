@@ -30,16 +30,16 @@ import myra.rule.shell.Memory;
 public class Quit implements Command {
     @Override
     public void execute(Memory memory, String... arguments) {
-	System.exit(0);
+        System.exit(0);
     }
 
     @Override
     public String name() {
-	return "quit";
+        return "quit";
     }
-    
+
     @Override
     public int size() {
-	return 0;
+        return 0;
     }
 }

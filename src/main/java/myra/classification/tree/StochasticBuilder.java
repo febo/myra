@@ -41,71 +41,70 @@ public class StochasticBuilder extends TreeBuilder {
      * level of the tree.
      */
     public final static ConfigKey<Boolean> DYNAMIC_HEURISTIC =
-	    new ConfigKey<>();
+            new ConfigKey<>();
 
     @Override
     protected Attribute select(Graph graph,
-			       double[] heuristic,
-			       Dataset dataset,
-			       boolean[] used,
-			       Instance[] instances,
-			       InternalNode parent,
-			       final int index) {
-	if (CONFIG.get(DYNAMIC_HEURISTIC)) {
-	    heuristic = CONFIG.get(DEFAULT_HEURISTIC).compute(dataset,
-							      instances,
-							      used);
-	}
+                               double[] heuristic,
+                               Dataset dataset,
+                               boolean[] used,
+                               Instance[] instances,
+                               InternalNode parent,
+                               final int index) {
+        if (CONFIG.get(DYNAMIC_HEURISTIC)) {
+            heuristic = CONFIG.get(DEFAULT_HEURISTIC)
+                    .compute(dataset, instances, used);
+        }
 
-	double[] pheromone = graph.pheromone((parent == null) ? START_INDEX
-		: InternalNode.encode(parent, parent.conditions[index]));
+        double[] pheromone = graph.pheromone((parent == null) ? START_INDEX
+                : InternalNode.encode(parent, parent.conditions[index]));
 
-	double[] probabilities = new double[pheromone.length];
-	double total = 0;
+        double[] probabilities = new double[pheromone.length];
+        double total = 0;
 
-	for (int i = 0; i < pheromone.length; i++) {
-	    if (!used[i]) {
-		probabilities[i] = pheromone[i] * heuristic[i];
-		total += probabilities[i];
-	    } else {
-		probabilities[i] = 0.0;
-	    }
-	}
+        for (int i = 0; i < pheromone.length; i++) {
+            if (!used[i]) {
+                probabilities[i] = pheromone[i] * heuristic[i];
+                total += probabilities[i];
+            } else {
+                probabilities[i] = 0.0;
+            }
+        }
 
-	if (total == 0.0) {
-	    // there are no compatible attributes, the creation process
-	    // is stopped
-	    return null;
-	}
+        if (total == 0.0) {
+            // there are no compatible attributes, the creation process
+            // is stopped
+            return null;
+        }
 
-	// prepares the roulette by accumulating the probabilities
-	double cumulative = 0.0;
+        // prepares the roulette by accumulating the probabilities
+        double cumulative = 0.0;
 
-	for (int i = 0; i < probabilities.length; i++) {
-	    if (probabilities[i] > 0) {
-		probabilities[i] = cumulative + (probabilities[i] / total);
-		cumulative = probabilities[i];
-	    }
-	}
+        for (int i = 0; i < probabilities.length; i++) {
+            if (probabilities[i] > 0) {
+                probabilities[i] = cumulative + (probabilities[i] / total);
+                cumulative = probabilities[i];
+            }
+        }
 
-	for (int i = (probabilities.length - 1); i >= 0; i--) {
-	    if (probabilities[i] > 0) {
-		probabilities[i] = 1.0;
-		break;
-	    }
-	}
+        for (int i = (probabilities.length - 1); i >= 0; i--) {
+            if (probabilities[i] > 0) {
+                probabilities[i] = 1.0;
+                break;
+            }
+        }
 
-	// roulette selection
-	double slot = CONFIG.get(RANDOM_GENERATOR).nextDouble();
-	int selected = -1;
+        // roulette selection
+        double slot = CONFIG.get(RANDOM_GENERATOR).nextDouble();
+        int selected = -1;
 
-	for (int i = 0; i < probabilities.length; i++) {
-	    if (slot < probabilities[i]) {
-		selected = i;
-		break;
-	    }
-	}
+        for (int i = 0; i < probabilities.length; i++) {
+            if (slot < probabilities[i]) {
+                selected = i;
+                break;
+            }
+        }
 
-	return (selected == -1) ? null : dataset.attributes()[selected];
+        return (selected == -1) ? null : dataset.attributes()[selected];
     }
 }

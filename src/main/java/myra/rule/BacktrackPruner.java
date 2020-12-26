@@ -36,37 +36,37 @@ import myra.rule.Rule.Term;
 public class BacktrackPruner extends Pruner {
     @Override
     public int prune(Dataset dataset,
-		     Rule rule,
-		     Instance[] instances,
-		     RuleFunction function) {
-	Assignator assignator = CONFIG.get(ASSIGNATOR);
-	int available = assignator.assign(dataset, rule, instances);
+                     Rule rule,
+                     Instance[] instances,
+                     RuleFunction function) {
+        Assignator assignator = CONFIG.get(ASSIGNATOR);
+        int available = assignator.assign(dataset, rule, instances);
 
-	Cost best = function.evaluate(dataset, rule, instances);
-	Term last = null;
+        Cost best = function.evaluate(dataset, rule, instances);
+        Term last = null;
 
-	while (rule.size() > 1) {
-	    last = rule.pop();
-	    rule.apply(dataset, instances);
-	    int pruned = assignator.assign(dataset, rule, instances);
+        while (rule.size() > 1) {
+            last = rule.pop();
+            rule.apply(dataset, instances);
+            int pruned = assignator.assign(dataset, rule, instances);
 
-	    Cost current = function.evaluate(dataset, rule, instances);
+            Cost current = function.evaluate(dataset, rule, instances);
 
-	    if (current.compareTo(best) >= 0) {
-		available = pruned;
-		best = current;
-	    } else {
-		rule.push(last);
-		rule.apply(dataset, instances);
-		available = assignator.assign(dataset, rule, instances);
+            if (current.compareTo(best) >= 0) {
+                available = pruned;
+                best = current;
+            } else {
+                rule.push(last);
+                rule.apply(dataset, instances);
+                available = assignator.assign(dataset, rule, instances);
 
-		break;
-	    }
-	}
+                break;
+            }
+        }
 
-	rule.compact();
-	rule.setQuality(best);
+        rule.compact();
+        rule.setQuality(best);
 
-	return available;
+        return available;
     }
 }

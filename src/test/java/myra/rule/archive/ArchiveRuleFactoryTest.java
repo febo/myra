@@ -53,36 +53,36 @@ public class ArchiveRuleFactoryTest extends TestCase {
 
     @Override
     protected void setUp() throws Exception {
-	CONFIG.set(Archive.ARCHIVE_SIZE, 5);
-	CONFIG.set(VariableArchive.PRECISION, 2.0);
-	CONFIG.set(RANDOM_GENERATOR, new Random(System.currentTimeMillis()));
-	CONFIG.set(Rule.DEFAULT_RULE, ClassificationRule.class);
+        CONFIG.set(Archive.ARCHIVE_SIZE, 5);
+        CONFIG.set(VariableArchive.PRECISION, 2.0);
+        CONFIG.set(RANDOM_GENERATOR, new Random(System.currentTimeMillis()));
+        CONFIG.set(Rule.DEFAULT_RULE, ClassificationRule.class);
 
-	ARFFReader reader = new ARFFReader();
-	dataset = reader.read(new InputStreamReader(getClass()
-		.getResourceAsStream("/weather.arff")));
+        ARFFReader reader = new ARFFReader();
+        dataset = reader.read(new InputStreamReader(getClass()
+                .getResourceAsStream("/weather.arff")));
 
-	graph = new Graph(dataset);
-	Entry[][] matrix = graph.matrix();
+        graph = new Graph(dataset);
+        Entry[][] matrix = graph.matrix();
 
-	for (int i = 0; i < graph.size(); i++) {
-	    for (int j = 0; j < graph.size(); j++) {
-		if (matrix[i][j] != null) {
-		    matrix[i][j] = new Entry(1.0, 1.0);
-		}
-	    }
-	}
+        for (int i = 0; i < graph.size(); i++) {
+            for (int j = 0; j < graph.size(); j++) {
+                if (matrix[i][j] != null) {
+                    matrix[i][j] = new Entry(1.0, 1.0);
+                }
+            }
+        }
     }
 
     public void testCreate() {
-	Instance[] instances = Instance.newArray(dataset.size());
-	Instance.markAll(instances, NOT_COVERED);
+        Instance[] instances = Instance.newArray(dataset.size());
+        Instance.markAll(instances, NOT_COVERED);
 
-	Entry[] heuristic =
-		new Heuristic.None().compute(graph, dataset, instances);
+        Entry[] heuristic =
+                new Heuristic.None().compute(graph, dataset, instances);
 
-	Rule rule = new ArchiveRuleFactory()
-		.create(0, graph, heuristic, dataset, instances);
-	assertTrue(!rule.isEmpty());
+        Rule rule = new ArchiveRuleFactory()
+                .create(0, graph, heuristic, dataset, instances);
+        assertTrue(!rule.isEmpty());
     }
 }

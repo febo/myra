@@ -42,104 +42,104 @@ import myra.datamining.Dataset.Instance;
 public class BinaryMDLSplit extends MDLSplit implements ClassAwareSplit {
     @Override
     public Condition[] multiple(Dataset dataset,
-				Instance[] instances,
-				int attribute) {
-	throw new UnsupportedOperationException();
+                                Instance[] instances,
+                                int attribute) {
+        throw new UnsupportedOperationException();
     }
 
     @Override
     public Condition single(Dataset dataset,
-			    Instance[] instances,
-			    int attribute) {
-	throw new UnsupportedOperationException();
+                            Instance[] instances,
+                            int attribute) {
+        throw new UnsupportedOperationException();
     }
 
     @Override
     public Condition[] multiple(Dataset dataset,
-				Instance[] instances,
-				int attribute,
-				int target) {
-	Pair[] candidates = new Pair[dataset.size()];
-	double[] frequency = new double[dataset.classLength()];
+                                Instance[] instances,
+                                int attribute,
+                                int target) {
+        Pair[] candidates = new Pair[dataset.size()];
+        double[] frequency = new double[dataset.classLength()];
 
-	int index = 0;
-	double size = 0;
+        int index = 0;
+        double size = 0;
 
-	for (int i = 0; i < dataset.size(); i++) {
-	    // the dynamc discretisation only considers the instances covered
-	    // by the current rule
-	    if (instances[i].flag == RULE_COVERED) {
-		double v = dataset.value(i, attribute);
+        for (int i = 0; i < dataset.size(); i++) {
+            // the dynamc discretisation only considers the instances covered
+            // by the current rule
+            if (instances[i].flag == RULE_COVERED) {
+                double v = dataset.value(i, attribute);
 
-		if (!Double.isNaN(v)) {
-		    Pair pair = new Pair();
-		    pair.value = v;
-		    pair.classValue =
-			    (dataset.value(i, dataset.classIndex()) == target)
-				    ? 1 // positive (target)
-				    : 0; // negative
-		    pair.weight = instances[i].weight;
-		    candidates[index] = pair;
+                if (!Double.isNaN(v)) {
+                    Pair pair = new Pair();
+                    pair.value = v;
+                    pair.classValue =
+                            (dataset.value(i, dataset.classIndex()) == target)
+                                    ? 1 // positive (target)
+                                    : 0; // negative
+                    pair.weight = instances[i].weight;
+                    candidates[index] = pair;
 
-		    size += pair.weight;
+                    size += pair.weight;
 
-		    index++;
-		}
-	    }
-	}
+                    index++;
+                }
+            }
+        }
 
-	if (index == 0) {
-	    // there are no candidate threshold values
-	    return null;
-	}
+        if (index == 0) {
+            // there are no candidate threshold values
+            return null;
+        }
 
-	candidates = Arrays.copyOf(candidates, index);
-	Arrays.sort(candidates);
+        candidates = Arrays.copyOf(candidates, index);
+        Arrays.sort(candidates);
 
-	Condition[] conditions = create(candidates,
-					0,
-					candidates.length,
-					frequency,
-					size,
-					IntervalBuilder.minimumCases(dataset,
-								     size));
+        Condition[] conditions =
+                create(candidates,
+                       0,
+                       candidates.length,
+                       frequency,
+                       size,
+                       IntervalBuilder.minimumCases(dataset, size));
 
-	if (conditions == null) {
-	    // no interval was created
-	    return null;
-	} else {
-	    for (Condition c : conditions) {
-		c.attribute = attribute;
-	    }
+        if (conditions == null) {
+            // no interval was created
+            return null;
+        } else {
+            for (Condition c : conditions) {
+                c.attribute = attribute;
+            }
 
-	    return conditions;
-	}
+            return conditions;
+        }
     }
 
     @Override
     public Condition single(Dataset dataset,
-			    Instance[] instances,
-			    int attribute,
-			    int target) {
-	Condition[] conditions =
-		multiple(dataset, instances, attribute, target);
-	Condition best = null;
-	double ratio = Double.MIN_VALUE;
+                            Instance[] instances,
+                            int attribute,
+                            int target) {
+        Condition[] conditions =
+                multiple(dataset, instances, attribute, target);
+        Condition best = null;
+        double ratio = Double.MIN_VALUE;
 
-	if (conditions != null && conditions.length > 0) {
-	    for (Condition c : conditions) {
-		// index 1 is the target (positive) value
-		double r = c.frequency[target] / c.length;
+        if (conditions != null && conditions.length > 0) {
+            for (Condition c : conditions) {
+                // index 1 is the target (positive) value
+                double r = c.frequency[target] / c.length;
 
-		if (r > ratio) {
-		    best = c;
-		    ratio = r;
-		} else if (r == ratio && c.length > best.length) {
-		    best = c;
-		}
-	    }
-	}
+                if (r > ratio) {
+                    best = c;
+                    ratio = r;
+                } else if (r == ratio && c.length > best.length) {
+                    best = c;
+                }
+            }
+        }
 
-	return best;
+        return best;
     }
 }

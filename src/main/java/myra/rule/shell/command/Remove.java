@@ -38,34 +38,34 @@ import myra.rule.shell.Memory;
 public class Remove implements Command {
     @Override
     public void execute(Memory memory, String... arguments) {
-	Dataset dataset = memory.get(DATASET);
-	Instance[] instances = memory.get(INSTANCES);
+        Dataset dataset = memory.get(DATASET);
+        Instance[] instances = memory.get(INSTANCES);
 
-	if (dataset == null || instances == null) {
-	    System.out.println("Dataset not loaded.");
-	} else {
-	    int[] indexes = new int[arguments.length];
+        if (dataset == null || instances == null) {
+            System.out.println("Dataset not loaded.");
+        } else {
+            int[] indexes = new int[arguments.length];
 
-	    for (int i = 0; i < arguments.length; i++) {
-		indexes[i] = Integer.parseInt(arguments[i]);
-	    }
+            for (int i = 0; i < arguments.length; i++) {
+                indexes[i] = Integer.parseInt(arguments[i]);
+            }
 
-	    System.out
-		    .println("Available instances: " + dataset.remove(indexes));
+            System.out
+                    .println("Available instances: " + dataset.remove(indexes));
 
-	    instances = Instance.newArray(dataset.size());
-	    Instance.markAll(instances, NOT_COVERED);
-	    memory.put(INSTANCES, instances);
-	}
+            instances = Instance.newArray(dataset.size());
+            Instance.markAll(instances, NOT_COVERED);
+            memory.put(INSTANCES, instances);
+        }
     }
 
     @Override
     public String name() {
-	return "remove";
+        return "remove";
     }
-    
+
     @Override
     public int size() {
-	return 1;
+        return 1;
     }
 }

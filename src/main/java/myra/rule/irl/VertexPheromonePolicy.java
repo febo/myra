@@ -45,13 +45,13 @@ public final class VertexPheromonePolicy implements PheromonePolicy {
      *            the construction graph to be initialised.
      */
     public void initialise(Graph graph) {
-	Entry[][] matrix = graph.matrix();
-	matrix[START_INDEX][0] = new Entry(0.0, 0.0);
-	double initial = 1.0 / graph.size();
+        Entry[][] matrix = graph.matrix();
+        matrix[START_INDEX][0] = new Entry(0.0, 0.0);
+        double initial = 1.0 / graph.size();
 
-	for (int i = 1; i < graph.size(); i++) {
-	    matrix[i][0] = new Entry(initial, initial);
-	}
+        for (int i = 1; i < graph.size(); i++) {
+            matrix[i][0] = new Entry(initial, initial);
+        }
     }
 
     /**
@@ -65,27 +65,27 @@ public final class VertexPheromonePolicy implements PheromonePolicy {
      *            the rule to guide the update.
      */
     public void update(Graph graph, Rule rule) {
-	Term[] terms = rule.terms();
-	Entry[][] matrix = graph.matrix();
-	final double q = rule.getQuality().raw();
+        Term[] terms = rule.terms();
+        Entry[][] matrix = graph.matrix();
+        final double q = rule.getQuality().raw();
 
-	for (int i = 0; i < terms.length; i++) {
-	    double value = matrix[terms[i].index()][0].value(0);
-	    matrix[terms[i].index()][0].set(0, value + (value * q));
-	}
+        for (int i = 0; i < terms.length; i++) {
+            double value = matrix[terms[i].index()][0].value(0);
+            matrix[terms[i].index()][0].set(0, value + (value * q));
+        }
 
-	// normilises the pheromone values (it has the effect of
-	// evaporation for vertices that have not being updated)
+        // normilises the pheromone values (it has the effect of
+        // evaporation for vertices that have not being updated)
 
-	double total = 0.0;
+        double total = 0.0;
 
-	for (int i = 1; i < matrix.length; i++) {
-	    total += matrix[i][0].value(0);
-	}
+        for (int i = 1; i < matrix.length; i++) {
+            total += matrix[i][0].value(0);
+        }
 
-	for (int i = 1; i < matrix.length; i++) {
-	    double value = matrix[i][0].value(0);
-	    matrix[i][0].set(0, value / total);
-	}
+        for (int i = 1; i < matrix.length; i++) {
+            double value = matrix[i][0].value(0);
+            matrix[i][0].set(0, value / total);
+        }
     }
 }

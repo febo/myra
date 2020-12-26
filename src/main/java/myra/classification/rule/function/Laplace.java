@@ -33,17 +33,17 @@ import myra.datamining.Dataset.Instance;
 public class Laplace extends ClassificationRuleFunction {
     @Override
     public Maximise evaluate(Dataset dataset,
-			     ClassificationRule rule,
-			     Instance[] instances) {
-	int[] frequency = rule.covered();
-	int predicted = rule.getConsequent().value();
-	int total = 0;
+                             ClassificationRule rule,
+                             Instance[] instances) {
+        int[] frequency = rule.covered();
+        int predicted = rule.getConsequent().value();
+        int total = 0;
 
-	for (int i = 0; i < frequency.length; i++) {
-	    total += frequency[i];
-	}
+        for (int i = 0; i < frequency.length; i++) {
+            total += frequency[i];
+        }
 
-	return new Maximise((frequency[predicted] + 1)
-		/ (double) (total + frequency.length));
+        return new Maximise((frequency[predicted] + 1)
+                / (double) (total + frequency.length));
     }
 }

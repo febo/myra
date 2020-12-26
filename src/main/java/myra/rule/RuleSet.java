@@ -42,79 +42,80 @@ public class RuleSet extends RuleList {
      * The config key for the default conflict resolution strategy.
      */
     public static final ConfigKey<ConflictResolution> CONFLICT_RESOLUTION =
-	    new ConfigKey<ConflictResolution>();
+            new ConfigKey<ConflictResolution>();
 
     /**
      * Applies the rule set to the specify dataset. The coverage of each rule is
      * updated following the order of the rules.
      * 
-     * @param dataset the current dataset.
+     * @param dataset
+     *            the current dataset.
      */
     @Override
     public void apply(Dataset dataset) {
-	Instance[] instances = Instance.newArray(dataset.size());
-	Instance.markAll(instances, NOT_COVERED);
+        Instance[] instances = Instance.newArray(dataset.size());
+        Instance.markAll(instances, NOT_COVERED);
 
-	for (int i = 0; i < rules.length; i++) {
-	    if (rules[i].isEnabled()) {
-		rules[i].apply(dataset, instances);
-		// marks only the correctly covered instances, since
-		// this is how the set of rules were created
-		Dataset.markCorrect(dataset,
-				    instances,
-				    ((Label) rules[i].getConsequent()).value());
-	    }
-	}
+        for (int i = 0; i < rules.length; i++) {
+            if (rules[i].isEnabled()) {
+                rules[i].apply(dataset, instances);
+                // marks only the correctly covered instances, since
+                // this is how the set of rules were created
+                Dataset.markCorrect(dataset,
+                                    instances,
+                                    ((Label) rules[i].getConsequent()).value());
+            }
+        }
     }
 
     @Override
     public Prediction predict(Dataset dataset, int instance) {
-	boolean[] fired = new boolean[rules.length];
-	int defaultRule = -1;
+        boolean[] fired = new boolean[rules.length];
+        int defaultRule = -1;
 
-	for (int i = 0; i < rules.length; i++) {
-	    if (rules[i].isEmpty()) {
-		defaultRule = i;
-	    } else if (rules[i].isEnabled()
-		    && rules[i].covers(dataset, instance)) {
-		fired[i] = true;
-	    }
-	}
+        for (int i = 0; i < rules.length; i++) {
+            if (rules[i].isEmpty()) {
+                defaultRule = i;
+            } else if (rules[i].isEnabled()
+                    && rules[i].covers(dataset, instance)) {
+                fired[i] = true;
+            }
+        }
 
-	// we assume that we are dealing with classification rules, which
-	// should be the case; there is nothing we can do if this is not
-	// the case, apart from raising an exception
-	Label predicted = CONFIG.get(CONFLICT_RESOLUTION)
-		.resolve(dataset, (ClassificationRule[]) rules, fired);
+        // we assume that we are dealing with classification rules, which
+        // should be the case; there is nothing we can do if this is not
+        // the case, apart from raising an exception
+        Label predicted = CONFIG.get(CONFLICT_RESOLUTION)
+                .resolve(dataset, (ClassificationRule[]) rules, fired);
 
-	if (predicted == null) {
-	    predicted = (Label) rules[defaultRule].getConsequent();
-	}
+        if (predicted == null) {
+            predicted = (Label) rules[defaultRule].getConsequent();
+        }
 
-	return predicted;
+        return predicted;
     }
 
     @Override
     public String export(Dataset dataset) {
-	StringBuffer buffer = new StringBuffer();
-	buffer.append(super.export(dataset));
-	buffer.append(String.format("%n"));
+        StringBuffer buffer = new StringBuffer();
+        buffer.append(super.export(dataset));
+        buffer.append(String.format("%n"));
 
-	for (int i = 0; i < rules.length; i++) {
-	    ClassificationRule c = (ClassificationRule) rules[i];
-	    buffer.append(String.format("%n("));
+        for (int i = 0; i < rules.length; i++) {
+            ClassificationRule c = (ClassificationRule) rules[i];
+            buffer.append(String.format("%n("));
 
-	    for (int j = 0; j < c.covered().length; j++) {
-		if (j > 0) {
-		    buffer.append(",");
-		}
+            for (int j = 0; j < c.covered().length; j++) {
+                if (j > 0) {
+                    buffer.append(",");
+                }
 
-		buffer.append(c.covered()[j]);
-	    }
+                buffer.append(c.covered()[j]);
+            }
 
-	    buffer.append(")");
-	}
+            buffer.append(")");
+        }
 
-	return buffer.toString();
+        return buffer.toString();
     }
 }

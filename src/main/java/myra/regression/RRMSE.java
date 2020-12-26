@@ -33,21 +33,21 @@ import myra.datamining.Dataset;
 public class RRMSE extends Measure {
     @Override
     public Cost evaluate(Dataset dataset, RegressionModel model) {
-	double mean = dataset.mean();
-	double lRMSE = 0;
-	double lDefault = 0;
+        double mean = dataset.mean();
+        double lRMSE = 0;
+        double lDefault = 0;
 
-	for (int i = 0; i < dataset.size(); i++) {
-	    double actual = dataset.value(i, dataset.classIndex());
-	    double predicted = model.predict(dataset, i).value();
+        for (int i = 0; i < dataset.size(); i++) {
+            double actual = dataset.value(i, dataset.classIndex());
+            double predicted = model.predict(dataset, i).value();
 
-	    lRMSE += Math.pow(actual - predicted, 2);
-	    lDefault += Math.pow(actual - mean, 2);
-	}
+            lRMSE += Math.pow(actual - predicted, 2);
+            lDefault += Math.pow(actual - mean, 2);
+        }
 
-	double RRMSE = Math.sqrt(lRMSE / dataset.size())
-		/ Math.sqrt(lDefault / dataset.size());
+        double RRMSE = Math.sqrt(lRMSE / dataset.size())
+                / Math.sqrt(lDefault / dataset.size());
 
-	return new Minimise(RRMSE);
+        return new Minimise(RRMSE);
     }
 }

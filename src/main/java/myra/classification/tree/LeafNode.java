@@ -44,13 +44,13 @@ public final class LeafNode extends Node {
      *            the prediction of the node.
      */
     public LeafNode(String name, int level, Label prediction) {
-	super(name, level);
-	this.prediction = prediction;
+        super(name, level);
+        this.prediction = prediction;
     }
 
     @Override
     public boolean isLeaf() {
-	return true;
+        return true;
     }
 
     /**
@@ -59,7 +59,7 @@ public final class LeafNode extends Node {
      * @return the label predicted by the node.
      */
     public Label getPrediction() {
-	return prediction;
+        return prediction;
     }
 
     /**
@@ -69,7 +69,7 @@ public final class LeafNode extends Node {
      *            the prediction to set.
      */
     public void setPrediction(Label prediction) {
-	this.prediction = prediction;
+        this.prediction = prediction;
     }
 
     @Override

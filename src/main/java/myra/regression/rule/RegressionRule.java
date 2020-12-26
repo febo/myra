@@ -30,8 +30,9 @@ import myra.regression.Real;
 import myra.rule.Rule;
 
 /**
+ * This class represents a regression rule.
+ * 
  * @author Fernando Esteban Barril Otero
- *
  */
 public class RegressionRule extends Rule {
     /**
@@ -43,7 +44,7 @@ public class RegressionRule extends Rule {
      * Creates a new <code>RegressionRule</code>.
      */
     public RegressionRule() {
-	this(0);
+        this(0);
     }
 
     /**
@@ -53,40 +54,40 @@ public class RegressionRule extends Rule {
      *            the allocated size of the rule.
      */
     public RegressionRule(int capacity) {
-	super(capacity);
+        super(capacity);
     }
 
     @Override
     public int apply(Dataset dataset, Instance[] instances) {
-	int total = 0;
+        int total = 0;
 
-	for (int i = 0; i < dataset.size(); i++) {
-	    if (instances[i].flag != COVERED) {
-		if (covers(dataset, i)) {
-		    total++;
-		    instances[i].flag = RULE_COVERED;
-		} else {
-		    instances[i].flag = NOT_COVERED;
-		}
-	    }
-	}
+        for (int i = 0; i < dataset.size(); i++) {
+            if (instances[i].flag != COVERED) {
+                if (covers(dataset, i)) {
+                    total++;
+                    instances[i].flag = RULE_COVERED;
+                } else {
+                    instances[i].flag = NOT_COVERED;
+                }
+            }
+        }
 
-	return total;
+        return total;
     }
 
     @Override
     public void setConsequent(Prediction prediction) {
-	if (!(prediction instanceof Real)) {
-	    throw new IllegalArgumentException("Invalid predicted value: "
-		    + prediction);
-	}
+        if (!(prediction instanceof Real)) {
+            throw new IllegalArgumentException("Invalid predicted value: "
+                    + prediction);
+        }
 
-	consequent = (Real) prediction;
+        consequent = (Real) prediction;
     }
 
     @Override
     public Real getConsequent() {
-	return consequent;
+        return consequent;
     }
 
     /**
@@ -94,6 +95,6 @@ public class RegressionRule extends Rule {
      */
     @Override
     public boolean isDiverse() {
-	return true;
+        return true;
     }
 }

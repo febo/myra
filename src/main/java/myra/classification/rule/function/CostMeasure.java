@@ -40,28 +40,28 @@ public class CostMeasure extends ClassificationRuleFunction {
     public static final ConfigKey<Double> C = new ConfigKey<Double>();
 
     static {
-	// default c value
-	// see F. Janssen and J. Furnkranz, "On the quest for optimal rule
-	// learning heuristics", Machine Learning 78, pp. 343-379, 2010.
-	CONFIG.set(C, 0.437);
+        // default c value
+        // see F. Janssen and J. Furnkranz, "On the quest for optimal rule
+        // learning heuristics", Machine Learning 78, pp. 343-379, 2010.
+        CONFIG.set(C, 0.437);
     }
 
     @Override
     public Maximise evaluate(Dataset dataset,
-			     ClassificationRule rule,
-			     Instance[] instances) {
-	final double c = CONFIG.get(C);
+                             ClassificationRule rule,
+                             Instance[] instances) {
+        final double c = CONFIG.get(C);
 
-	int[] frequency = rule.covered();
-	int predicted = rule.getConsequent().value();
-	int negative = 0;
+        int[] frequency = rule.covered();
+        int predicted = rule.getConsequent().value();
+        int negative = 0;
 
-	for (int i = 0; i < frequency.length; i++) {
-	    if (i != predicted) {
-		negative += frequency[i];
-	    }
-	}
+        for (int i = 0; i < frequency.length; i++) {
+            if (i != predicted) {
+                negative += frequency[i];
+            }
+        }
 
-	return new Maximise((c * frequency[predicted]) - ((1 - c) * negative));
+        return new Maximise((c * frequency[predicted]) - ((1 - c) * negative));
     }
 }

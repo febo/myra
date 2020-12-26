@@ -33,7 +33,7 @@ import myra.datamining.Model;
 public abstract class Measure extends myra.datamining.Measure {
     @Override
     public Cost evaluate(Dataset dataset, Model model) {
-	return evaluate(dataset, (RegressionModel) model);
+        return evaluate(dataset, (RegressionModel) model);
     }
 
     /**

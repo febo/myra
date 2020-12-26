@@ -37,7 +37,7 @@ public abstract class IntervalBuilder {
      * Config key for the default <code>IntervalBuilder</code> instance.
      */
     public final static ConfigKey<IntervalBuilder> DEFAULT_BUILDER =
-	    new ConfigKey<>();
+            new ConfigKey<>();
 
     /**
      * Returns the singleton <code>IntervalBuilder</code> instance.
@@ -45,7 +45,7 @@ public abstract class IntervalBuilder {
      * @return the singleton <code>IntervalBuilder</code> instance.
      */
     public final static IntervalBuilder singleton() {
-	return CONFIG.get(DEFAULT_BUILDER);
+        return CONFIG.get(DEFAULT_BUILDER);
     }
 
     /**
@@ -73,8 +73,8 @@ public abstract class IntervalBuilder {
      *         specified attribute
      */
     public abstract Condition[] multiple(Dataset dataset,
-					 Instance[] instances,
-					 int attribute);
+                                         Instance[] instances,
+                                         int attribute);
 
     /**
      * Returns an attribute condition representing a single discrete interval
@@ -91,8 +91,8 @@ public abstract class IntervalBuilder {
      *         specified attribute
      */
     public abstract Condition single(Dataset dataset,
-				     Instance[] instances,
-				     int attribute);
+                                     Instance[] instances,
+                                     int attribute);
 
     /**
      * Returns the minimum number of examples that an interval must contain. The
@@ -106,60 +106,60 @@ public abstract class IntervalBuilder {
      * @return the minimum number of examples that an interval must contain.
      */
     public static double minimumCases(Dataset dataset, double length) {
-	double minimum = (dataset.getTarget().getType() == Type.NOMINAL
-		? 0.1 * (length / (double) dataset.classLength())
-		: CONFIG.get(MINIMUM_CASES));
+        double minimum = (dataset.getTarget().getType() == Type.NOMINAL
+                ? 0.1 * (length / (double) dataset.classLength())
+                : CONFIG.get(MINIMUM_CASES));
 
-	if (minimum < CONFIG.get(MINIMUM_CASES)) {
-	    minimum = CONFIG.get(MINIMUM_CASES);
-	} else if (minimum > CONFIG.get(MAXIMUM_LIMIT)) {
-	    minimum = CONFIG.get(MAXIMUM_LIMIT);
-	}
+        if (minimum < CONFIG.get(MINIMUM_CASES)) {
+            minimum = CONFIG.get(MINIMUM_CASES);
+        } else if (minimum > CONFIG.get(MAXIMUM_LIMIT)) {
+            minimum = CONFIG.get(MAXIMUM_LIMIT);
+        }
 
-	return minimum;
+        return minimum;
     }
 
     /**
      * This class represents a (value,class) pair.
      */
     public static class Pair implements Comparable<Pair> {
-	/**
-	 * The value of the pair.
-	 */
-	public double value;
+        /**
+         * The value of the pair.
+         */
+        public double value;
 
-	/**
-	 * The class value of the pair.
-	 */
-	public double classValue;
+        /**
+         * The class value of the pair.
+         */
+        public double classValue;
 
-	/**
-	 * The weight of the pair.
-	 */
-	public double weight;
+        /**
+         * The weight of the pair.
+         */
+        public double weight;
 
-	/**
-	 * Compares this <code>Pair</code> with thespecified <code>Pair</code>
-	 * value. The sign of the integer value returned is the same as that of
-	 * the integer that would be returned by the call:
-	 * 
-	 * <pre>
-	 * new Double(this.value).compareTo(new Double(o.value))
-	 * </pre>
-	 * 
-	 * @param o
-	 *            the <code>Pair</code> to compare against.
-	 */
-	public int compareTo(Pair o) {
-	    return Double.compare(value, o.value);
-	}
+        /**
+         * Compares this <code>Pair</code> with the specified <code>Pair</code>
+         * value. The sign of the integer value returned is the same as that of
+         * the integer that would be returned by the call:
+         * 
+         * <pre>
+         * new Double(this.value).compareTo(new Double(o.value))
+         * </pre>
+         * 
+         * @param o
+         *            the <code>Pair</code> to compare against.
+         */
+        public int compareTo(Pair o) {
+            return Double.compare(value, o.value);
+        }
 
-	@Override
-	public String toString() {
-	    return String.format("(v=%.6f, c=%.0f, w=%.4f)",
-				 value,
-				 classValue,
-				 weight);
-	}
+        @Override
+        public String toString() {
+            return String.format("(v=%.6f, c=%.0f, w=%.4f)",
+                                 value,
+                                 classValue,
+                                 weight);
+        }
     }
 }

@@ -55,7 +55,7 @@ public final class Config {
      *            the value to set.
      */
     public <T> void set(ConfigKey<T> key, T value) {
-	mapping.put(key, value);
+        mapping.put(key, value);
     }
 
     /**
@@ -72,14 +72,12 @@ public final class Config {
      */
     @SuppressWarnings("unchecked")
     public <T> T get(ConfigKey<T> key) {
-	T value = (T) mapping.get(key);
+        if (!isPresent(key)) {
+            throw new IllegalStateException("ConfigKey " + key
+                    + " has not been set.");
+        }
 
-	if (value == null) {
-	    throw new IllegalStateException("ConfigKey " + key
-		    + " has not been set.");
-	}
-
-	return value;
+        return (T) mapping.get(key);
     }
 
     /**
@@ -95,7 +93,7 @@ public final class Config {
      *         has been set; <code>false</code> otherwise.
      */
     public <T> boolean isPresent(ConfigKey<T> key) {
-	return mapping.containsKey(key);
+        return mapping.containsKey(key);
     }
 
     /**

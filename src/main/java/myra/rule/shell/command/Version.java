@@ -31,16 +31,16 @@ import myra.rule.shell.Memory;
 public class Version implements Command {
     @Override
     public void execute(Memory memory, String... arguments) {
-	System.out.println("Shell " + Classifier.version());
+        System.out.println("Shell " + Classifier.version());
     }
 
     @Override
     public String name() {
-	return "version";
+        return "version";
     }
 
     @Override
     public int size() {
-	return 0;
+        return 0;
     }
 }

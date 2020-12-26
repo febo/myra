@@ -40,7 +40,7 @@ public class Real implements Prediction {
      * Default construction.
      */
     public Real() {
-	this(Double.NaN);
+        this(Double.NaN);
     }
 
     /**
@@ -50,7 +50,7 @@ public class Real implements Prediction {
      *            the value representing the prediction.
      */
     public Real(double value) {
-	this.value = value;
+        this.value = value;
     }
 
     /**
@@ -59,11 +59,11 @@ public class Real implements Prediction {
      * @return the predicted (real) value.
      */
     public double value() {
-	return value;
+        return value;
     }
 
     @Override
     public String toString(Attribute target) {
-	return String.format("%.2f", value);
+        return String.format("%.2f", value);
     }
 }

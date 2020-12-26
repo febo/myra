@@ -35,27 +35,27 @@ import myra.rule.shell.Shell;
 public class Help implements Command {
     @Override
     public void execute(Memory memory, String... arguments) {
-	Shell shell = memory.get(SHELL);
+        Shell shell = memory.get(SHELL);
 
-	if (arguments.length == 0) {
-	    TreeSet<String> list = new TreeSet<String>(shell.list());
+        if (arguments.length == 0) {
+            TreeSet<String> list = new TreeSet<String>(shell.list());
 
-	    System.out.println("The following commands are available:");
-	    System.out.println();
+            System.out.println("The following commands are available:");
+            System.out.println();
 
-	    for (String command : list) {
-		System.out.println(command);
-	    }
-	}
+            for (String command : list) {
+                System.out.println(command);
+            }
+        }
     }
 
     @Override
     public String name() {
-	return "help";
+        return "help";
     }
-    
+
     @Override
     public int size() {
-	return 0;
+        return 0;
     }
 }

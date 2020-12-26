@@ -33,7 +33,7 @@ import myra.rule.Rule;
 import myra.rule.RuleList;
 
 /**
- * Class responsile to build an ordered list of rules from a collection of
+ * Class responsible to build an ordered list of rules from a collection of
  * rules. The order of the rules is determined by a procedure inspired by
  * C4.5rules algorithm.
  * 
@@ -50,84 +50,119 @@ public class SiftRules {
      */
     private double totalBits;
 
+    /**
+     * Returns a rule list given a set of rules.
+     * 
+     * @param dataset
+     *            the current dataset.
+     * @param rules
+     *            the rules to organise as a list of rules.
+     * 
+     * @return a list of rules.
+     */
     public RuleList create(Dataset dataset, Rule[] rules) {
-	prepare(dataset);
+        prepare(dataset);
 
-	return null;
+        return null;
     }
 
+    /**
+     * Reads the dataset metadata.
+     * 
+     * @param dataset
+     *            the current dataset.
+     */
     private void prepare(Dataset dataset) {
-	Attribute[] attributes = dataset.attributes();
-	attributeBits = new double[attributes.length];
-	double total = 0;
-	// intances array used for the discretisation process
-	Instance[] instances = Instance.newArray(dataset.size());
-	Instance.markAll(instances, RULE_COVERED);
+        Attribute[] attributes = dataset.attributes();
+        attributeBits = new double[attributes.length];
+        double total = 0;
+        // intances array used for the discretisation process
+        Instance[] instances = Instance.newArray(dataset.size());
+        Instance.markAll(instances, RULE_COVERED);
 
-	for (int i = 0; i < attributes.length; i++) {
-	    if (attributes[i].getType() == NOMINAL) {
-		double[] frequency = new double[attributes[i].values().length];
+        for (int i = 0; i < attributes.length; i++) {
+            if (attributes[i].getType() == NOMINAL) {
+                double[] frequency = new double[attributes[i].values().length];
 
-		for (int j = 0; j < dataset.size(); j++) {
-		    double v = dataset.value(j, i);
+                for (int j = 0; j < dataset.size(); j++) {
+                    double v = dataset.value(j, i);
 
-		    if (v != MISSING_VALUE_INDEX) {
-			frequency[(int) v]++;
-		    }
-		}
+                    if (v != MISSING_VALUE_INDEX) {
+                        frequency[(int) v]++;
+                    }
+                }
 
-		double sum = 0;
+                double sum = 0;
 
-		for (int j = 0; j < frequency.length; j++) {
-		    if (frequency[j] > 0) {
-			sum += (frequency[j] / dataset.size())
-				* (log2(dataset.size()) - log2(frequency[j]));
-		    }
-		}
+                for (int j = 0; j < frequency.length; j++) {
+                    if (frequency[j] > 0) {
+                        sum += (frequency[j] / dataset.size())
+                                * (log2(dataset.size()) - log2(frequency[j]));
+                    }
+                }
 
-		attributeBits[i] = sum;
-	    } else if (attributes[i].getType() == CONTINUOUS) {
-		Condition[] conditions = IntervalBuilder.singleton()
-			.multiple(dataset, instances, i);
+                attributeBits[i] = sum;
+            } else if (attributes[i].getType() == CONTINUOUS) {
+                Condition[] conditions = IntervalBuilder.singleton()
+                        .multiple(dataset, instances, i);
 
-		if (conditions == null) {
-		    // no conditions could be created
-		    attributeBits[i] = 0;
-		} else {
-		    // we only want the number of candidate thresholds
-		    double size = conditions[0].tries;
+                if (conditions == null) {
+                    // no conditions could be created
+                    attributeBits[i] = 0;
+                } else {
+                    // we only want the number of candidate thresholds
+                    double size = conditions[0].tries;
 
-		    attributeBits[i] = 1 + log2(size) / 2;
-		}
-	    } else {
-		// sanity check
-		throw new RuntimeException("Invalid attribute type: "
-			+ attributes[i].getType());
-	    }
+                    attributeBits[i] = 1 + log2(size) / 2;
+                }
+            } else {
+                // sanity check
+                throw new RuntimeException("Invalid attribute type: "
+                        + attributes[i].getType());
+            }
 
-	    // accumulates the total
-	    total += attributeBits[i];
-	}
+            // accumulates the total
+            total += attributeBits[i];
+        }
 
-	setTotalBits(0);
+        setTotalBits(0);
 
-	for (int i = 0; i < attributes.length; i++) {
-	    if (attributeBits[i] > 0) {
-		double p = attributeBits[i] / total;
-		setTotalBits(getTotalBits() - p * log2(p));
-	    }
-	}
+        for (int i = 0; i < attributes.length; i++) {
+            if (attributeBits[i] > 0) {
+                double p = attributeBits[i] / total;
+                setTotalBits(getTotalBits() - p * log2(p));
+            }
+        }
     }
 
+    /**
+     * Returns the base 2 logarithm of the specified number.
+     * 
+     * @param number
+     *            a double number.
+     * 
+     * @return the base 2 logarithm of the specified number.
+     */
     private double log2(double number) {
-	return Math.log(number) / Math.log(2.0);
+        return Math.log(number) / Math.log(2.0);
     }
 
+    /**
+     * Returns the total number of bits.
+     * 
+     * @return the total number of bits.
+     */
     public double getTotalBits() {
-	return totalBits;
+        return totalBits;
     }
 
+    /**
+     * Sets the total number of bits.
+     * 
+     * @param totalBits
+     *            the value to set.
+     */
     public void setTotalBits(double totalBits) {
-	this.totalBits = totalBits;
+        this.totalBits = totalBits;
     }
 }

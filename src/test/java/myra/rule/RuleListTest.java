@@ -33,33 +33,33 @@ public class RuleListTest extends TestCase {
      * Tests the size of the dataset.
      */
     public void testRuleList() {
-	Config.CONFIG.set(Rule.DEFAULT_RULE, ClassificationRule.class);
-	RuleList list = new RuleList();
-	assertTrue(list.rules() instanceof ClassificationRule[]);
+        Config.CONFIG.set(Rule.DEFAULT_RULE, ClassificationRule.class);
+        RuleList list = new RuleList();
+        assertTrue(list.rules() instanceof ClassificationRule[]);
 
-	Config.CONFIG.set(Rule.DEFAULT_RULE, Rule.class);
-	list = new RuleList();
-	assertFalse(list.rules() instanceof ClassificationRule[]);
-	assertTrue(list.rules() instanceof Rule[]);
+        Config.CONFIG.set(Rule.DEFAULT_RULE, Rule.class);
+        list = new RuleList();
+        assertFalse(list.rules() instanceof ClassificationRule[]);
+        assertTrue(list.rules() instanceof Rule[]);
     }
 
     public void testCompact() {
-	Config.CONFIG.set(Rule.DEFAULT_RULE, ClassificationRule.class);
-	RuleList list = new RuleList();
+        Config.CONFIG.set(Rule.DEFAULT_RULE, ClassificationRule.class);
+        RuleList list = new RuleList();
 
-	list.add(Rule.newInstance());
-	list.add(Rule.newInstance());
+        list.add(Rule.newInstance());
+        list.add(Rule.newInstance());
 
-	assertEquals(2, list.size());
+        assertEquals(2, list.size());
 
-	list.rules()[0].setEnabled(false);
-	list.compact();
+        list.rules()[0].setEnabled(false);
+        list.compact();
 
-	assertEquals(1, list.size());
+        assertEquals(1, list.size());
 
-	list.rules()[0].setEnabled(false);
-	list.compact();
+        list.rules()[0].setEnabled(false);
+        list.compact();
 
-	assertEquals(0, list.size());
+        assertEquals(0, list.size());
     }
 }

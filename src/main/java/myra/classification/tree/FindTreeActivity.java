@@ -39,7 +39,7 @@ public class FindTreeActivity extends IterativeActivity<Tree> {
      * The config key to indicate if the default pruner to use.
      */
     public static final ConfigKey<TreeMeasure> DEFAULT_MEASURE =
-	    new ConfigKey<>();
+            new ConfigKey<>();
 
     /**
      * The current dataset.
@@ -81,63 +81,63 @@ public class FindTreeActivity extends IterativeActivity<Tree> {
      *            the current dataset.
      */
     public FindTreeActivity(Graph graph, Dataset dataset) {
-	this.graph = graph;
-	this.dataset = dataset;
+        this.graph = graph;
+        this.dataset = dataset;
     }
 
     @Override
     public void initialise() {
-	super.initialise();
+        super.initialise();
 
-	reset = true;
-	builder = new StochasticBuilder();
+        reset = true;
+        builder = new StochasticBuilder();
 
-	policy = new PheromonePolicy();
-	policy.initialise(graph);
+        policy = new PheromonePolicy();
+        policy.initialise(graph);
 
-	Instance[] covered = Instance.newArray(dataset.size());
-	Instance.markAll(covered, RULE_COVERED);
-	boolean[] used = new boolean[graph.size()];
-	Arrays.fill(used, false);
+        Instance[] covered = Instance.newArray(dataset.size());
+        Instance.markAll(covered, RULE_COVERED);
+        boolean[] used = new boolean[graph.size()];
+        Arrays.fill(used, false);
 
-	Heuristic heuristic = CONFIG.get(Heuristic.DEFAULT_HEURISTIC);
-	INITIAL_HEURISTIC = heuristic.compute(dataset, covered, used);
+        Heuristic heuristic = CONFIG.get(Heuristic.DEFAULT_HEURISTIC);
+        INITIAL_HEURISTIC = heuristic.compute(dataset, covered, used);
     }
 
     @Override
     public Tree create() {
-	Instance[] covered = Instance.newArray(dataset.size());
-	Instance.markAll(covered, RULE_COVERED);
+        Instance[] covered = Instance.newArray(dataset.size());
+        Instance.markAll(covered, RULE_COVERED);
 
-	double[] heuristic = INITIAL_HEURISTIC.clone();
+        double[] heuristic = INITIAL_HEURISTIC.clone();
 
-	Tree tree = builder.build(graph, heuristic, dataset, covered);
-	tree.setIteration(iteration);
+        Tree tree = builder.build(graph, heuristic, dataset, covered);
+        tree.setIteration(iteration);
 
-	tree = CONFIG.get(DEFAULT_PRUNER).prune(dataset, tree);
-	tree.setQuality(CONFIG.get(DEFAULT_MEASURE).evaluate(dataset, tree));
+        tree = CONFIG.get(DEFAULT_PRUNER).prune(dataset, tree);
+        tree.setQuality(CONFIG.get(DEFAULT_MEASURE).evaluate(dataset, tree));
 
-	return tree;
+        return tree;
     }
 
     @Override
     public void update(Archive<Tree> archive) {
-	super.update(archive);
-	policy.update(graph, archive.highest());
+        super.update(archive);
+        policy.update(graph, archive.highest());
     }
 
     @Override
     public boolean terminate() {
-	if (stagnation > CONFIG.get(STAGNATION)) {
-	    if (reset) {
-		policy.initialise(graph);
-		stagnation = 0;
-		reset = false;
-	    } else {
-		return true;
-	    }
-	}
+        if (stagnation > CONFIG.get(STAGNATION)) {
+            if (reset) {
+                policy.initialise(graph);
+                stagnation = 0;
+                reset = false;
+            } else {
+                return true;
+            }
+        }
 
-	return super.terminate();
+        return super.terminate();
     }
 }

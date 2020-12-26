@@ -25,35 +25,37 @@ import myra.datamining.Dataset;
 import myra.datamining.Dataset.Instance;
 
 /**
+ * The <code>Entropy</code> class represents a rule quality function based on
+ * the entropy the covered examples.
+ * 
  * @author Fernando Esteban Barril Otero
  */
 public class Entropy extends ClassificationRuleFunction {
-
     @Override
     public Maximise evaluate(Dataset dataset,
-			     ClassificationRule rule,
-			     Instance[] instances) {
-	int[] covered = rule.covered();
-	int total = 0;
+                             ClassificationRule rule,
+                             Instance[] instances) {
+        int[] covered = rule.covered();
+        int total = 0;
 
-	// calculate the total number of covered instances
+        // calculate the total number of covered instances
 
-	for (int i = 0; i < covered.length; i++) {
-	    total += covered[i];
-	}
+        for (int i = 0; i < covered.length; i++) {
+            total += covered[i];
+        }
 
-	// calculate the entropy
+        // calculate the entropy
 
-	double entropy = 0.0;
+        double entropy = 0.0;
 
-	for (int i = 0; i < dataset.classLength(); i++) {
-	    if (covered[i] > 0) {
-		double p = covered[i] / (double) total;
-		entropy += (p * (Math.log(p) / Math.log(2.0)));
-	    }
-	}
+        for (int i = 0; i < dataset.classLength(); i++) {
+            if (covered[i] > 0) {
+                double p = covered[i] / (double) total;
+                entropy += (p * (Math.log(p) / Math.log(2.0)));
+            }
+        }
 
-	return new Maximise(-entropy);
+        return new Maximise(-entropy);
     }
 
 }

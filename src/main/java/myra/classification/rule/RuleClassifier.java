@@ -37,11 +37,11 @@ public abstract class RuleClassifier extends Classifier {
 
     @Override
     protected void evaluate(Dataset dataset, Model model) {
-	super.evaluate(dataset, model);
+        super.evaluate(dataset, model);
 
-	if (((ClassificationModel) model).raw() instanceof RuleList) {
-	    logRules(dataset, (RuleList) ((ClassificationModel) model).raw());
-	}
+        if (((ClassificationModel) model).raw() instanceof RuleList) {
+            logRules(dataset, (RuleList) ((ClassificationModel) model).raw());
+        }
     }
 
     /**
@@ -53,42 +53,42 @@ public abstract class RuleClassifier extends Classifier {
      *            the <code>RuleList</code> model.
      */
     protected void logRules(Dataset dataset, RuleList list) {
-	Logger.log("%n>>> Rule coverage:%n%n");
+        Logger.log("%n>>> Rule coverage:%n%n");
 
-	Rule[] rules = list.rules();
-	int position = Integer.toString(rules.length).length();
-	Logger.log("%" + position + "s ", "#");
+        Rule[] rules = list.rules();
+        int position = Integer.toString(rules.length).length();
+        Logger.log("%" + position + "s ", "#");
 
-	int minimum = Integer.toString(dataset.size()).length();
-	int[] width = new int[dataset.classLength()];
-	Attribute[] attributes = dataset.attributes();
+        int minimum = Integer.toString(dataset.size()).length();
+        int[] width = new int[dataset.classLength()];
+        Attribute[] attributes = dataset.attributes();
 
-	for (int i = 0; i < attributes[dataset.classIndex()].size(); i++) {
-	    width[i] = attributes[dataset.classIndex()].value(i).length();
+        for (int i = 0; i < attributes[dataset.classIndex()].size(); i++) {
+            width[i] = attributes[dataset.classIndex()].value(i).length();
 
-	    if (width[i] < minimum) {
-		width[i] = minimum;
-	    }
+            if (width[i] < minimum) {
+                width[i] = minimum;
+            }
 
-	    Logger.log("%" + width[i] + "s ",
-		       attributes[dataset.classIndex()].value(i));
-	}
+            Logger.log("%" + width[i] + "s ",
+                       attributes[dataset.classIndex()].value(i));
+        }
 
-	Logger.log(" <-- class %n");
+        Logger.log(" <-- class %n");
 
-	for (int i = 0; i < rules.length; i++) {
-	    Logger.log("%" + position + "d ", i + 1);
-	    ClassificationRule c = (ClassificationRule) rules[i];
+        for (int i = 0; i < rules.length; i++) {
+            Logger.log("%" + position + "d ", i + 1);
+            ClassificationRule c = (ClassificationRule) rules[i];
 
-	    for (int j = 0; j < width.length; j++) {
-		Logger.log("%" + width[j] + "d ", c.covered()[j]);
-	    }
+            for (int j = 0; j < width.length; j++) {
+                Logger.log("%" + width[j] + "d ", c.covered()[j]);
+            }
 
-	    if (rules[i].isEmpty()) {
-		Logger.log(" (default rule)");
-	    }
+            if (rules[i].isEmpty()) {
+                Logger.log(" (default rule)");
+            }
 
-	    Logger.log("%n");
-	}
+            Logger.log("%n");
+        }
     }
 }

@@ -19,39 +19,74 @@
 
 package myra.classification;
 
+import java.util.Arrays;
+import java.util.Collection;
+
 import myra.datamining.Attribute;
 import myra.datamining.Dataset;
 import myra.datamining.Prediction;
 
 /**
  * The <code>Label</code> represents the predicted value of a classification
- * algorithm.
+ * algorithm. The label is represented as an array of all possible labels. Note
+ * that for hierarchical and/or multi-label problems, where more than one label
+ * can be associated with an instance, the array can have more than one position
+ * active.
  * 
  * @since 4.5
  * 
  * @author Fernando Esteban Barril Otero
  */
-public final class Label implements Prediction {
+public final class Label implements Prediction, Cloneable {
     /**
-     * The class value index represented by the label.
+     * Information of active values.
      */
-    private int index;
+    private boolean[] active;
 
     /**
-     * Default constructor.
+     * Probability of each class label.
      */
-    public Label() {
-	this(Dataset.MISSING_VALUE_INDEX);
+    private double[] probabilities;
+
+    /**
+     * Creates a new label using the information from the specified attribute.
+     * 
+     * @param target
+     *            the target attribute.
+     */
+    public Label(Attribute target) {
+        this(target, Dataset.MISSING_VALUE_INDEX);
+    }
+
+    /**
+     * Creates a new label using the information from the specified attribute.
+     * 
+     * @param target
+     *            the target attribute.
+     * @param index
+     *            the active value index.
+     */
+    public Label(Attribute target, int index) {
+        this(target.length(), index);
     }
 
     /**
      * Default constructor.
      * 
+     * @param length
+     *            the number of different values.
      * @param index
      *            the class value index.
      */
-    public Label(int index) {
-	this.index = index;
+    public Label(int length, int index) {
+        active = new boolean[length];
+
+        if (index != Dataset.MISSING_VALUE_INDEX) {
+            active[index] = true;
+        }
+
+        probabilities = new double[length];
+        Arrays.fill(probabilities, 1.0);
     }
 
     /**
@@ -60,11 +95,205 @@ public final class Label implements Prediction {
      * @return the class value index represented by the label.
      */
     public int value() {
-	return index;
+        int index = Dataset.MISSING_VALUE_INDEX;
+
+        for (int i = 0; i < active.length; i++) {
+            if (active[i]) {
+                if (index == Dataset.MISSING_VALUE_INDEX) {
+                    index = i;
+                } else {
+                    throw new IllegalStateException("Multiple labels active");
+                }
+            }
+        }
+
+        return index;
+    }
+
+    /**
+     * Returns <code>true</code> if the specified value is active.
+     * 
+     * @param index
+     *            index of the value.
+     * 
+     * @return <code>true</code> if the specified value is active.
+     */
+    public boolean active(int index) {
+        return active[index];
+    }
+
+    /**
+     * Returns the information of active values.
+     * 
+     * @return the information of active values.
+     */
+    public boolean[] active() {
+        return active;
+    }
+
+    /**
+     * Returns the probability of the specified class label.
+     * 
+     * @param index
+     *            index of the value.
+     * 
+     * @return the probability of the specified class label.
+     */
+    public double probability(int index) {
+        return probabilities[index];
+    }
+
+    /**
+     * Returns the probability of each class label.
+     * 
+     * @return the probability of each class label.
+     */
+    public double[] probabilities() {
+        return probabilities;
+    }
+
+    /**
+     * Returns the number of class labels present in this <code>Label</code>
+     * instance.
+     * 
+     * @return the number of class labels present in this <code>Label</code>
+     *         instance.
+     */
+    public int cardinality() {
+        int count = 0;
+
+        for (int i = 0; i < active.length; i++) {
+            if (active[i]) {
+                count++;
+            }
+        }
+
+        return count;
+    }
+
+    /**
+     * Removes the specified label values from all instances lavels.
+     * 
+     * @param indexes
+     *            the indexes of the labels to remove.
+     */
+    public void remove(int... indexes) {
+        double[] p = new double[probabilities.length - indexes.length];
+        boolean[] a = new boolean[active.length - indexes.length];
+
+        int source = 0;
+        int target = 0;
+
+        for (int i = 0; i < indexes.length; i++) {
+            int length = indexes[i] - source;
+            if (length > 0) {
+                System.arraycopy(probabilities, source, p, target, length);
+                System.arraycopy(active, source, a, target, length);
+                target += length;
+            }
+            source = indexes[i] + 1;
+        }
+
+        System.arraycopy(probabilities,
+                         source,
+                         p,
+                         target,
+                         probabilities.length - source);
+        System.arraycopy(active, source, a, target, active.length - source);
+
+        probabilities = p;
+        active = a;
     }
 
     @Override
     public String toString(Attribute target) {
-	return target.value(index);
+        StringBuffer values = new StringBuffer();
+
+        for (int i = 0; i < active.length; i++) {
+            if (active[i]) {
+                values.append(values.length() == 0 ? target.value(i)
+                        : "," + target.value(i));
+            }
+        }
+
+        return values.toString();
+    }
+
+    @Override
+    public int hashCode() {
+        return Arrays.hashCode(active);
+    }
+
+    /**
+     * Returns a new <code>Label</code> instance representing the specified
+     * array of labels.
+     * 
+     * @param target
+     *            the target attribute.
+     * @param values
+     *            the array of labels.
+     * 
+     * @return a new <code>Label</code> instance representing the specified
+     *         array of labels.
+     */
+    public static Label toLabel(Attribute target, String... values) {
+        return toLabel(target, Arrays.asList(values));
+    }
+
+    /**
+     * Returns a new <code>Label</code> instance representing the specified
+     * array of labels.
+     * 
+     * @param target
+     *            the target attribute.
+     * @param probabilities
+     *            the probability associared with each label.
+     * 
+     * @return a new <code>Label</code> instance representing the specified
+     *         array of labels.
+     */
+    public static Label toLabel(Attribute target, double[] probabilities) {
+        boolean[] active = new boolean[target.length()];
+        String[] values = target.values();
+
+        for (int i = 0; i < values.length; i++) {
+            active[i] = (probabilities[i] > 0);
+        }
+
+        Label label = new Label(target);
+        label.active = active;
+        label.probabilities = probabilities;
+        return label;
+    }
+
+    /**
+     * Returns a new <code>Label</code> instance representing the specified list
+     * of labels.
+     * 
+     * @param target
+     *            the target attribute.
+     * @param labels
+     *            the list of labels.
+     * 
+     * @return a new <code>Label</code> instance representing the specified list
+     *         of labels.
+     */
+    public static Label toLabel(Attribute target, Collection<String> labels) {
+        if (target.length() < labels.size()) {
+            throw new IllegalArgumentException("Invalid number of labels: <"
+                    + target.length() + "> expected, <" + labels.size()
+                    + "> found");
+        }
+
+        boolean[] active = new boolean[target.length()];
+        String[] values = target.values();
+
+        for (int i = 0; i < values.length; i++) {
+            active[i] = labels.contains(values[i]);
+        }
+
+        Label label = new Label(target);
+        label.active = active;
+        return label;
     }
 }

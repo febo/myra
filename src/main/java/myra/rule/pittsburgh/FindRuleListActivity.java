@@ -90,7 +90,7 @@ public class FindRuleListActivity extends IterativeActivity<RuleList> {
      *            the current dataset.
      */
     public FindRuleListActivity(Graph graph, Dataset dataset) {
-	this(graph, dataset, new LevelRuleFactory());
+        this(graph, dataset, new LevelRuleFactory());
     }
 
     /**
@@ -104,9 +104,9 @@ public class FindRuleListActivity extends IterativeActivity<RuleList> {
      *            the rule factory.
      */
     public FindRuleListActivity(Graph graph,
-				Dataset dataset,
-				LevelRuleFactory factory) {
-	this(graph, dataset, factory, new LevelPheromonePolicy());
+                                Dataset dataset,
+                                LevelRuleFactory factory) {
+        this(graph, dataset, factory, new LevelPheromonePolicy());
     }
 
     /**
@@ -122,115 +122,115 @@ public class FindRuleListActivity extends IterativeActivity<RuleList> {
      *            the pheromone policy.
      */
     public FindRuleListActivity(Graph graph,
-				Dataset dataset,
-				LevelRuleFactory factory,
-				LevelPheromonePolicy policy) {
-	this.graph = graph;
-	this.dataset = dataset;
-	this.factory = factory;
-	this.policy = policy;
+                                Dataset dataset,
+                                LevelRuleFactory factory,
+                                LevelPheromonePolicy policy) {
+        this.graph = graph;
+        this.dataset = dataset;
+        this.factory = factory;
+        this.policy = policy;
     }
 
     @Override
     public RuleList create() {
-	Instance[] instances = Instance.newArray(dataset.size());
-	Instance.markAll(instances, NOT_COVERED);
-	Entry[] heuristic = Entry.deepClone(INITIAL_HEURISTIC);
+        Instance[] instances = Instance.newArray(dataset.size());
+        Instance.markAll(instances, NOT_COVERED);
+        Entry[] heuristic = Entry.deepClone(INITIAL_HEURISTIC);
 
-	RuleList list = new RuleList();
-	list.setIteration(iteration);
+        RuleList list = new RuleList();
+        list.setIteration(iteration);
 
-	int available = dataset.size();
-	int uncovered = (int) ((dataset.size() * CONFIG.get(UNCOVERED)) + 0.5);
+        int available = dataset.size();
+        int uncovered = (int) ((dataset.size() * CONFIG.get(UNCOVERED)) + 0.5);
 
-	while (available >= uncovered) {
-	    if (list.size() > 0) {
-		// the heuristic procedure only takes into account
-		// the instances covered by a rule, so we prepare an
-		// instance array where each NOT_COVERED value is
-		// replaced by a RULE_COVERED value
+        while (available >= uncovered) {
+            if (list.size() > 0) {
+                // the heuristic procedure only takes into account
+                // the instances covered by a rule, so we prepare an
+                // instance array where each NOT_COVERED value is
+                // replaced by a RULE_COVERED value
 
-		Instance.mark(instances, NOT_COVERED, RULE_COVERED);
+                Instance.mark(instances, NOT_COVERED, RULE_COVERED);
 
-		heuristic = CONFIG.get(DEFAULT_HEURISTIC)
-			.compute(graph, dataset, instances);
+                heuristic = CONFIG.get(DEFAULT_HEURISTIC)
+                        .compute(graph, dataset, instances);
 
-		Instance.mark(instances, RULE_COVERED, NOT_COVERED);
-	    }
+                Instance.mark(instances, RULE_COVERED, NOT_COVERED);
+            }
 
-	    // creates a rule for the current level
+            // creates a rule for the current level
 
-	    Rule rule = factory
-		    .create(list.size(), graph, heuristic, dataset, instances);
+            Rule rule = factory
+                    .create(list.size(), graph, heuristic, dataset, instances);
 
-	    available =
-		    CONFIG.get(DEFAULT_PRUNER).prune(dataset, rule, instances);
+            available =
+                    CONFIG.get(DEFAULT_PRUNER).prune(dataset, rule, instances);
 
-	    list.add(rule);
+            list.add(rule);
 
-	    if (rule.size() == 0) {
-		break;
-	    }
+            if (rule.size() == 0) {
+                break;
+            }
 
-	    // marks the instances covered by the current rule as
-	    // COVERED, so they are not available for the next
-	    // iterations
-	    Dataset.markCovered(instances);
-	}
+            // marks the instances covered by the current rule as
+            // COVERED, so they are not available for the next
+            // iterations
+            Dataset.markCovered(instances);
+        }
 
-	if (!list.hasDefault()) {
-	    if (available == 0) {
-		Instance.markAll(instances, NOT_COVERED);
-	    }
+        if (!list.hasDefault()) {
+            if (available == 0) {
+                Instance.markAll(instances, NOT_COVERED);
+            }
 
-	    Rule rule = Rule.newInstance();
-	    rule.apply(dataset, instances);
-	    CONFIG.get(ASSIGNATOR).assign(dataset, rule, instances);
-	    list.add(rule);
-	}
+            Rule rule = Rule.newInstance();
+            rule.apply(dataset, instances);
+            CONFIG.get(ASSIGNATOR).assign(dataset, rule, instances);
+            list.add(rule);
+        }
 
-	// global pruning
-	CONFIG.get(DEFAULT_LIST_PRUNER).prune(dataset, list);
-	// evaluates the list
-	list.setQuality(CONFIG.get(DEFAULT_MEASURE).evaluate(dataset, list));
+        // global pruning
+        CONFIG.get(DEFAULT_LIST_PRUNER).prune(dataset, list);
+        // evaluates the list
+        list.setQuality(CONFIG.get(DEFAULT_MEASURE).evaluate(dataset, list));
 
-	return list;
+        return list;
     }
 
     @Override
     public void initialise() {
-	super.initialise();
-	policy.initialise(graph);
+        super.initialise();
+        policy.initialise(graph);
 
-	reset = true;
+        reset = true;
 
-	// (initial) heuristic of the whole dataset
+        // (initial) heuristic of the whole dataset
 
-	Instance[] instances = Instance.newArray(dataset.size());
-	Instance.markAll(instances, RULE_COVERED);
+        Instance[] instances = Instance.newArray(dataset.size());
+        Instance.markAll(instances, RULE_COVERED);
 
-	INITIAL_HEURISTIC = CONFIG.get(DEFAULT_HEURISTIC)
-		.compute(graph, dataset, instances);
+        INITIAL_HEURISTIC = CONFIG.get(DEFAULT_HEURISTIC)
+                .compute(graph, dataset, instances);
     }
 
     @Override
     public boolean terminate() {
-	if (stagnation > CONFIG.get(STAGNATION)) {
-	    if (reset) {
-		policy.initialise(graph);
-		stagnation = 0;
-		reset = false;
-	    } else {
-		return true;
-	    }
-	}
+        if (stagnation > CONFIG.get(STAGNATION)) {
+            if (reset) {
+                policy.initialise(graph);
+                stagnation = 0;
+                reset = false;
+            } else {
+                return true;
+            }
+        }
 
-	return super.terminate();
+        return super.terminate();
     }
 
     @Override
     public void update(Archive<RuleList> archive) {
-	super.update(archive);
-	policy.update(graph, archive.highest());
+        super.update(archive);
+        policy.update(graph, archive.highest());
     }
 }

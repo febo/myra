@@ -39,18 +39,18 @@ public final class TreeStats {
      *         node.
      */
     public static final double estimated(Node node) {
-	if (node.isLeaf()) {
-	    return estimated(node.getDistribution(),
-			     ((LeafNode) node).getPrediction());
-	} else {
-	    double error = 0;
+        if (node.isLeaf()) {
+            return estimated(node.getDistribution(),
+                             ((LeafNode) node).getPrediction());
+        } else {
+            double error = 0;
 
-	    for (Node child : ((InternalNode) node).children) {
-		error += estimated(child);
-	    }
+            for (Node child : ((InternalNode) node).children) {
+                error += estimated(child);
+            }
 
-	    return error;
-	}
+            return error;
+        }
     }
 
     /**
@@ -62,15 +62,16 @@ public final class TreeStats {
      * @return the predicted error of the distribution.
      */
     public static final double estimated(double[] distribution) {
-	int majority = 0;
+        int majority = 0;
 
-	for (int i = 1; i < distribution.length; i++) {
-	    if (distribution[majority] < distribution[i]) {
-		majority = i;
-	    }
-	}
+        for (int i = 1; i < distribution.length; i++) {
+            if (distribution[majority] < distribution[i]) {
+                majority = i;
+            }
+        }
 
-	return estimated(distribution, new Label(majority));
+        return estimated(distribution,
+                         new Label(distribution.length, majority));
     }
 
     /**
@@ -85,19 +86,19 @@ public final class TreeStats {
      * @return the predicted error of the distribution.
      */
     public static final double estimated(double[] distribution,
-					 Label prediction) {
-	double error = 0;
-	double total = 0;
+                                         Label prediction) {
+        double error = 0;
+        double total = 0;
 
-	for (int i = 0; i < distribution.length; i++) {
-	    if (i != prediction.value()) {
-		error += distribution[i];
-	    }
+        for (int i = 0; i < distribution.length; i++) {
+            if (i != prediction.value()) {
+                error += distribution[i];
+            }
 
-	    total += distribution[i];
-	}
+            total += distribution[i];
+        }
 
-	return error + Stats.errors(total, error);
+        return error + Stats.errors(total, error);
     }
 
     /**
@@ -109,15 +110,15 @@ public final class TreeStats {
      * @return the error of the distribution.
      */
     public static final double error(double[] distribution) {
-	int majority = 0;
+        int majority = 0;
 
-	for (int i = 1; i < distribution.length; i++) {
-	    if (distribution[majority] < distribution[i]) {
-		majority = i;
-	    }
-	}
+        for (int i = 1; i < distribution.length; i++) {
+            if (distribution[majority] < distribution[i]) {
+                majority = i;
+            }
+        }
 
-	return error(distribution, new Label(majority));
+        return error(distribution, new Label(distribution.length, majority));
     }
 
     /**
@@ -132,15 +133,15 @@ public final class TreeStats {
      * @return the predicted error of the distribution.
      */
     public static final double error(double[] distribution, Label prediction) {
-	double error = 0;
+        double error = 0;
 
-	for (int i = 0; i < distribution.length; i++) {
-	    if (i != prediction.value()) {
-		error += distribution[i];
-	    }
-	}
+        for (int i = 0; i < distribution.length; i++) {
+            if (i != prediction.value()) {
+                error += distribution[i];
+            }
+        }
 
-	return error;
+        return error;
     }
 
     /**
@@ -152,18 +153,18 @@ public final class TreeStats {
      * @return the error of the subtree represented by the specified node.
      */
     public static final double error(Node node) {
-	if (node.isLeaf()) {
-	    return error(node.getDistribution(),
-			 ((LeafNode) node).getPrediction());
-	} else {
-	    double error = 0;
+        if (node.isLeaf()) {
+            return error(node.getDistribution(),
+                         ((LeafNode) node).getPrediction());
+        } else {
+            double error = 0;
 
-	    for (Node child : ((InternalNode) node).children) {
-		error += error(child);
-	    }
+            for (Node child : ((InternalNode) node).children) {
+                error += error(child);
+            }
 
-	    return error;
-	}
+            return error;
+        }
     }
 
     /**
@@ -175,12 +176,12 @@ public final class TreeStats {
      * @return the total of the distribution.
      */
     public static final double total(double[] distribution) {
-	double total = 0;
+        double total = 0;
 
-	for (int i = 0; i < distribution.length; i++) {
-	    total += distribution[i];
-	}
+        for (int i = 0; i < distribution.length; i++) {
+            total += distribution[i];
+        }
 
-	return total;
+        return total;
     }
 }

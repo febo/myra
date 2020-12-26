@@ -1,5 +1,5 @@
 /*
- * cAntMiner.java
+ * ContinuousAntMiner.java
  * (this file is part of MYRA)
  * 
  * Copyright 2008-2015 Fernando Esteban Barril Otero
@@ -17,7 +17,7 @@
  * limitations under the License.
  */
 
-package myra.classification.rule.impl;
+package myra.algorithm;
 
 import static myra.Config.CONFIG;
 import static myra.datamining.IntervalBuilder.DEFAULT_BUILDER;
@@ -71,54 +71,54 @@ import myra.rule.irl.EdgeRuleFactory;
  * 
  * @author Fernando Esteban Barril Otero
  */
-public class cAntMiner extends AntMiner {
+public class ContinuousAntMiner extends AntMiner {
     @Override
     protected void defaults() {
-	super.defaults();
+        super.defaults();
 
-	// configuration not set via command line
+        // configuration not set via command line
 
-	CONFIG.set(DEFAULT_FACTORY, new EdgeRuleFactory());
-	CONFIG.set(DEFAULT_POLICY, new EdgePheromonePolicy());
+        CONFIG.set(DEFAULT_FACTORY, new EdgeRuleFactory());
+        CONFIG.set(DEFAULT_POLICY, new EdgePheromonePolicy());
 
-	// default configuration values
+        // default configuration values
 
-	CONFIG.set(DEFAULT_BUILDER, new MDLSplit(new BoundarySplit(), false));
-	CONFIG.set(DEFAULT_PRUNER, new BacktrackPruner());
+        CONFIG.set(DEFAULT_BUILDER, new MDLSplit(new BoundarySplit(), false));
+        CONFIG.set(DEFAULT_PRUNER, new BacktrackPruner());
     }
 
     @Override
     @SuppressWarnings("unchecked")
     protected Collection<Option<?>> options() {
-	ArrayList<Option<?>> options = new ArrayList<Option<?>>();
-	options.addAll(super.options());
+        ArrayList<Option<?>> options = new ArrayList<Option<?>>();
+        options.addAll(super.options());
 
-	// discretisation
-	Option<IntervalBuilder> builder =
-		new Option<IntervalBuilder>(DEFAULT_BUILDER,
-					    "d",
-					    "specify the discretisation %s",
-					    true,
-					    "method");
-	builder.add("c45", new C45Split());
-	builder.add("mdl", CONFIG.get(DEFAULT_BUILDER));
-	options.add(builder);
+        // discretisation
+        Option<IntervalBuilder> builder =
+                new Option<IntervalBuilder>(DEFAULT_BUILDER,
+                                            "d",
+                                            "specify the discretisation %s",
+                                            true,
+                                            "method");
+        builder.add("c45", new C45Split());
+        builder.add("mdl", CONFIG.get(DEFAULT_BUILDER));
+        options.add(builder);
 
-	// replaces the default pruner method
-	for (Option<?> option : options) {
-	    if (option.getKey() == DEFAULT_PRUNER) {
-		Option<Pruner> pruner = (Option<Pruner>) option;
-		pruner.add("greedy", new GreedyPruner());
-		pruner.add("backtrack", CONFIG.get(DEFAULT_PRUNER));
-	    }
-	}
+        // replaces the default pruner method
+        for (Option<?> option : options) {
+            if (option.getKey() == DEFAULT_PRUNER) {
+                Option<Pruner> pruner = (Option<Pruner>) option;
+                pruner.add("greedy", new GreedyPruner());
+                pruner.add("backtrack", CONFIG.get(DEFAULT_PRUNER));
+            }
+        }
 
-	return options;
+        return options;
     }
 
     @Override
     public String description() {
-	return "cAnt-Miner rule induction";
+        return "cAnt-Miner rule induction";
     }
 
     /**
@@ -131,7 +131,7 @@ public class cAntMiner extends AntMiner {
      *             If an error occurs &mdash; e.g., I/O error.
      */
     public static void main(String[] args) throws Exception {
-	cAntMiner algorithm = new cAntMiner();
-	algorithm.run(args);
+        ContinuousAntMiner algorithm = new ContinuousAntMiner();
+        algorithm.run(args);
     }
 }

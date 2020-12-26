@@ -28,18 +28,18 @@ package myra;
  */
 public abstract class AbstractWeighable<T> implements Weighable<T> {
     /**
-     * The solution weight. The weight based on the rank of the solution
-     * in the archive.
+     * The solution weight. The weight based on the rank of the solution in the
+     * archive.
      */
     protected double weight;
-    
+
     @Override
     public double getWeight() {
-	return weight;
+        return weight;
     }
 
     @Override
     public void setWeight(double weight) {
-	this.weight = weight;
+        this.weight = weight;
     }
 }

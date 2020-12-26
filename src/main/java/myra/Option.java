@@ -39,7 +39,7 @@ public class Option<T> {
     protected ConfigKey<T> key;
 
     /**
-     * The switch modifier. This usually is a single caracter.
+     * The switch modifier. This usually is a single character.
      */
     protected String modifier;
 
@@ -74,7 +74,7 @@ public class Option<T> {
      *            the description of the option.
      */
     public Option(ConfigKey<T> key, String modifier, String description) {
-	this(key, modifier, description, true);
+        this(key, modifier, description, true);
     }
 
     /**
@@ -90,10 +90,10 @@ public class Option<T> {
      *            indication whether this option has a default value.
      */
     public Option(ConfigKey<T> key,
-		  String modifier,
-		  String description,
-		  boolean hasDefault) {
-	this(key, modifier, description, hasDefault, null);
+                  String modifier,
+                  String description,
+                  boolean hasDefault) {
+        this(key, modifier, description, hasDefault, null);
     }
 
     /**
@@ -111,15 +111,15 @@ public class Option<T> {
      *            the name of the option's argument.
      */
     public Option(ConfigKey<T> key,
-		  String modifier,
-		  String description,
-		  boolean hasDefault,
-		  String argument) {
-	this.key = key;
-	this.modifier = modifier;
-	this.description = description;
-	this.hasDefault = hasDefault;
-	this.argument = argument;
+                  String modifier,
+                  String description,
+                  boolean hasDefault,
+                  String argument) {
+        this.key = key;
+        this.modifier = modifier;
+        this.description = description;
+        this.hasDefault = hasDefault;
+        this.argument = argument;
     }
 
     /**
@@ -131,7 +131,7 @@ public class Option<T> {
      *            the corresponding configuration object.
      */
     public void add(String value, T object) {
-	alternatives.put(value, object);
+        alternatives.put(value, object);
     }
 
     /**
@@ -144,13 +144,11 @@ public class Option<T> {
      */
     @SuppressWarnings("unchecked")
     public void set(String value) {
-	if (value == null) {
-	    throw new RuntimeException("Invalid option value: " + value);
-	} else if (alternatives.isEmpty()) {
-	    CONFIG.set((ConfigKey<String>) key, value);
-	} else {
-	    CONFIG.set(key, alternatives.get(value));
-	}
+        if (alternatives.isEmpty()) {
+            CONFIG.set((ConfigKey<String>) key, value);
+        } else {
+            CONFIG.set(key, alternatives.get(value));
+        }
     }
 
     /**
@@ -159,24 +157,24 @@ public class Option<T> {
      * @return the value set for this option.
      */
     public String value() {
-	if (hasArgument()) {
-	    T value = CONFIG.get(key);
+        if (hasArgument()) {
+            T value = CONFIG.get(key);
 
-	    if (alternatives.isEmpty()) {
-		return value.toString();
-	    }
+            if (alternatives.isEmpty()) {
+                return value.toString();
+            }
 
-	    for (Map.Entry<String, T> entry : alternatives.entrySet()) {
-		if (value == entry.getValue()) {
-		    return entry.getKey();
-		}
-	    }
+            for (Map.Entry<String, T> entry : alternatives.entrySet()) {
+                if (value == entry.getValue()) {
+                    return entry.getKey();
+                }
+            }
 
-	    throw new IllegalArgumentException("Value not set for option: "
-		    + modifier);
-	} else {
-	    return new String();
-	}
+            throw new IllegalArgumentException("Value not set for option: "
+                    + modifier);
+        } else {
+            return new String();
+        }
     }
 
     /**
@@ -186,7 +184,7 @@ public class Option<T> {
      *         <code>false</code> otherwise.
      */
     public boolean hasDefault() {
-	return hasDefault;
+        return hasDefault;
     }
 
     /**
@@ -196,7 +194,7 @@ public class Option<T> {
      *         <code>false</code> otherwise.
      */
     public boolean hasArgument() {
-	return (argument != null);
+        return (argument != null);
     }
 
     /**
@@ -205,16 +203,16 @@ public class Option<T> {
      * @return the <code>ConfigKey</code> object represented by this option.
      */
     public ConfigKey<T> getKey() {
-	return key;
+        return key;
     }
-    
+
     /**
      * Returns the argument of this option.
      * 
      * @return the argument of this option.
      */
     public String getArgument() {
-	return argument;
+        return argument;
     }
 
     /**
@@ -223,7 +221,7 @@ public class Option<T> {
      * @return the switch modifier.
      */
     public String getModifier() {
-	return modifier;
+        return modifier;
     }
 
     /**
@@ -232,148 +230,148 @@ public class Option<T> {
      * @return the description of this option.
      */
     public String getDescription() {
-	return description;
+        return description;
     }
 
     @Override
     public String toString() {
-	StringBuffer out = new StringBuffer();
+        StringBuffer out = new StringBuffer();
 
-	if (argument == null) {
-	    out.append(description);
-	} else {
-	    out.append(String.format(description, argument));
-	}
+        if (argument == null) {
+            out.append(description);
+        } else {
+            out.append(String.format(description, argument));
+        }
 
-	if (!alternatives.isEmpty()) {
-	    out.append(" [");
+        if (!alternatives.isEmpty()) {
+            out.append(" [");
 
-	    for (String value : alternatives.keySet()) {
-		out.append(value);
-		out.append(" | ");
-	    }
+            for (String value : alternatives.keySet()) {
+                out.append(value);
+                out.append(" | ");
+            }
 
-	    out.delete(out.length() - 3, out.length());
-	    out.append("]");
-	}
+            out.delete(out.length() - 3, out.length());
+            out.append("]");
+        }
 
-	if (hasDefault() && CONFIG.isPresent(key)) {
-	    if (alternatives.isEmpty()) {
-		out.append(String.format(" (default %s)", CONFIG.get(key)));
-	    } else {
-		for (Entry<String, T> entry : alternatives.entrySet()) {
-		    if (entry.getValue() instanceof Boolean) {
-			if (entry.getValue().equals(CONFIG.get(key))) {
-			    out.append(String.format(" (default %s)",
-						     entry.getKey()));
-			}
-		    }
-		    // default value for an object option should be the
-		    // same instance
-		    else if (entry.getValue() == CONFIG.get(key)) {
-			out.append(String.format(" (default %s)",
-						 entry.getKey()));
-		    }
-		}
-	    }
-	}
+        if (hasDefault() && CONFIG.isPresent(key)) {
+            if (alternatives.isEmpty()) {
+                out.append(String.format(" (default %s)", CONFIG.get(key)));
+            } else {
+                for (Entry<String, T> entry : alternatives.entrySet()) {
+                    if (entry.getValue() instanceof Boolean) {
+                        if (entry.getValue().equals(CONFIG.get(key))) {
+                            out.append(String.format(" (default %s)",
+                                                     entry.getKey()));
+                        }
+                    }
+                    // default value for an object option should be the
+                    // same instance
+                    else if (entry.getValue() == CONFIG.get(key)) {
+                        out.append(String.format(" (default %s)",
+                                                 entry.getKey()));
+                    }
+                }
+            }
+        }
 
-	return out.toString();
+        return out.toString();
     }
 
     /**
      * <code>Option</code> for integer parameters.
      */
     public static class IntegerOption extends Option<Integer> {
-	/**
-	 * Creates an <code>IntegerOption</code>.
-	 * 
-	 * @param key
-	 *            the key of the option.
-	 * @param modifier
-	 *            the modifier of the option.
-	 * @param description
-	 *            the description of the option.
-	 * @param argument
-	 *            the name of the option's argument.
-	 */
-	public IntegerOption(ConfigKey<Integer> key,
-			     String modifier,
-			     String description,
-			     String argument) {
-	    super(key, modifier, description, true, argument);
-	}
+        /**
+         * Creates an <code>IntegerOption</code>.
+         * 
+         * @param key
+         *            the key of the option.
+         * @param modifier
+         *            the modifier of the option.
+         * @param description
+         *            the description of the option.
+         * @param argument
+         *            the name of the option's argument.
+         */
+        public IntegerOption(ConfigKey<Integer> key,
+                             String modifier,
+                             String description,
+                             String argument) {
+            super(key, modifier, description, true, argument);
+        }
 
-	@Override
-	public void set(String value) {
-	    try {
-		CONFIG.set(key, Integer.parseInt(value));
-	    } catch (NumberFormatException e) {
-		throw new IllegalArgumentException("Expected an integer value: "
-			+ value, e);
-	    }
-	}
+        @Override
+        public void set(String value) {
+            try {
+                CONFIG.set(key, Integer.parseInt(value));
+            } catch (NumberFormatException e) {
+                throw new IllegalArgumentException("Expected an integer value: "
+                        + value, e);
+            }
+        }
     }
 
     /**
      * <code>Option</code> for double parameters.
      */
     public static class DoubleOption extends Option<Double> {
-	/**
-	 * Creates a <code>DoubleOption</code>.
-	 * 
-	 * @param key
-	 *            the key of the option.
-	 * @param modifier
-	 *            the modifier of the option.
-	 * @param description
-	 *            the description of the option.
-	 * @param argument
-	 *            the name of the option's argument.
-	 */
-	public DoubleOption(ConfigKey<Double> key,
-			    String modifier,
-			    String description,
-			    String argument) {
-	    super(key, modifier, description, true, argument);
-	}
+        /**
+         * Creates a <code>DoubleOption</code>.
+         * 
+         * @param key
+         *            the key of the option.
+         * @param modifier
+         *            the modifier of the option.
+         * @param description
+         *            the description of the option.
+         * @param argument
+         *            the name of the option's argument.
+         */
+        public DoubleOption(ConfigKey<Double> key,
+                            String modifier,
+                            String description,
+                            String argument) {
+            super(key, modifier, description, true, argument);
+        }
 
-	@Override
-	public void set(String value) {
-	    try {
-		CONFIG.set(key, Double.parseDouble(value));
-	    } catch (NumberFormatException e) {
-		throw new IllegalArgumentException("Expected a double value: "
-			+ value, e);
-	    }
-	}
+        @Override
+        public void set(String value) {
+            try {
+                CONFIG.set(key, Double.parseDouble(value));
+            } catch (NumberFormatException e) {
+                throw new IllegalArgumentException("Expected a double value: "
+                        + value, e);
+            }
+        }
     }
 
     /**
      * <code>Option</code> for boolean parameters.
      */
     public static class BooleanOption extends Option<Boolean> {
-	/**
-	 * Creates an <code>BooleanOption</code>.
-	 * 
-	 * @param key
-	 *            the key of the option.
-	 * @param modifier
-	 *            the modifier of the option.
-	 * @param description
-	 *            the description of the option.
-	 */
-	public BooleanOption(ConfigKey<Boolean> key,
-			     String modifier,
-			     String description) {
-	    super(key, modifier, description, false);
-	}
+        /**
+         * Creates an <code>BooleanOption</code>.
+         * 
+         * @param key
+         *            the key of the option.
+         * @param modifier
+         *            the modifier of the option.
+         * @param description
+         *            the description of the option.
+         */
+        public BooleanOption(ConfigKey<Boolean> key,
+                             String modifier,
+                             String description) {
+            super(key, modifier, description, false);
+        }
 
-	@Override
-	public void set(String value) {
-	    // the presence of the option means that its value
-	    // should be set
-	    CONFIG.set(key, Boolean.TRUE);
-	}
+        @Override
+        public void set(String value) {
+            // the presence of the option means that its value
+            // should be set
+            CONFIG.set(key, Boolean.TRUE);
+        }
     }
 }

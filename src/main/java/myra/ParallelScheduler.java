@@ -34,8 +34,7 @@ import myra.Archive.SynchronizedArchive;
  * 
  * @author Fernando Esteban Barril Otero
  */
-public class ParallelScheduler<T extends Weighable<T>> extends Scheduler<T>
-{
+public class ParallelScheduler<T extends Weighable<T>> extends Scheduler<T> {
     /**
      * Tasks executor service.
      */
@@ -45,7 +44,7 @@ public class ParallelScheduler<T extends Weighable<T>> extends Scheduler<T>
      * Creates a new <code>ParallelScheduler</code>.
      */
     public ParallelScheduler() {
-	this(null, CONFIG.get(COLONY_SIZE));
+        this(null, CONFIG.get(COLONY_SIZE));
     }
 
     /**
@@ -55,7 +54,7 @@ public class ParallelScheduler<T extends Weighable<T>> extends Scheduler<T>
      *            number of candidate solutions stored at each iteration.
      */
     public ParallelScheduler(int capacity) {
-	this(null, capacity);
+        this(null, capacity);
     }
 
     /**
@@ -65,7 +64,7 @@ public class ParallelScheduler<T extends Weighable<T>> extends Scheduler<T>
      *            the (wrapped) activity.
      */
     public ParallelScheduler(Activity<T> activity) {
-	this(activity, CONFIG.get(COLONY_SIZE));
+        this(activity, CONFIG.get(COLONY_SIZE));
     }
 
     /**
@@ -77,53 +76,53 @@ public class ParallelScheduler<T extends Weighable<T>> extends Scheduler<T>
      *            number of candidate solutions stored at each iteration.
      */
     public ParallelScheduler(Activity<T> activity, int capacity) {
-	super(activity, capacity);
+        super(activity, capacity);
     }
 
     @Override
     protected void initialise() {
-	super.initialise();
-	// initialises the thread pool
-	executor = Executors.newFixedThreadPool(CONFIG.get(PARALLEL),
-						new ThreadFactory() {
-						    private int id = 0;
+        super.initialise();
+        // initialises the thread pool
+        executor = Executors.newFixedThreadPool(CONFIG.get(PARALLEL),
+                                                new ThreadFactory() {
+                                                    private int id = 0;
 
-						    public Thread newThread(Runnable r) {
-							return new Thread(r,
-									  "ParallelScheduler::worker"
-										  + (id++));
-						    }
-						});
+                                                    public Thread newThread(Runnable r) {
+                                                        return new Thread(r,
+                                                                          "ParallelScheduler::worker"
+                                                                                  + (id++));
+                                                    }
+                                                });
     }
 
     @Override
     protected void create() {
-	final CountDownLatch latch =
-		new CountDownLatch(CONFIG.get(COLONY_SIZE));
-	final Archive<T> pool = new SynchronizedArchive<>(archive);
+        final CountDownLatch latch =
+                new CountDownLatch(CONFIG.get(COLONY_SIZE));
+        final Archive<T> pool = new SynchronizedArchive<>(archive);
 
-	for (int i = 0; i < CONFIG.get(COLONY_SIZE); i++) {
-	    executor.execute(new Runnable() {
-		@Override
-		public void run() {
-		    pool.add(activity.create());
-		    latch.countDown();
-		}
-	    });
-	}
+        for (int i = 0; i < CONFIG.get(COLONY_SIZE); i++) {
+            executor.execute(new Runnable() {
+                @Override
+                public void run() {
+                    pool.add(activity.create());
+                    latch.countDown();
+                }
+            });
+        }
 
-	try {
-	    // waits for the creation of trails
-	    latch.await();
-	} catch (InterruptedException e) {
-	    throw new RuntimeException(e);
-	}
+        try {
+            // waits for the creation of trails
+            latch.await();
+        } catch (InterruptedException e) {
+            throw new RuntimeException(e);
+        }
     }
 
     @Override
     public void run() {
-	super.run();
-	// finilizes the executor threads
-	executor.shutdown();
+        super.run();
+        // finilizes the executor threads
+        executor.shutdown();
     }
 }

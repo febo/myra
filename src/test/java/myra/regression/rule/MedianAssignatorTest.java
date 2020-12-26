@@ -33,23 +33,23 @@ import myra.datamining.Dataset.Instance;
  */
 public class MedianAssignatorTest extends TestCase {
     public void testAssign() {
-	try {
-	    ARFFReader reader = new ARFFReader();
+        try {
+            ARFFReader reader = new ARFFReader();
 
-	    Dataset dataset = reader.read(new InputStreamReader(getClass()
-		    .getResourceAsStream("/temperature.arff")));
+            Dataset dataset = reader.read(new InputStreamReader(getClass()
+                    .getResourceAsStream("/temperature.arff")));
 
-	    RegressionRule rule = new RegressionRule();
-	    Instance[] instances = Instance.newArray(dataset.size());
-	    rule.apply(dataset, instances);
-	    
-	    MedianAssignator assignator = new MedianAssignator();
-	    assignator.assign(dataset, rule, instances);
-	    
-	    assertEquals(72.0, rule.getConsequent().value());
-	    
-	} catch (Exception e) {
-	    fail(e.toString());
-	}
+            RegressionRule rule = new RegressionRule();
+            Instance[] instances = Instance.newArray(dataset.size());
+            rule.apply(dataset, instances);
+
+            MedianAssignator assignator = new MedianAssignator();
+            assignator.assign(dataset, rule, instances);
+
+            assertEquals(72.0, rule.getConsequent().value());
+
+        } catch (Exception e) {
+            fail(e.toString());
+        }
     }
 }

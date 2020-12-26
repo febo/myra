@@ -34,42 +34,42 @@ import myra.util.Stats;
 public class PessimisticAccuracy implements ListMeasure {
     @Override
     public Cost evaluate(Dataset dataset, RuleList list) {
-	if (list.size() == 0) {
-	    return new Maximise();
-	}
-	
-	// updates the coverage of each rule
-	list.apply(dataset);
+        if (list.size() == 0) {
+            return new Maximise();
+        }
 
-	// we assume that we are dealing with classification rules, which
-	// should be the case; there is nothing we can do if this is not
-	// the case, apart from raising an exception
-	ClassificationRule[] rules = (ClassificationRule[]) list.rules();
+        // updates the coverage of each rule
+        list.apply(dataset);
 
-	double[] coverage = new double[list.size()];
-	double[] errors = new double[list.size()];
+        // we assume that we are dealing with classification rules, which
+        // should be the case; there is nothing we can do if this is not
+        // the case, apart from raising an exception
+        ClassificationRule[] rules = (ClassificationRule[]) list.rules();
 
-	// coverage and errors of each rule
+        double[] coverage = new double[list.size()];
+        double[] errors = new double[list.size()];
 
-	for (int i = 0; i < coverage.length; i++) {
-	    for (int j = 0; j < dataset.classLength(); j++) {
-		coverage[i] += rules[i].covered()[j];
+        // coverage and errors of each rule
 
-		if (j != rules[i].getConsequent().value()) {
-		    errors[i] += rules[i].covered()[j];
-		}
-	    }
-	}
+        for (int i = 0; i < coverage.length; i++) {
+            for (int j = 0; j < dataset.classLength(); j++) {
+                coverage[i] += rules[i].covered()[j];
 
-	// predicted errors of the list (sum of the estimated errors
-	// of each rule)
+                if (j != rules[i].getConsequent().value()) {
+                    errors[i] += rules[i].covered()[j];
+                }
+            }
+        }
 
-	double predicted = 0;
+        // predicted errors of the list (sum of the estimated errors
+        // of each rule)
 
-	for (int i = 0; i < coverage.length; i++) {
-	    predicted += (errors[i] + Stats.errors(coverage[i], errors[i]));
-	}
+        double predicted = 0;
 
-	return new Maximise(1.0 - (predicted / (double) dataset.size()));
+        for (int i = 0; i < coverage.length; i++) {
+            predicted += (errors[i] + Stats.errors(coverage[i], errors[i]));
+        }
+
+        return new Maximise(1.0 - (predicted / (double) dataset.size()));
     }
 }

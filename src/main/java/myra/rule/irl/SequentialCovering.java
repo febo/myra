@@ -44,52 +44,78 @@ public class SequentialCovering {
      */
     public final static ConfigKey<Integer> UNCOVERED = new ConfigKey<Integer>();
 
+    /**
+     * Returns a {@link RuleList}, where rules are created using a sequential
+     * coveting.
+     * 
+     * @param dataset
+     *            the training data.
+     * 
+     * @return a {@link RuleList}.
+     * 
+     * @see Rule
+     */
     public Model train(Dataset dataset) {
-	final int uncovered = CONFIG.get(UNCOVERED);
-	Instance[] instances = Instance.newArray(dataset.size());
-	Instance.markAll(instances, NOT_COVERED);
+        return train(dataset, new Graph(dataset));
+    }
 
-	Graph graph = new Graph(dataset);
+    /**
+     * Returns a {@link RuleList}, where rules are created using a sequential
+     * coveting.
+     * 
+     * @param dataset
+     *            the training data.
+     * @param graph
+     *            the construction graph.
+     * 
+     * @return a {@link RuleList}.
+     * 
+     * @see Rule
+     */
+    public Model train(Dataset dataset, Graph graph) {
+        final int uncovered = CONFIG.get(UNCOVERED);
+        Instance[] instances = Instance.newArray(dataset.size());
+        Instance.markAll(instances, NOT_COVERED);
 
-	RuleList discovered = new RuleList();
-	int available = dataset.size();
+        RuleList discovered = new RuleList();
+        int available = dataset.size();
 
-	Scheduler<Rule> scheduler = Scheduler.newInstance(1);
+        Scheduler<Rule> scheduler = Scheduler.newInstance(1);
 
-	while (available >= uncovered) {
-	    FindRuleActivity activity =
-		    new FindRuleActivity(graph, instances, dataset);
+        while (available >= uncovered) {
+            FindRuleActivity activity =
+                    new FindRuleActivity(graph, instances, dataset);
 
-	    // discovers one rule using an ACO procedure
+            // discovers one rule using an ACO procedure
 
-	    scheduler.setActivity(activity);
-	    scheduler.run();
+            scheduler.setActivity(activity);
+            scheduler.run();
 
-	    Rule best = activity.getBest();
-	    best.apply(dataset, instances);
+            Rule best = activity.getBest();
+            best.apply(dataset, instances);
 
-	    // adds the rule to the list
-	    discovered.add(best);
+            // adds the rule to the list
+            discovered.add(best);
 
-	    // marks the instances covered by the current rule as
-	    // COVERED, so they are not available for the next
-	    // iterations
-	    available = Dataset.markCovered(instances);
-	}
+            // marks the instances covered by the current rule as
+            // COVERED, so they are not available for the next
+            // iterations
+            available = Dataset.markCovered(instances);
+        }
 
-	if (!discovered.hasDefault()) {
-	    // adds a default rule to the list
+        if (!discovered.hasDefault()) {
+            // adds a default rule to the list
 
-	    if (available == 0) {
-		Instance.markAll(instances, NOT_COVERED);
-	    }
+            if (available == 0) {
+                Instance.markAll(instances, NOT_COVERED);
+            }
 
-	    Rule rule = Rule.newInstance();
-	    rule.apply(dataset, instances);
-	    CONFIG.get(ASSIGNATOR).assign(dataset, rule, instances);
-	    discovered.add(rule);
-	}
+            Rule rule = Rule.newInstance();
+            rule.apply(dataset, instances);
+            CONFIG.get(ASSIGNATOR).assign(dataset, rule, instances);
+            discovered.add(rule);
+        }
 
-	return discovered;
+        return discovered;
     }
 }

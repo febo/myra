@@ -46,7 +46,7 @@ public final class RegressionModel implements Model {
      *            <code>Real</code> object.
      */
     public RegressionModel(Model model) {
-	this.model = model;
+        this.model = model;
     }
 
     /**
@@ -55,14 +55,14 @@ public final class RegressionModel implements Model {
      */
     @Override
     public Real predict(Dataset dataset, int instance) {
-	return (Real) model.predict(dataset, instance);
+        return (Real) model.predict(dataset, instance);
     }
 
     @Override
     public String toString(Dataset dataset) {
-	return model.toString(dataset);
+        return model.toString(dataset);
     }
-    
+
     @Override
     public String export(Dataset dataset) {
         return model.export(dataset);

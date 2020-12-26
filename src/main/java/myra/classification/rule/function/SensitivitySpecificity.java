@@ -34,12 +34,12 @@ import myra.datamining.Dataset.Instance;
 public class SensitivitySpecificity extends ClassificationRuleFunction {
     @Override
     public Maximise evaluate(Dataset dataset,
-			     ClassificationRule rule,
-			     Instance[] instances) {
-	BinaryConfusionMatrix m = fill(rule);
+                             ClassificationRule rule,
+                             Instance[] instances) {
+        BinaryConfusionMatrix m = fill(rule);
 
-	double value = (m.TP / (m.TP + m.FN)) * (m.TN / (m.TN + m.FP));
+        double value = (m.TP / (m.TP + m.FN)) * (m.TN / (m.TN + m.FP));
 
-	return new Maximise(Double.isNaN(value) ? 0.0 : value);
+        return new Maximise(Double.isNaN(value) ? 0.0 : value);
     }
 }

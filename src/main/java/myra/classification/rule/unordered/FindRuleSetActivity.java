@@ -45,6 +45,10 @@ import myra.rule.RuleList;
 import myra.rule.RuleSet;
 import myra.rule.pittsburgh.LevelPheromonePolicy;
 
+/**
+ * The <code>FindRuleSetActivity</code> is responsible for evolving a complete
+ * set of (unordered) rules using an ACO-based procedure.
+ */
 public class FindRuleSetActivity extends IterativeActivity<RuleList> {
     /**
      * The config key to indicate if the dynamic function selector should be
@@ -86,128 +90,128 @@ public class FindRuleSetActivity extends IterativeActivity<RuleList> {
      *            the current dataset.
      */
     public FindRuleSetActivity(Graph graph, Dataset training) {
-	this.graph = graph;
-	this.dataset = training;
+        this.graph = graph;
+        this.dataset = training;
     }
 
     @Override
     public RuleSet create() {
-	Instance[] instances = Instance.newArray(dataset.size());
-	RuleSet ruleSet = new RuleSet();
-	ruleSet.setIteration(iteration);
+        Instance[] instances = Instance.newArray(dataset.size());
+        RuleSet ruleSet = new RuleSet();
+        ruleSet.setIteration(iteration);
 
-	// creates rules for each class
+        // creates rules for each class
 
-	for (int j = 0; j < dataset.classLength(); j++) {
-	    Instance.markAll(instances, NOT_COVERED);
+        for (int j = 0; j < dataset.classLength(); j++) {
+            Instance.markAll(instances, NOT_COVERED);
 
-	    final int total = dataset.size(j);
-	    int available = total;
+            final int total = dataset.size(j);
+            int available = total;
 
-	    int uncovered = (int) ((available * CONFIG.get(UNCOVERED)) + 0.5);
+            int uncovered = (int) ((available * CONFIG.get(UNCOVERED)) + 0.5);
 
-	    while (available > 0 && available >= uncovered) {
-		// the heuristic only takes into account the instances
-		// covered by a rule
-		Instance.mark(instances, NOT_COVERED, RULE_COVERED);
-		Entry[] heuristic = CONFIG.get(DEFAULT_HEURISTIC)
-			.compute(graph, dataset, instances, j);
-		Instance.mark(instances, RULE_COVERED, NOT_COVERED);
+            while (available > 0 && available >= uncovered) {
+                // the heuristic only takes into account the instances
+                // covered by a rule
+                Instance.mark(instances, NOT_COVERED, RULE_COVERED);
+                Entry[] heuristic = CONFIG.get(DEFAULT_HEURISTIC)
+                        .compute(graph, dataset, instances, j);
+                Instance.mark(instances, RULE_COVERED, NOT_COVERED);
 
-		ClassificationRule rule =
-			FixedClassRuleFactory.create(ruleSet.size(),
-						     graph,
-						     heuristic,
-						     dataset,
-						     instances,
-						     new Label(j));
+                ClassificationRule rule = FixedClassRuleFactory
+                        .create(ruleSet.size(),
+                                graph,
+                                heuristic,
+                                dataset,
+                                instances,
+                                new Label(dataset.getTarget(), j));
 
-		RuleFunction function = null;
+                RuleFunction function = null;
 
-		if (CONFIG.get(DYNAMIC_FUNCTION)) {
-		    rule.setFunction(selector.select(ruleSet.size()));
-		    function = selector.get(rule.getFunction());
-		} else {
-		    function = CONFIG.get(DEFAULT_FUNCTION);
-		}
+                if (CONFIG.get(DYNAMIC_FUNCTION)) {
+                    rule.setFunction(selector.select(ruleSet.size()));
+                    function = selector.get(rule.getFunction());
+                } else {
+                    function = CONFIG.get(DEFAULT_FUNCTION);
+                }
 
-		available = CONFIG.get(DEFAULT_PRUNER)
-			.prune(dataset, rule, instances, function);
+                available = CONFIG.get(DEFAULT_PRUNER)
+                        .prune(dataset, rule, instances, function);
 
-		if (rule.size() == 0) {
-		    break;
-		} else {
-		    ruleSet.add(rule);
-		}
+                if (rule.size() == 0) {
+                    break;
+                } else {
+                    ruleSet.add(rule);
+                }
 
-		// marks the instances correctly covered by the current
-		// rule as COVERED, so they are not available for the
-		// next iterations
+                // marks the instances correctly covered by the current
+                // rule as COVERED, so they are not available for the
+                // next iterations
 
-		Dataset.markCorrect(dataset,
-				    instances,
-				    rule.getConsequent().value());
-	    }
-	}
+                Dataset.markCorrect(dataset,
+                                    instances,
+                                    rule.getConsequent().value());
+            }
+        }
 
-	// creates a default rule predicting the majority class
+        // creates a default rule predicting the majority class
 
-	Instance.markAll(instances, NOT_COVERED);
-	Rule rule = Rule.newInstance();
-	rule.apply(dataset, instances);
-	new MajorityAssignator().assign(dataset, rule, instances);
+        Instance.markAll(instances, NOT_COVERED);
+        Rule rule = Rule.newInstance();
+        rule.apply(dataset, instances);
+        new MajorityAssignator().assign(dataset, rule, instances);
 
-	ruleSet.add(rule);
-	ruleSet.apply(dataset);
+        ruleSet.add(rule);
+        ruleSet.apply(dataset);
 
-	ruleSet.setQuality(CONFIG.get(DEFAULT_MEASURE).evaluate(dataset,
-								ruleSet));
+        ruleSet.setQuality(CONFIG.get(DEFAULT_MEASURE).evaluate(dataset,
+                                                                ruleSet));
 
-	return ruleSet;
+        return ruleSet;
     }
 
     @Override
     public void initialise() {
-	super.initialise();
+        super.initialise();
 
-	policy = new LevelPheromonePolicy();
-	policy.initialise(graph);
-	selector = new FunctionSelector();
+        policy = new LevelPheromonePolicy();
+        policy.initialise(graph);
+        selector = new FunctionSelector();
 
-	reset = true;
+        reset = true;
     }
 
     @Override
     public boolean terminate() {
-	if (stagnation > CONFIG.get(STAGNATION)) {
-	    if (reset) {
-		policy.initialise(graph);
-		selector = new FunctionSelector();
+        if (stagnation > CONFIG.get(STAGNATION)) {
+            if (reset) {
+                policy.initialise(graph);
+                selector = new FunctionSelector();
 
-		stagnation = 0;
-		reset = false;
-	    } else {
-		return true;
-	    }
-	}
+                stagnation = 0;
+                reset = false;
+            } else {
+                return true;
+            }
+        }
 
-	return super.terminate();
+        return super.terminate();
     }
 
     @Override
     public void update(Archive<RuleList> archive) {
-	super.update(archive);
+        super.update(archive);
 
-	RuleSet candidate = (RuleSet) archive.highest();
-	policy.update(graph, candidate);
+        RuleSet candidate = (RuleSet) archive.highest();
+        policy.update(graph, candidate);
 
-	if (CONFIG.get(DYNAMIC_FUNCTION)) {
-	    selector.update(candidate, policy);
-	}
+        if (CONFIG.get(DYNAMIC_FUNCTION)) {
+            selector.update(candidate, policy);
+        }
     }
 
     @Override
     public RuleSet getBest() {
-	return (RuleSet) super.getBest();
+        return (RuleSet) super.getBest();
     }
 }

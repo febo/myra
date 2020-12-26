@@ -40,23 +40,23 @@ public class MEstimate extends ClassificationRuleFunction {
     public static final ConfigKey<Double> M = new ConfigKey<Double>();
 
     static {
-	// default m value
-	// see F. Janssen and J. Furnkranz, "On the quest for optimal rule
-	// learning heuristics", Machine Learning 78, pp. 343-379, 2010.
-	CONFIG.set(M, 22.466);
+        // default m value
+        // see F. Janssen and J. Furnkranz, "On the quest for optimal rule
+        // learning heuristics", Machine Learning 78, pp. 343-379, 2010.
+        CONFIG.set(M, 22.466);
     }
 
     @Override
     public Maximise evaluate(Dataset dataset,
-			     ClassificationRule rule,
-			     Instance[] instances) {
-	BinaryConfusionMatrix m = fill(rule);
+                             ClassificationRule rule,
+                             Instance[] instances) {
+        BinaryConfusionMatrix m = fill(rule);
 
-	final double mValue = CONFIG.get(M);
-	double totalN = m.FP + m.TN;
-	double totalP = m.TP + m.FN;
+        final double mValue = CONFIG.get(M);
+        double totalN = m.FP + m.TN;
+        double totalP = m.TP + m.FN;
 
-	return new Maximise((m.TP + (mValue * (totalP / (totalN + totalP))))
-		/ (m.TP + m.FP + mValue));
+        return new Maximise((m.TP + (mValue * (totalP / (totalN + totalP))))
+                / (m.TP + m.FP + mValue));
     }
 }

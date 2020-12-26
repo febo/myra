@@ -25,12 +25,12 @@ package myra;
  * @author Fernando Esteban Barril Otero
  */
 public abstract class AbstractActivity<T extends Weighable<T>>
-	implements Activity<T> {
+        implements Activity<T> {
     /**
      * Default (empty) implementation.
      */
     @Override
     public boolean search(Archive<T> archive) {
-	return false;
+        return false;
     }
 }

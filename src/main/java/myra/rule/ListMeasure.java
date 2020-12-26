@@ -34,7 +34,7 @@ public interface ListMeasure {
      * Config key for the default list measure instance.
      */
     public static final ConfigKey<ListMeasure> DEFAULT_MEASURE =
-	    new ConfigKey<ListMeasure>();
+            new ConfigKey<ListMeasure>();
 
     /**
      * Returns the quality of the specified list of rules.

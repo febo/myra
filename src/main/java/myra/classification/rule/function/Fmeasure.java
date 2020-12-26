@@ -40,23 +40,23 @@ public class Fmeasure extends ClassificationRuleFunction {
     public static final ConfigKey<Double> BETA = new ConfigKey<Double>();
 
     static {
-	// default beta value
-	// see F. Janssen and J. Furnkranz, "On the quest for optimal rule
-	// learning heuristics", Machine Learning 78, pp. 343-379, 2010.
-	CONFIG.set(BETA, 0.5);
+        // default beta value
+        // see F. Janssen and J. Furnkranz, "On the quest for optimal rule
+        // learning heuristics", Machine Learning 78, pp. 343-379, 2010.
+        CONFIG.set(BETA, 0.5);
     }
 
     @Override
     public Maximise evaluate(Dataset dataset,
-			     ClassificationRule rule,
-			     Instance[] instances) {
-	BinaryConfusionMatrix m = fill(rule);
-	final double beta = CONFIG.get(BETA);
+                             ClassificationRule rule,
+                             Instance[] instances) {
+        BinaryConfusionMatrix m = fill(rule);
+        final double beta = CONFIG.get(BETA);
 
-	double precision = m.TP / (m.TP + m.FP);
-	double recall = m.TP / (m.TP + m.FN);
+        double precision = m.TP / (m.TP + m.FP);
+        double recall = m.TP / (m.TP + m.FN);
 
-	return new Maximise((1 + (beta * beta)) * ((precision * recall)
-		/ (((beta * beta) * precision) + recall)));
+        return new Maximise((1 + (beta * beta)) * ((precision * recall)
+                / (((beta * beta) * precision) + recall)));
     }
 }

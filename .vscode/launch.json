@@ -1,0 +1,97 @@
+{
+    // Use IntelliSense to learn about possible attributes.
+    // Hover to view descriptions of existing attributes.
+    // For more information, visit: https://go.microsoft.com/fwlink/?linkid=830387
+    "version": "0.2.0",
+    "configurations": [
+        {
+            "type": "java",
+            "name": "Debug (Launch) - Current File",
+            "request": "launch",
+            "mainClass": "${file}"
+        },
+        {
+            "type": "java",
+            "name": "Ant-Miner",
+            "request": "launch",
+            "mainClass": "myra.algorithm.AntMiner",
+            "projectName": "myra"
+        },
+        {
+            "type": "java",
+            "name": "Ant-Miner-Reg",
+            "request": "launch",
+            "mainClass": "myra.algorithm.AntMinerReg",
+            "projectName": "myra"
+        },
+        {
+            "type": "java",
+            "name": "Ant-Tree-Miner",
+            "request": "launch",
+            "mainClass": "myra.algorithm.AntTreeMiner",
+            "projectName": "myra",
+            "args": "-f /Users/febo/Documents/repository/myra/src/test/resources/weather.arff -m 2"
+        },
+        {
+            "type": "java",
+            "name": "Continuous Ant-Miner",
+            "request": "launch",
+            "mainClass": "myra.algorithm.ContinuousAntMiner",
+            "projectName": "myra"
+        },
+        {
+            "type": "java",
+            "name": "Pittsburgh Continuous Ant-Miner",
+            "request": "launch",
+            "mainClass": "myra.algorithm.PittsburghContinuousAntMiner",
+            "projectName": "myra",
+            "args": "-f /Users/febo/Documents/uok/uci/datasets/breast-w/wdbc.arff"
+        },
+        {
+            "type": "java",
+            "name": "Unordered Pittsburgh Continuous Ant-Miner",
+            "request": "launch",
+            "mainClass": "myra.algorithm.UnorderedPittsburghContinuousAntMiner",
+            "projectName": "myra"
+        },
+        {
+            "type": "java",
+            "name": "Hierarchical Multi-Label Ant-Miner",
+            "request": "launch",
+            "mainClass": "myra.algorithm.HierarchicalMultiLabelAntMiner",
+            "projectName": "myra",
+            "args": "-f /Users/febo/Documents/uok/experiments/hierarchical/funcat/cellcycle/cellcycle_FUN.trainvalid.arff.zip -t /Users/febo/Documents/uok/experiments/hierarchical/funcat/cellcycle/cellcycle_FUN.test.arff.zip -c 1 -i 1 --ignore-root"
+        },
+        {
+            "type": "java",
+            "name": "Pittsburgh Hierarchical Multi-Label Ant-Miner",
+            "request": "launch",
+            "mainClass": "myra.algorithm.PittsburghHierarchicalMultiLabelAntMiner",
+            "projectName": "myra",
+            "args": "-f /Users/febo/Documents/uok/experiments/hierarchical/funcat/cellcycle/cellcycle_FUN.trainvalid.arff.zip -t /Users/febo/Documents/uok/experiments/hierarchical/funcat/cellcycle/cellcycle_FUN.test.arff.zip -c 1 -i 1 --ignore-root"
+        },
+        {
+            "type": "java",
+            "name": "Mixed-Attribute Ant-Miner",
+            "request": "launch",
+            "mainClass": "myra.algorithm.MixedAttributeAntMiner",
+            "projectName": "myra",
+            "args": "-f /Users/febo/Documents/uok/uci/datasets/breast-w/wdbc.arff"
+        },
+        {
+            "type": "java",
+            "name": "Pittsburgh Mixed-Attribute Ant-Miner",
+            "request": "launch",
+            "mainClass": "myra.algorithm.PittsburghMixedAttributeAntMiner",
+            "projectName": "myra",
+            "args": "-f /Users/febo/Documents/uok/uci/datasets/breast-w/wdbc.arff"
+        },
+        {
+            "type": "java",
+            "name": "Shell",
+            "request": "launch",
+            "mainClass": "myra.rule.shell.Shell",
+            "projectName": "myra"
+        }
+    ]
+}

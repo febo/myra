@@ -40,22 +40,22 @@ public class Klosgen extends ClassificationRuleFunction {
     public static final ConfigKey<Double> W = new ConfigKey<Double>();
 
     static {
-	// default w value
-	// see F. Janssen and J. Furnkranz, "On the quest for optimal rule
-	// learning heuristics", Machine Learning 78, pp. 343-379, 2010.
-	CONFIG.set(W, 0.4323);
+        // default w value
+        // see F. Janssen and J. Furnkranz, "On the quest for optimal rule
+        // learning heuristics", Machine Learning 78, pp. 343-379, 2010.
+        CONFIG.set(W, 0.4323);
     }
 
     @Override
     public Maximise evaluate(Dataset dataset,
-			     ClassificationRule rule,
-			     Instance[] instances) {
-	BinaryConfusionMatrix m = fill(rule);
+                             ClassificationRule rule,
+                             Instance[] instances) {
+        BinaryConfusionMatrix m = fill(rule);
 
-	double total = m.TP + m.FP + m.FN + m.TN;
-	double precision = m.TP / (m.TP + m.FP);
+        double total = m.TP + m.FP + m.FN + m.TN;
+        double precision = m.TP / (m.TP + m.FP);
 
-	return new Maximise(Math.pow((m.TP + m.FP) / total, CONFIG.get(W))
-		* (precision - ((m.TP + m.FN) / total)));
+        return new Maximise(Math.pow((m.TP + m.FP) / total, CONFIG.get(W))
+                * (precision - ((m.TP + m.FN) / total)));
     }
 }

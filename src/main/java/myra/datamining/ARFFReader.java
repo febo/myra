@@ -19,13 +19,22 @@
 
 package myra.datamining;
 
+import static myra.datamining.Hierarchy.DELIMITER;
+
 import java.io.BufferedReader;
 import java.io.File;
+import java.io.FileInputStream;
 import java.io.FileReader;
 import java.io.IOException;
+import java.io.InputStreamReader;
 import java.io.Reader;
+import java.nio.file.Files;
+import java.nio.file.Paths;
 import java.util.Arrays;
+import java.util.LinkedHashSet;
+import java.util.Set;
 import java.util.StringTokenizer;
+import java.util.zip.ZipInputStream;
 
 import myra.datamining.Attribute.Type;
 
@@ -66,6 +75,11 @@ public class ARFFReader {
     private static final String REAL = "real";
 
     /**
+     * Constant representing a hierarchical attribute.
+     */
+    private static final String HIERARCHICAL = "hierarchical";
+
+    /**
      * Reads the specified file.
      * 
      * @param filename
@@ -78,7 +92,18 @@ public class ARFFReader {
      *                if an I/O error occurs.
      */
     public Dataset read(String filename) throws IOException {
-	return read(new File(filename));
+        String contentType = Files.probeContentType(Paths.get(filename));
+
+        if (contentType != null && contentType.equals("application/zip")) {
+            ZipInputStream zip =
+                    new ZipInputStream(new FileInputStream(filename));
+            // positions the stream at the first entry
+            zip.getNextEntry();
+
+            return read(new InputStreamReader(zip));
+        }
+
+        return read(new File(filename));
     }
 
     /**
@@ -94,12 +119,12 @@ public class ARFFReader {
      *                if an I/O error occurs.
      */
     public Dataset read(File input) throws IOException {
-	if (!input.exists()) {
-	    throw new IllegalArgumentException("Could not open file: "
-		    + input.getAbsolutePath());
-	}
+        if (!input.exists()) {
+            throw new IllegalArgumentException("Could not open file: "
+                    + input.getAbsolutePath());
+        }
 
-	return read(new FileReader(input));
+        return read(new FileReader(input));
     }
 
     /**
@@ -116,41 +141,43 @@ public class ARFFReader {
      *                if an I/O error occurs.
      */
     public Dataset read(Reader input) throws IOException {
-	BufferedReader reader = new BufferedReader(input);
-	Dataset dataset = new Dataset();
-	String line = null;
-	boolean dataSection = false;
+        BufferedReader reader = new BufferedReader(input);
+        Dataset dataset = new Dataset();
+        String line = null;
+        boolean dataSection = false;
 
-	while ((line = reader.readLine()) != null) {
-	    String[] split = split(line);
+        while ((line = reader.readLine()) != null) {
+            String[] split = split(line);
 
-	    if (split.length > 0 && !isComment(split[0])) {
-		split[0] = split[0].toLowerCase();
+            if (split.length > 0 && !isComment(split[0])) {
+                split[0] = split[0].toLowerCase();
 
-		// are we dealing with an attribute?
-		if (split[0].startsWith(ATTRIBUTE)) {
-		    if (split.length != 3) {
-			reader.close();
-			throw new IllegalArgumentException("Invalid attribute specification: "
-				+ line);
-		    }
+                // are we dealing with an attribute?
+                if (split[0].startsWith(ATTRIBUTE)) {
+                    if (split.length == 4 && split[2].equals(HIERARCHICAL)) {
+                        processHierarchy(dataset, split);
+                    } else if (split.length != 3) {
+                        reader.close();
+                        throw new IllegalArgumentException("Invalid attribute specification: "
+                                + line);
+                    } else {
+                        processAttribute(dataset, split);
+                    }
+                } else if (split[0].startsWith(DATA)) {
+                    dataSection = true;
+                } else if (split[0].startsWith(RELATION) && split.length == 2) {
+                    dataset.setName(split[1]);
+                }
+                // we must be dealing with an instance
+                else if (dataSection) {
+                    processInstance(dataset, line);
+                }
+            }
+        }
 
-		    processAttribute(dataset, split);
-		} else if (split[0].startsWith(DATA)) {
-		    dataSection = true;
-		} else if (split[0].startsWith(RELATION) && split.length == 2) {
-		    dataset.setName(split[1]);
-		}
-		// we must be dealing with an instance
-		else if (dataSection) {
-		    processInstance(dataset, line);
-		}
-	    }
-	}
+        reader.close();
 
-	reader.close();
-
-	return dataset;
+        return dataset;
     }
 
     /**
@@ -162,58 +189,58 @@ public class ARFFReader {
      * @return an array of String representing the tokens.
      */
     private String[] split(String line) {
-	String[] words = new String[0];
-	int index = 0;
+        String[] words = new String[0];
+        int index = 0;
 
-	while (index < line.length()) {
-	    StringBuffer word = new StringBuffer();
+        while (index < line.length()) {
+            StringBuffer word = new StringBuffer();
 
-	    boolean copying = false;
-	    boolean quotes = false;
-	    boolean brackets = false;
+            boolean copying = false;
+            boolean quotes = false;
+            boolean brackets = false;
 
-	    int i = index;
+            int i = index;
 
-	    for (; i < line.length(); i++) {
-		char c = line.charAt(i);
+            for (; i < line.length(); i++) {
+                char c = line.charAt(i);
 
-		if (!copying && !Character.isWhitespace(c)) {
-		    copying = true;
-		}
+                if (!copying && !Character.isWhitespace(c)) {
+                    copying = true;
+                }
 
-		if (c == '"' || c == '\'') {
-		    quotes ^= true;
-		} else if (c == '{' || c == '}') {
-		    brackets ^= true;
-		}
+                if (c == '"' || c == '\'') {
+                    quotes ^= true;
+                } else if (c == '{' || c == '}') {
+                    brackets ^= true;
+                }
 
-		if (copying) {
-		    if (Character.isWhitespace(c) && !quotes && !brackets) {
-			index = i + 1;
-			break;
-		    }
+                if (copying) {
+                    if (Character.isWhitespace(c) && !quotes && !brackets) {
+                        index = i + 1;
+                        break;
+                    }
 
-		    word.append(c);
+                    word.append(c);
 
-		    // if (!(c == '"' || c == '\''))
-		    // {
-		    // word.append(c);
-		    // }
-		}
-	    }
+                    // if (!(c == '"' || c == '\''))
+                    // {
+                    // word.append(c);
+                    // }
+                }
+            }
 
-	    if (i >= line.length()) {
-		// we reached the end of the line, need to stop the while loop
-		index = i;
-	    }
+            if (i >= line.length()) {
+                // we reached the end of the line, need to stop the while loop
+                index = i;
+            }
 
-	    if (word.length() > 0) {
-		words = Arrays.copyOf(words, words.length + 1);
-		words[words.length - 1] = word.toString();
-	    }
-	}
+            if (word.length() > 0) {
+                words = Arrays.copyOf(words, words.length + 1);
+                words[words.length - 1] = word.toString();
+            }
+        }
 
-	return words;
+        return words;
     }
 
     /**
@@ -226,11 +253,11 @@ public class ARFFReader {
      *         otherwise.
      */
     private boolean isComment(String line) {
-	if (line.startsWith("%") || line.startsWith("#")) {
-	    return true;
-	}
+        if (line.startsWith("%") || line.startsWith("#")) {
+            return true;
+        }
 
-	return false;
+        return false;
     }
 
     /**
@@ -242,36 +269,36 @@ public class ARFFReader {
      *            the components representing the attribute.
      */
     private void processAttribute(Dataset dataset, String[] components) {
-	if (components[2].startsWith("{")) {
-	    // it is a nominal attribute
-	    Attribute attribute = new Attribute(Type.NOMINAL, components[1]);
-	    StringBuffer value = new StringBuffer();
+        if (components[2].startsWith("{")) {
+            // it is a nominal attribute
+            Attribute attribute = new Attribute(Type.NOMINAL, components[1]);
+            StringBuffer value = new StringBuffer();
 
-	    for (int i = 0; i < components[2].length(); i++) {
-		if (components[2].charAt(i) == ',') {
-		    attribute.add(trim(value.toString()));
-		    value.delete(0, value.length());
-		} else if (components[2].charAt(i) == '}') {
-		    attribute.add(trim(value.toString()));
-		    dataset.add(attribute);
-		    break;
-		} else if (components[2].charAt(i) != '{') {
-		    value.append(components[2].charAt(i));
-		}
-	    }
-	} else {
-	    components[2] = components[2].toLowerCase();
+            for (int i = 0; i < components[2].length(); i++) {
+                if (components[2].charAt(i) == ',') {
+                    attribute.add(trim(value.toString()));
+                    value.delete(0, value.length());
+                } else if (components[2].charAt(i) == '}') {
+                    attribute.add(trim(value.toString()));
+                    dataset.add(attribute);
+                    break;
+                } else if (components[2].charAt(i) != '{') {
+                    value.append(components[2].charAt(i));
+                }
+            }
+        } else {
+            components[2] = components[2].toLowerCase();
 
-	    if (components[2].startsWith(CONTINUOUS)
-		    || components[2].startsWith(NUMERIC)
-		    || components[2].startsWith(REAL)) {
-		// it is a continuous attribute
-		dataset.add(new Attribute(Type.CONTINUOUS, components[1]));
-	    } else {
-		throw new IllegalArgumentException("Unsupported attribute: "
-			+ components[1]);
-	    }
-	}
+            if (components[2].startsWith(CONTINUOUS)
+                    || components[2].startsWith(NUMERIC)
+                    || components[2].startsWith(REAL)) {
+                // it is a continuous attribute
+                dataset.add(new Attribute(Type.CONTINUOUS, components[1]));
+            } else {
+                throw new IllegalArgumentException("Unsupported attribute: "
+                        + components[1]);
+            }
+        }
     }
 
     /**
@@ -283,18 +310,93 @@ public class ARFFReader {
      *            the instance information.
      */
     private void processInstance(Dataset dataset, String line) {
-	StringTokenizer tokens = new StringTokenizer(line, ",");
-	String[] values = new String[tokens.countTokens()];
-	int index = 0;
+        StringTokenizer tokens = new StringTokenizer(line, ",");
+        String[] values = new String[tokens.countTokens()];
+        int index = 0;
 
-	while (tokens.hasMoreTokens()) {
-	    String value = trim(tokens.nextToken());
-	    // value.replaceAll("'|\"", "");
-	    values[index] = value;
-	    index++;
-	}
+        while (tokens.hasMoreTokens()) {
+            String value = trim(tokens.nextToken());
+            values[index] = value;
+            index++;
+        }
 
-	dataset.add(values);
+        dataset.add(values);
+    }
+
+    private void processHierarchy(Dataset dataset, String[] components) {
+        String[] values = components[3].split(",");
+        boolean unique = true;
+
+        // (1) determines if label values are unique or not
+
+        for (int i = 0; i < values.length && unique; i++) {
+            String label = trim(values[i]);
+            String[] nodes = label.split(DELIMITER);
+
+            for (int j = 0; j < (nodes.length - 1); j++) {
+                if (nodes[j].equals(nodes[j + 1])) {
+                    // labels in the hierarchy are not unique (e.g., 01/01)
+                    // should use complete labels to identify nodes
+                    unique = false;
+                    break;
+                }
+            }
+        }
+
+        // (2) process the label values
+
+        Hierarchy hierarchy = new Hierarchy();
+        Set<String> labels = new LinkedHashSet<String>();
+
+        for (int i = 0; i < values.length; i++) {
+            String label = trim(values[i]);
+            int split = label.lastIndexOf(DELIMITER);
+
+            if (split != -1) {
+                String[] nodes = new String[2];
+                nodes[0] = trim(label.substring(0, split));
+                nodes[1] = trim(unique ? label.substring(split + 1) : label);
+
+                if (hierarchy.isEmpty()) {
+                    // adds the parent node to the hierarchy
+                    hierarchy.add(nodes[0]);
+                }
+
+                if (hierarchy.get(nodes[1]) == null) {
+                    // we checked if the node exists or not, since in DAG
+                    // hierarchies nodes can have multiple parents
+                    hierarchy.add(nodes[1]);
+                }
+
+                // creates the parent-child link
+                hierarchy.link(nodes[0], nodes[1]);
+
+                labels.add(nodes[0]);
+                labels.add(nodes[1]);
+            } else {
+                if (hierarchy.isEmpty()) {
+                    hierarchy.add("root");
+                    labels.add("root");
+                }
+
+                hierarchy.add(label);
+                hierarchy.link("root", label);
+                labels.add(label);
+            }
+        }
+
+        hierarchy.validate(labels);
+
+        // (3) adds a nominal attribute to represent the hierarchy
+
+        Attribute attribute = new Attribute(Type.NOMINAL, components[1]);
+
+        for (String label : labels) {
+            attribute.add(label);
+        }
+
+        dataset.add(attribute);
+        dataset.setHierarchy(hierarchy);
     }
 
     /**
@@ -307,7 +409,7 @@ public class ARFFReader {
      * @return a string without spaces at the beginning and end.
      */
     private String trim(String value) {
-	value = value.replace("'\\'", "\"").replace("\\''", "\"");
-	return value.trim();
+        value = value.replace("'\\'", "\"").replace("\\''", "\"");
+        return value.trim();
     }
 }

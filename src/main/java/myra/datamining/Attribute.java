@@ -107,12 +107,12 @@ public final class Attribute implements Cloneable {
      *            the name of the attribute.
      */
     public Attribute(Type type, String name) {
-	this.type = type;
-	this.name = name;
-	values = new String[0];
-	index = -1;
-	lower = Double.MAX_VALUE;
-	upper = Double.MIN_VALUE;
+        this.type = type;
+        this.name = name;
+        values = new String[0];
+        index = -1;
+        lower = Double.MAX_VALUE;
+        upper = Double.MIN_VALUE;
     }
 
     /**
@@ -121,7 +121,7 @@ public final class Attribute implements Cloneable {
      * @return the index of the attribute in the instance array.
      */
     public int getIndex() {
-	return index;
+        return index;
     }
 
     /**
@@ -131,7 +131,7 @@ public final class Attribute implements Cloneable {
      *            the index to set.
      */
     public void setIndex(int index) {
-	this.index = index;
+        this.index = index;
     }
 
     /**
@@ -140,7 +140,7 @@ public final class Attribute implements Cloneable {
      * @return the name of the attribute.
      */
     public String getName() {
-	return name;
+        return name;
     }
 
     /**
@@ -149,7 +149,7 @@ public final class Attribute implements Cloneable {
      * @return the attribute type.
      */
     public Type getType() {
-	return type;
+        return type;
     }
 
     /**
@@ -159,8 +159,35 @@ public final class Attribute implements Cloneable {
      *            the value to add.
      */
     public void add(String value) {
-	values = Arrays.copyOf(values, values.length + 1);
-	values[values.length - 1] = value;
+        values = Arrays.copyOf(values, values.length + 1);
+        values[values.length - 1] = value;
+    }
+
+    /**
+     * Removes the specified values.
+     * 
+     * @param indexes
+     *            the indexes of the values to remove.
+     */
+    public void remove(int... indexes) {
+        String[] v = new String[values.length - indexes.length];
+
+        int source = 0;
+        int target = 0;
+
+        for (int i = 0; i < indexes.length; i++) {
+            int length = indexes[i] - source;
+
+            if (length > 0) {
+                System.arraycopy(values, source, v, target, length);
+                target += length;
+            }
+
+            source = indexes[i] + 1;
+        }
+
+        System.arraycopy(values, source, v, target, values.length - source);
+        values = v;
     }
 
     /**
@@ -169,7 +196,7 @@ public final class Attribute implements Cloneable {
      * @return the number of attribute values.
      */
     public int length() {
-	return values.length;
+        return values.length;
     }
 
     /**
@@ -178,7 +205,7 @@ public final class Attribute implements Cloneable {
      * @return the attribute values.
      */
     public String[] values() {
-	return values;
+        return values;
     }
 
     /**
@@ -190,7 +217,7 @@ public final class Attribute implements Cloneable {
      * @return the attribute value at the specified index.
      */
     public String value(int index) {
-	return values[index];
+        return values[index];
     }
 
     /**
@@ -202,13 +229,13 @@ public final class Attribute implements Cloneable {
      * @return the index of the specified value.
      */
     public int indexOf(String value) {
-	for (int i = 0; i < values.length; i++) {
-	    if (value.equals(values[i])) {
-		return i;
-	    }
-	}
+        for (int i = 0; i < values.length; i++) {
+            if (value.equals(values[i])) {
+                return i;
+            }
+        }
 
-	throw new IllegalArgumentException("Value not found: " + value);
+        throw new IllegalArgumentException("Value not found: " + value);
     }
 
     /**
@@ -217,23 +244,23 @@ public final class Attribute implements Cloneable {
      * @return the number of values in the domain of the attribute.
      */
     public int size() {
-	return values.length;
+        return values.length;
     }
 
     @Override
     public String toString() {
-	return getName();
+        return getName();
     }
 
     @Override
     public Attribute clone() {
-	try {
-	    Attribute clone = (Attribute) super.clone();
-	    clone.values = values.clone();
-	    return clone;
-	} catch (CloneNotSupportedException e) {
-	    throw new InternalError(e.getMessage());
-	}
+        try {
+            Attribute clone = (Attribute) super.clone();
+            clone.values = values.clone();
+            return clone;
+        } catch (CloneNotSupportedException e) {
+            throw new InternalError(e.getMessage());
+        }
     }
 
     /**
@@ -243,9 +270,9 @@ public final class Attribute implements Cloneable {
      *            the candidate lower bound.
      */
     public void lower(double value) {
-	if (value < lower) {
-	    lower = value;
-	}
+        if (value < lower) {
+            lower = value;
+        }
     }
 
     /**
@@ -254,7 +281,7 @@ public final class Attribute implements Cloneable {
      * @return the lower bound value of the attribute.
      */
     public double lower() {
-	return lower;
+        return lower;
     }
 
     /**
@@ -264,9 +291,9 @@ public final class Attribute implements Cloneable {
      *            the candidate upper bound.
      */
     public void upper(double value) {
-	if (value > upper) {
-	    upper = value;
-	}
+        if (value > upper) {
+            upper = value;
+        }
     }
 
     /**
@@ -275,7 +302,7 @@ public final class Attribute implements Cloneable {
      * @return the upper bound value of the attribute.
      */
     public double upper() {
-	return upper;
+        return upper;
     }
 
     /**
@@ -284,7 +311,14 @@ public final class Attribute implements Cloneable {
      * @author Fernando Esteban Barril Otero
      */
     public static enum Type {
-	NOMINAL, CONTINUOUS;
+        /**
+         * Categorical attribute type.
+         */
+        NOMINAL,
+        /**
+         * Continuous attribute type.
+         */
+        CONTINUOUS;
     }
 
     /**
@@ -293,230 +327,238 @@ public final class Attribute implements Cloneable {
      * @author Fernando Esteban Barril Otero
      */
     public static class Condition implements Comparable<Condition> {
-	/**
-	 * The maximum number of decimal places in the output of double values.
-	 */
-	public static final int OUTPUT_LENGTH = 6;
+        /**
+         * The maximum number of decimal places in the output of double values.
+         */
+        public static final int OUTPUT_LENGTH = 6;
 
-	/**
-	 * The value(s) of the condition.
-	 */
-	public double[] value = new double[2];
+        /**
+         * The value(s) of the condition.
+         */
+        public double[] value = new double[2];
 
-	/**
-	 * The computed threshold value(s).
-	 */
-	public double[] threshold = new double[2];
+        /**
+         * The computed threshold value(s).
+         */
+        public double[] threshold = new double[2];
 
-	/**
-	 * The relation type.
-	 */
-	public short relation = 0;
+        /**
+         * The relation type.
+         */
+        public short relation = 0;
 
-	/**
-	 * The entropy of the interval represented by the condition. Only valid
-	 * for continuous attribute conditions.
-	 */
-	public double entropy = Double.NaN;
+        /**
+         * The entropy of the interval represented by the condition. Only valid
+         * for continuous attribute conditions.
+         */
+        public double entropy = Double.NaN;
 
-	/**
-	 * The index of the attribute of the condition.
-	 */
-	public int attribute = -1;
+        /**
+         * The index of the attribute of the condition.
+         */
+        public int attribute = -1;
 
-	/**
-	 * The length of the interval represented by the condition. <b>Note:</b>
-	 * when this value is not initialised, it is equal to <code>0</code>.
-	 */
-	public double length = 0.0;
+        /**
+         * The length of the interval represented by the condition. <b>Note:</b>
+         * when this value is not initialised, it is equal to <code>0</code>.
+         */
+        public double length = 0.0;
 
-	/**
-	 * Number of tested continuous thresholds (only valid for continuous
-	 * attributes).
-	 */
-	public double tries = Double.NaN;
+        /**
+         * Number of tested continuous thresholds (only valid for continuous
+         * attributes).
+         */
+        public double tries = Double.NaN;
 
-	/**
-	 * The class distribution frequency of the examples satisfying the
-	 * condition.
-	 */
-	public double[] frequency;
+        /**
+         * The class distribution frequency of the examples satisfying the
+         * condition.
+         */
+        public double[] frequency;
 
-	/**
-	 * The number of different class values occuring in the examples
-	 * satisfying the condition.
-	 */
-	public int diversity = 0;
+        /**
+         * The number of different class values occuring in the examples
+         * satisfying the condition.
+         */
+        public int diversity = 0;
 
-	/**
-	 * Index using during the creation of the condition. Usually this is
-	 * only for continuous attrutes conditions.
-	 */
-	public int index;
+        /**
+         * Index using during the creation of the condition. Usually this is
+         * only for continuous attrutes conditions.
+         */
+        public int index;
 
-	/**
-	 * The quality of the condition.
-	 */
-	public double quality = Double.MIN_VALUE;
+        /**
+         * The quality of the condition.
+         */
+        public double quality = Double.MIN_VALUE;
 
-	/**
-	 * The weight of the condition.
-	 */
-	public double weight = 0;
+        /**
+         * The weight of the condition.
+         */
+        public double weight = 0;
 
-	/**
-	 * Returns <code>true</code> if the specified value satisfies this
-	 * attribute condition.
-	 * 
-	 * @param v
-	 *            the value to test.
-	 * 
-	 * @return <code>true</code> if the specified value satisfies this
-	 *         attribute condition; otherwise <code>false</code>.
-	 */
-	public boolean satisfies(double v) {
-	    boolean satisfies = false;
+        /**
+         * Returns <code>true</code> if the specified value satisfies this
+         * attribute condition.
+         * 
+         * @param v
+         *            the value to test.
+         * 
+         * @return <code>true</code> if the specified value satisfies this
+         *         attribute condition; otherwise <code>false</code>.
+         */
+        public boolean satisfies(double v) {
+            boolean satisfies = false;
 
-	    if (!Double.isNaN(v)) {
-		switch (relation) {
-		case LESS_THAN_OR_EQUAL_TO:
-		    satisfies = (v <= value[0]);
-		    break;
+            if (!Double.isNaN(v)) {
+                switch (relation) {
+                case LESS_THAN_OR_EQUAL_TO:
+                    satisfies = (v <= value[0]);
+                    break;
 
-		case GREATER_THAN:
-		    satisfies = (v > value[0]);
-		    break;
+                case GREATER_THAN:
+                    satisfies = (v > value[0]);
+                    break;
 
-		case IN_RANGE:
-		    satisfies = (v >= value[0] && v < value[1]);
-		    break;
+                case IN_RANGE:
+                    satisfies = (v >= value[0] && v < value[1]);
+                    break;
 
-		case EQUAL_TO:
-		    satisfies = (v == value[0]);
-		    break;
+                case EQUAL_TO:
+                    satisfies = (v == value[0]);
+                    break;
 
-		case LESS_THAN:
-		    satisfies = (v < value[0]);
-		    break;
+                case LESS_THAN:
+                    satisfies = (v < value[0]);
+                    break;
 
-		case GREATER_THAN_OR_EQUAL_TO:
-		    satisfies = (v >= value[0]);
-		    break;
+                case GREATER_THAN_OR_EQUAL_TO:
+                    satisfies = (v >= value[0]);
+                    break;
 
-		case ANY_OF:
-		    for (double option : value) {
-			if (v == option) {
-			    satisfies = true;
-			    break;
-			}
-		    }
+                case ANY_OF:
+                    for (double option : value) {
+                        if (v == option) {
+                            satisfies = true;
+                            break;
+                        }
+                    }
 
-		    break;
-		}
-	    }
+                    break;
+                }
+            }
 
-	    return satisfies;
-	}
+            return satisfies;
+        }
 
-	@Override
-	public int compareTo(Condition o) {
-	    return Double.compare(quality, o.quality);
-	}
+        @Override
+        public int compareTo(Condition o) {
+            return Double.compare(quality, o.quality);
+        }
 
-	@Override
-	public String toString() {
-	    StringBuffer buffer = new StringBuffer();
-	    buffer.append("(");
-	    buffer.append(attribute);
-	    buffer.append(",");
-	    buffer.append(relation);
-	    buffer.append(",");
-	    buffer.append(Arrays.toString(value));
-	    buffer.append(")");
+        @Override
+        public String toString() {
+            StringBuffer buffer = new StringBuffer();
+            buffer.append("(");
+            buffer.append(attribute);
+            buffer.append(",");
+            buffer.append(relation);
+            buffer.append(",");
+            buffer.append(Arrays.toString(value));
+            buffer.append(")");
 
-	    return buffer.toString();
-	}
+            return buffer.toString();
+        }
 
-	public String toString(Dataset dataset) {
-	    StringBuffer buffer = new StringBuffer();
+        /**
+         * Returns a string representation of the attribute.
+         * 
+         * @param dataset
+         *            the current dataset.
+         * 
+         * @return a string representation of the attribute.
+         */
+        public String toString(Dataset dataset) {
+            StringBuffer buffer = new StringBuffer();
 
-	    String name = dataset.attributes()[attribute].getName();
+            String name = dataset.attributes()[attribute].getName();
 
-	    switch (relation) {
-	    case LESS_THAN:
-		buffer.append(String.format("%s < %s", name, format(value[0])));
-		break;
+            switch (relation) {
+            case LESS_THAN:
+                buffer.append(String.format("%s < %s", name, format(value[0])));
+                break;
 
-	    case LESS_THAN_OR_EQUAL_TO:
-		buffer.append(String
-			.format("%s <= %s", name, format(value[0])));
-		break;
+            case LESS_THAN_OR_EQUAL_TO:
+                buffer.append(String
+                        .format("%s <= %s", name, format(value[0])));
+                break;
 
-	    case GREATER_THAN:
-		buffer.append(String.format("%s > %s", name, format(value[0])));
-		break;
+            case GREATER_THAN:
+                buffer.append(String.format("%s > %s", name, format(value[0])));
+                break;
 
-	    case GREATER_THAN_OR_EQUAL_TO:
-		buffer.append(String
-			.format("%s >= %s", name, format(value[0])));
-		break;
+            case GREATER_THAN_OR_EQUAL_TO:
+                buffer.append(String
+                        .format("%s >= %s", name, format(value[0])));
+                break;
 
-	    case IN_RANGE:
-		buffer.append(String.format("%s < %s <= %s",
-					    format(value[0]),
-					    name,
-					    format(value[1])));
-		break;
+            case IN_RANGE:
+                buffer.append(String.format("%s < %s <= %s",
+                                            format(value[0]),
+                                            name,
+                                            format(value[1])));
+                break;
 
-	    case EQUAL_TO:
-		buffer.append(String.format("%s = %s",
-					    name,
-					    dataset.attributes()[attribute]
-						    .value((int) value[0])));
-		break;
+            case EQUAL_TO:
+                buffer.append(String.format("%s = %s",
+                                            name,
+                                            dataset.attributes()[attribute]
+                                                    .value((int) value[0])));
+                break;
 
-	    case ANY_OF:
-		buffer.append(String.format("%s = {", name));
+            case ANY_OF:
+                buffer.append(String.format("%s = {", name));
 
-		for (int j = 0; j < value.length; j++) {
+                for (int j = 0; j < value.length; j++) {
 
-		    if (j > 0) {
-			buffer.append(", ");
-		    }
+                    if (j > 0) {
+                        buffer.append(", ");
+                    }
 
-		    buffer.append(String
-			    .format("%s",
-				    dataset.attributes()[attribute]
-					    .value((int) value[j])));
-		}
+                    buffer.append(String
+                            .format("%s",
+                                    dataset.attributes()[attribute]
+                                            .value((int) value[j])));
+                }
 
-		buffer.append("}");
+                buffer.append("}");
 
-		break;
-	    }
+                break;
+            }
 
-	    return buffer.toString();
-	}
+            return buffer.toString();
+        }
 
-	/**
-	 * Returns a string representing the specified double value respecting
-	 * the maximum {@link #OUTPUT_LENGTH}.
-	 * 
-	 * @param value
-	 *            the double value.
-	 * 
-	 * @return a string representing the specified double value.
-	 */
-	private String format(double value) {
-	    String output = Double.toString(value);
-	    int length = output.length() - output.indexOf('.') + 1;
+        /**
+         * Returns a string representing the specified double value respecting
+         * the maximum {@link #OUTPUT_LENGTH}.
+         * 
+         * @param value
+         *            the double value.
+         * 
+         * @return a string representing the specified double value.
+         */
+        private String format(double value) {
+            String output = Double.toString(value);
+            int length = output.length() - output.indexOf('.') + 1;
 
-	    if (length > OUTPUT_LENGTH) {
-		output = String.format("%.6f", value);
-		return output.replaceAll("0+$", "");
-	    }
+            if (length > OUTPUT_LENGTH) {
+                output = String.format("%.6f", value);
+                return output.replaceAll("0+$", "");
+            }
 
-	    return output;
-	}
+            return output;
+        }
     }
 }

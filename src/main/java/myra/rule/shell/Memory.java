@@ -49,7 +49,7 @@ public class Memory extends HashMap<Object, Object> {
      */
     @SuppressWarnings("unchecked")
     public <T> T get(Location<T> location) {
-	return (T) super.get(location);
+        return (T) super.get(location);
     }
 
     /**

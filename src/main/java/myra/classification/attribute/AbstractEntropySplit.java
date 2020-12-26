@@ -53,69 +53,69 @@ public abstract class AbstractEntropySplit extends IntervalBuilder {
      * @return an array of conditions representing discrete intervals.
      */
     protected abstract Condition[] create(Pair[] candidates,
-					  int start,
-					  int end,
-					  double[] frequency,
-					  double size,
-					  double minimum);
+                                          int start,
+                                          int end,
+                                          double[] frequency,
+                                          double size,
+                                          double minimum);
 
     @Override
     public Condition[] multiple(Dataset dataset,
-				Instance[] instances,
-				int attribute) {
-	Pair[] candidates = new Pair[dataset.size()];
-	double[] frequency = new double[dataset.classLength()];
+                                Instance[] instances,
+                                int attribute) {
+        Pair[] candidates = new Pair[dataset.size()];
+        double[] frequency = new double[dataset.classLength()];
 
-	int index = 0;
-	double size = 0;
+        int index = 0;
+        double size = 0;
 
-	for (int i = 0; i < dataset.size(); i++) {
-	    // the dynamc discretisation only considers the instances covered
-	    // by the current rule
-	    if (instances[i].flag == RULE_COVERED) {
-		double v = dataset.value(i, attribute);
+        for (int i = 0; i < dataset.size(); i++) {
+            // the dynamc discretisation only considers the instances covered
+            // by the current rule
+            if (instances[i].flag == RULE_COVERED) {
+                double v = dataset.value(i, attribute);
 
-		if (!Double.isNaN(v)) {
-		    Pair pair = new Pair();
-		    pair.value = v;
-		    pair.classValue = dataset.value(i, dataset.classIndex());
-		    pair.weight = instances[i].weight;
-		    candidates[index] = pair;
+                if (!Double.isNaN(v)) {
+                    Pair pair = new Pair();
+                    pair.value = v;
+                    pair.classValue = dataset.value(i, dataset.classIndex());
+                    pair.weight = instances[i].weight;
+                    candidates[index] = pair;
 
-		    frequency[(int) pair.classValue] += pair.weight;
-		    size += pair.weight;
+                    frequency[(int) pair.classValue] += pair.weight;
+                    size += pair.weight;
 
-		    index++;
-		}
-	    }
-	}
+                    index++;
+                }
+            }
+        }
 
-	if (index == 0) {
-	    // there are no candidate threshold values
-	    return null;
-	}
+        if (index == 0) {
+            // there are no candidate threshold values
+            return null;
+        }
 
-	candidates = Arrays.copyOf(candidates, index);
-	Arrays.sort(candidates);
+        candidates = Arrays.copyOf(candidates, index);
+        Arrays.sort(candidates);
 
-	Condition[] conditions =
-		create(candidates,
-		       0,
-		       candidates.length,
-		       frequency,
-		       size,
-		       IntervalBuilder.minimumCases(dataset, size));
+        Condition[] conditions =
+                create(candidates,
+                       0,
+                       candidates.length,
+                       frequency,
+                       size,
+                       IntervalBuilder.minimumCases(dataset, size));
 
-	if (conditions == null) {
-	    // no interval was created
-	    return null;
-	} else {
-	    for (Condition c : conditions) {
-		c.attribute = attribute;
-	    }
+        if (conditions == null) {
+            // no interval was created
+            return null;
+        } else {
+            for (Condition c : conditions) {
+                c.attribute = attribute;
+            }
 
-	    return conditions;
-	}
+            return conditions;
+        }
     }
 
     /**
@@ -138,22 +138,22 @@ public abstract class AbstractEntropySplit extends IntervalBuilder {
      */
     @Override
     public Condition single(Dataset dataset,
-			    Instance[] instances,
-			    int attribute) {
-	Condition[] conditions = multiple(dataset, instances, attribute);
-	Condition best = null;
+                            Instance[] instances,
+                            int attribute) {
+        Condition[] conditions = multiple(dataset, instances, attribute);
+        Condition best = null;
 
-	if (conditions != null && conditions.length > 0) {
-	    for (Condition c : conditions) {
-		if ((best == null) || (c.entropy < best.entropy)
-			|| (c.entropy == best.entropy
-				&& c.length > best.length)) {
-		    best = c;
-		}
-	    }
-	}
+        if (conditions != null && conditions.length > 0) {
+            for (Condition c : conditions) {
+                if ((best == null) || (c.entropy < best.entropy)
+                        || (c.entropy == best.entropy
+                                && c.length > best.length)) {
+                    best = c;
+                }
+            }
+        }
 
-	return best;
+        return best;
     }
 
     /**
@@ -165,6 +165,6 @@ public abstract class AbstractEntropySplit extends IntervalBuilder {
      * @return the <i>base 2</i> logarithm of <code>value</code>.
      */
     protected double log2(double value) {
-	return Math.log(value) / Math.log(2.0);
+        return Math.log(value) / Math.log(2.0);
     }
 }

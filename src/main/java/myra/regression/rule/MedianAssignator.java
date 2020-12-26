@@ -38,27 +38,27 @@ import myra.rule.Rule;
 public class MedianAssignator implements Assignator {
     @Override
     public int assign(Dataset dataset, Rule rule, Instance[] instances) {
-	double[] values = new double[instances.length];
-	int count = 0;
+        double[] values = new double[instances.length];
+        int count = 0;
 
-	for (int i = 0; i < instances.length; i++) {
-	    if (instances[i].flag == RULE_COVERED) {
-		values[count] = dataset.value(i, dataset.classIndex());
-		count++;
-	    }
-	}
+        for (int i = 0; i < instances.length; i++) {
+            if (instances[i].flag == RULE_COVERED) {
+                values[count] = dataset.value(i, dataset.classIndex());
+                count++;
+            }
+        }
 
-	Arrays.sort(values, 0, count);
-	double median = Double.NaN;
+        Arrays.sort(values, 0, count);
+        double median = Double.NaN;
 
-	if (count % 2 == 0) {
-	    median = (values[(count / 2) - 1] + values[count / 2]) / 2;
-	} else {
-	    median = values[count / 2];
-	}
+        if (count % 2 == 0) {
+            median = (values[(count / 2) - 1] + values[count / 2]) / 2;
+        } else {
+            median = values[count / 2];
+        }
 
-	rule.setConsequent(new Real(median));
+        rule.setConsequent(new Real(median));
 
-	return instances.length - count;
+        return instances.length - count;
     }
 }

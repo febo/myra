@@ -31,8 +31,7 @@ import java.util.Random;
  * 
  * @author Fernando Esteban Barril Otero
  */
-public class RandomSequence
-	extends Random {
+public class RandomSequence extends Random {
     /**
      * Serialization UID.
      */
@@ -55,34 +54,34 @@ public class RandomSequence
      *            the file from where the random number list is read.
      */
     public RandomSequence(String file) {
-	BufferedReader reader = null;
+        BufferedReader reader = null;
 
-	try {
-	    ArrayList<Double> list = new ArrayList<Double>();
-	    reader = new BufferedReader(new FileReader(file));
-	    String line = null;
+        try {
+            ArrayList<Double> list = new ArrayList<Double>();
+            reader = new BufferedReader(new FileReader(file));
+            String line = null;
 
-	    while ((line = reader.readLine()) != null) {
-		list.add(Double.parseDouble(line));
-	    }
+            while ((line = reader.readLine()) != null) {
+                list.add(Double.parseDouble(line));
+            }
 
-	    numbers = list.toArray(new Double[0]);
-	    current = 0;
-	} catch (IOException e) {
-	    throw new RuntimeException(e);
-	} finally {
-	    try {
-		if (reader != null) {
-		    reader.close();
-		}
-	    } catch (IOException e) {
-		throw new RuntimeException(e);
-	    }
-	}
+            numbers = list.toArray(new Double[0]);
+            current = 0;
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        } finally {
+            try {
+                if (reader != null) {
+                    reader.close();
+                }
+            } catch (IOException e) {
+                throw new RuntimeException(e);
+            }
+        }
     }
 
     @Override
     public double nextDouble() {
-	return numbers[current++];
+        return numbers[current++];
     }
 }

@@ -59,8 +59,8 @@ public class RuleList extends AbstractWeighable<RuleList> implements Model {
      * Default constructor.
      */
     public RuleList() {
-	rules = (Rule[]) Array.newInstance(Config.CONFIG.get(Rule.DEFAULT_RULE),
-					   0);
+        rules = (Rule[]) Array.newInstance(Config.CONFIG.get(Rule.DEFAULT_RULE),
+                                           0);
     }
 
     /**
@@ -70,8 +70,8 @@ public class RuleList extends AbstractWeighable<RuleList> implements Model {
      *            the rule to add.
      */
     public void add(Rule rule) {
-	rules = Arrays.copyOf(rules, rules.length + 1);
-	rules[rules.length - 1] = rule;
+        rules = Arrays.copyOf(rules, rules.length + 1);
+        rules[rules.length - 1] = rule;
     }
 
     /**
@@ -80,7 +80,7 @@ public class RuleList extends AbstractWeighable<RuleList> implements Model {
      * @return the list of rules.
      */
     public final Rule[] rules() {
-	return rules;
+        return rules;
     }
 
     /**
@@ -89,7 +89,7 @@ public class RuleList extends AbstractWeighable<RuleList> implements Model {
      * @return the number of rules.
      */
     public final int size() {
-	return rules.length;
+        return rules.length;
     }
 
     /**
@@ -100,23 +100,29 @@ public class RuleList extends AbstractWeighable<RuleList> implements Model {
      *         <code>false</code> otherwise.
      */
     public boolean hasDefault() {
-	for (int i = 0; i < rules.length; i++) {
-	    if (rules[i].terms().length == 0) {
-		return true;
-	    }
-	}
+        for (int i = 0; i < rules.length; i++) {
+            if (rules[i].terms().length == 0) {
+                return true;
+            }
+        }
 
-	return false;
+        return false;
     }
 
+    /**
+     * Returns the default (empty antecedent) rule.
+     * 
+     * @return the default rule; <code>null</code> if the list does not have a
+     *         default rule.
+     */
     public Rule defaultRule() {
-	for (int i = 0; i < rules.length; i++) {
-	    if (rules[i].terms().length == 0) {
-		return rules[i];
-	    }
-	}
+        for (int i = 0; i < rules.length; i++) {
+            if (rules[i].terms().length == 0) {
+                return rules[i];
+            }
+        }
 
-	return null;
+        return null;
     }
 
     /**
@@ -125,7 +131,7 @@ public class RuleList extends AbstractWeighable<RuleList> implements Model {
      * @return the quality of the rule list.
      */
     public Cost getQuality() {
-	return quality;
+        return quality;
     }
 
     /**
@@ -135,7 +141,7 @@ public class RuleList extends AbstractWeighable<RuleList> implements Model {
      *            the quality to set.
      */
     public void setQuality(Cost quality) {
-	this.quality = quality;
+        this.quality = quality;
     }
 
     /**
@@ -144,7 +150,7 @@ public class RuleList extends AbstractWeighable<RuleList> implements Model {
      * @return the iteration in which the list was created.
      */
     public int getIteration() {
-	return iteration;
+        return iteration;
     }
 
     /**
@@ -154,7 +160,7 @@ public class RuleList extends AbstractWeighable<RuleList> implements Model {
      *            the iteration number.
      */
     public void setIteration(int iteration) {
-	this.iteration = iteration;
+        this.iteration = iteration;
     }
 
     /**
@@ -167,44 +173,44 @@ public class RuleList extends AbstractWeighable<RuleList> implements Model {
      * @see Rule#apply(Dataset, Dataset.Instance[])
      */
     public void apply(Dataset dataset) {
-	Instance[] instances = Instance.newArray(dataset.size());
-	Instance.markAll(instances, NOT_COVERED);
+        Instance[] instances = Instance.newArray(dataset.size());
+        Instance.markAll(instances, NOT_COVERED);
 
-	for (int i = 0; i < rules.length; i++) {
-	    if (rules[i].isEnabled()) {
-		rules[i].apply(dataset, instances);
-		Dataset.markCovered(instances);
-	    }
-	}
+        for (int i = 0; i < rules.length; i++) {
+            if (rules[i].isEnabled()) {
+                rules[i].apply(dataset, instances);
+                Dataset.markCovered(instances);
+            }
+        }
     }
 
     /**
      * Removes rules that are not enabled from the rule list.
      */
     public void compact() {
-	int position = 0;
+        int position = 0;
 
-	for (Rule rule : rules) {
-	    if (rule.isEnabled()) {
-		position++;
-	    }
-	}
+        for (Rule rule : rules) {
+            if (rule.isEnabled()) {
+                position++;
+            }
+        }
 
-	if (position != size()) {
-	    Rule[] compact = (Rule[]) Array
-		    .newInstance(Config.CONFIG.get(Rule.DEFAULT_RULE),
-				 position);
-	    position = 0;
+        if (position != size()) {
+            Rule[] compact = (Rule[]) Array
+                    .newInstance(Config.CONFIG.get(Rule.DEFAULT_RULE),
+                                 position);
+            position = 0;
 
-	    for (int i = 0; i < rules.length; i++) {
-		if (rules[i].isEnabled()) {
-		    compact[position] = rules[i];
-		    position++;
-		}
-	    }
+            for (int i = 0; i < rules.length; i++) {
+                if (rules[i].isEnabled()) {
+                    compact[position] = rules[i];
+                    position++;
+                }
+            }
 
-	    rules = compact;
-	}
+            rules = compact;
+        }
     }
 
     /**
@@ -218,14 +224,14 @@ public class RuleList extends AbstractWeighable<RuleList> implements Model {
      * @return the predicted class value of the specified instance.
      */
     public Prediction predict(Dataset dataset, int instance) {
-	for (int i = 0; i < rules.length; i++) {
-	    if (rules[i].isEnabled() && rules[i].covers(dataset, instance)) {
-		return rules[i].getConsequent();
-	    }
-	}
+        for (int i = 0; i < rules.length; i++) {
+            if (rules[i].isEnabled() && rules[i].covers(dataset, instance)) {
+                return rules[i].getConsequent();
+            }
+        }
 
-	throw new IllegalArgumentException("Could not classify instance: "
-		+ instance);
+        throw new IllegalArgumentException("Could not classify instance: "
+                + instance);
     }
 
     /**
@@ -237,77 +243,77 @@ public class RuleList extends AbstractWeighable<RuleList> implements Model {
      * @return the string representation of the rule list.
      */
     public String toString(Dataset dataset) {
-	StringBuffer buffer = new StringBuffer();
-	double terms = 0.0;
+        StringBuffer buffer = new StringBuffer();
+        double terms = 0.0;
 
-	for (int i = 0; i < rules.length; i++) {
-	    if (i > 0) {
-		buffer.append("\n");
-	    }
+        for (int i = 0; i < rules.length; i++) {
+            if (i > 0) {
+                buffer.append("\n");
+            }
 
-	    buffer.append(rules[i].toString(dataset));
-	    terms += rules[i].size();
-	}
+            buffer.append(rules[i].toString(dataset));
+            terms += rules[i].size();
+        }
 
-	buffer.append(String.format("%n%nNumber of rules: %d%n", rules.length));
-	buffer.append(String.format("Total number of terms: %.0f%n", terms));
+        buffer.append(String.format("%n%nNumber of rules: %d%n", rules.length));
+        buffer.append(String.format("Total number of terms: %.0f%n", terms));
 
-	double mean = terms / rules.length;
-	buffer.append(String.format("Average number of terms: %.2f%n", mean));
+        double mean = terms / rules.length;
+        buffer.append(String.format("Average number of terms: %.2f%n", mean));
 
-	if (quality != null) {
-	    buffer.append(String.format("List quality: %f%n", quality.raw()));
-	    buffer.append(String.format("List iteration: %d", iteration));
-	}
+        if (quality != null) {
+            buffer.append(String.format("List quality: %f%n", quality.raw()));
+            buffer.append(String.format("List iteration: %d", iteration));
+        }
 
-	return buffer.toString();
+        return buffer.toString();
     }
 
     @Override
     public String export(Dataset dataset) {
-	StringBuffer buffer = new StringBuffer();
+        StringBuffer buffer = new StringBuffer();
 
-	for (int i = 0; i < rules.length; i++) {
-	    if (i > 0) {
-		buffer.append("\n");
-	    }
+        for (int i = 0; i < rules.length; i++) {
+            if (i > 0) {
+                buffer.append("\n");
+            }
 
-	    buffer.append(rules[i].toString(dataset));
-	}
+            buffer.append(rules[i].toString(dataset));
+        }
 
-	return buffer.toString();
+        return buffer.toString();
     }
 
     @Override
     public int compareTo(RuleList o) {
-	// (1) compare the quality
+        // (1) compare the quality
 
-	int c = (quality == null ? 0 : quality.compareTo(o.quality));
+        int c = (quality == null ? 0 : quality.compareTo(o.quality));
 
-	if (c == 0) {
-	    // (2) compare the number of rules
+        if (c == 0) {
+            // (2) compare the number of rules
 
-	    c = Double.compare(o.size(), size());
+            c = Double.compare(o.size(), size());
 
-	    if (c == 0) {
-		int total1 = 0;
+            if (c == 0) {
+                int total1 = 0;
 
-		for (Rule rule : rules) {
-		    total1 += rule.size();
-		}
+                for (Rule rule : rules) {
+                    total1 += rule.size();
+                }
 
-		int total2 = 0;
+                int total2 = 0;
 
-		for (Rule rule : o.rules) {
-		    total2 += rule.size();
-		}
+                for (Rule rule : o.rules) {
+                    total2 += rule.size();
+                }
 
-		// (3) compare the total number of terms
+                // (3) compare the total number of terms
 
-		return Double.compare(total2, total1);
-	    }
-	}
+                return Double.compare(total2, total1);
+            }
+        }
 
-	return c;
+        return c;
     }
 }

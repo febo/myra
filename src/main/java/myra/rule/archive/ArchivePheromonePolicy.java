@@ -23,6 +23,7 @@ import myra.rule.Rule;
 import myra.rule.Rule.Term;
 import myra.rule.RuleList;
 import myra.rule.archive.Graph.Vertex;
+import myra.rule.irl.PheromonePolicy;
 import myra.rule.pittsburgh.LevelPheromonePolicy;
 
 /**
@@ -31,27 +32,37 @@ import myra.rule.pittsburgh.LevelPheromonePolicy;
  * 
  * @author Fernando Esteban Barril Otero
  */
-public class ArchivePheromonePolicy extends LevelPheromonePolicy {
+public class ArchivePheromonePolicy extends LevelPheromonePolicy
+        implements PheromonePolicy {
     @Override
     public void update(myra.rule.Graph graph, RuleList list) {
-	// updates the pheromone on selected vertices 
-	super.update(graph, list);
+        // updates the pheromone on selected vertices
+        super.update(graph, list);
 
-	Graph g = (Graph) graph;
-	final int size = list.size() - (list.hasDefault() ? 1 : 0);
-	double delta = list.getQuality().raw() / 5.0;
-	int level = 0;
+        Graph g = (Graph) graph;
+        final int size = list.size() - (list.hasDefault() ? 1 : 0);
+        double delta = list.getQuality().raw();
+        int level = 0;
 
-	for (int i = 0; i < size; i++) {
-	    Rule rule = list.rules()[i];
+        for (int i = 0; i < size; i++) {
+            Rule rule = list.rules()[i];
 
-	    for (int j = 0; j < rule.size(); j++) {
-		Term term = rule.terms()[j];
-		Vertex vertex = g.vertices()[term.index()];
-		vertex.update(level, term.condition(), delta);
-	    }
+            for (int j = 0; j < rule.size(); j++) {
+                Term term = rule.terms()[j];
+                Vertex vertex = g.vertices()[term.index()];
+                vertex.update(level, term.condition(), delta);
+            }
 
-	    level++;
-	}
+            level++;
+        }
+    }
+
+    @Override
+    public void update(myra.rule.Graph graph, Rule rule) {
+        RuleList list = new RuleList();
+        list.add(rule);
+        list.setQuality(rule.getQuality());
+
+        update(graph, list);
     }
 }

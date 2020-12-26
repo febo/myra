@@ -33,15 +33,15 @@ public class SynchronizedArchiveTest extends TestCase {
      * Tests the addition of elements to the archive.
      */
     public void testAdd() {
-	Archive<WInteger> archive = new Archive.DefaultArchive<>(5);
-	Archive<WInteger> pool = new SynchronizedArchive<>(archive);
+        Archive<WInteger> archive = new Archive.DefaultArchive<>(5);
+        Archive<WInteger> pool = new SynchronizedArchive<>(archive);
 
-	for (int i = 0; i < 5; i++) {
-	    pool.add(new WInteger(i));
-	}
+        for (int i = 0; i < 5; i++) {
+            pool.add(new WInteger(i));
+        }
 
-	assertEquals(5, archive.size());
-	assertEquals(0, archive.lowest().intValue());
-	assertEquals(4, archive.highest().intValue());
+        assertEquals(5, archive.size());
+        assertEquals(0, archive.lowest().intValue());
+        assertEquals(4, archive.highest().intValue());
     }
 }

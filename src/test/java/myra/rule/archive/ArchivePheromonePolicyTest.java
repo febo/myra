@@ -67,40 +67,40 @@ public class ArchivePheromonePolicyTest extends TestCase {
 
     @Override
     protected void setUp() throws Exception {
-	CONFIG.set(Archive.ARCHIVE_SIZE, 5);
-	CONFIG.set(Archive.Q, Archive.DEFAULT_Q);
-	CONFIG.set(VariableArchive.PRECISION, 2.0);
-	CONFIG.set(UNCOVERED, 0.01);
-	CONFIG.set(RANDOM_GENERATOR, new Random(System.currentTimeMillis()));
-	CONFIG.set(Rule.DEFAULT_RULE, ClassificationRule.class);
-	CONFIG.set(ASSIGNATOR, new MajorityAssignator());
-	CONFIG.set(DEFAULT_HEURISTIC, new Heuristic.None());
-	CONFIG.set(DEFAULT_PRUNER, new SinglePassPruner());
-	CONFIG.set(DEFAULT_FUNCTION, new Accuracy());
-	CONFIG.set(DEFAULT_LIST_PRUNER, new ListPruner.None());
-	CONFIG.set(ListMeasure.DEFAULT_MEASURE, new ListAccuracy());
-	CONFIG.set(MINIMUM_CASES, 2);
-	CONFIG.set(EVAPORATION_FACTOR, 0.9);
-	CONFIG.set(P_BEST, 0.05);
+        CONFIG.set(Archive.ARCHIVE_SIZE, 5);
+        CONFIG.set(Archive.Q, Archive.DEFAULT_Q);
+        CONFIG.set(VariableArchive.PRECISION, 2.0);
+        CONFIG.set(UNCOVERED, 0.01);
+        CONFIG.set(RANDOM_GENERATOR, new Random(System.currentTimeMillis()));
+        CONFIG.set(Rule.DEFAULT_RULE, ClassificationRule.class);
+        CONFIG.set(ASSIGNATOR, new MajorityAssignator());
+        CONFIG.set(DEFAULT_HEURISTIC, new Heuristic.None());
+        CONFIG.set(DEFAULT_PRUNER, new SinglePassPruner());
+        CONFIG.set(DEFAULT_FUNCTION, new Accuracy());
+        CONFIG.set(DEFAULT_LIST_PRUNER, new ListPruner.None());
+        CONFIG.set(ListMeasure.DEFAULT_MEASURE, new ListAccuracy());
+        CONFIG.set(MINIMUM_CASES, 2);
+        CONFIG.set(EVAPORATION_FACTOR, 0.9);
+        CONFIG.set(P_BEST, 0.05);
 
-	ARFFReader reader = new ARFFReader();
-	dataset = reader.read(new InputStreamReader(getClass()
-		.getResourceAsStream("/weather.arff")));
+        ARFFReader reader = new ARFFReader();
+        dataset = reader.read(new InputStreamReader(getClass()
+                .getResourceAsStream("/weather.arff")));
 
-	graph = new Graph(dataset);
+        graph = new Graph(dataset);
     }
 
     public void testUpdate() {
-	FindRuleListActivity activity =
-		new FindRuleListActivity(graph,
-					 dataset,
-					 new ArchiveRuleFactory(),
-					 new ArchivePheromonePolicy());
+        FindRuleListActivity activity =
+                new FindRuleListActivity(graph,
+                                         dataset,
+                                         new ArchiveRuleFactory(),
+                                         new ArchivePheromonePolicy());
 
-	activity.initialise();
-	RuleList list = activity.create();
+        activity.initialise();
+        RuleList list = activity.create();
 
-	ArchivePheromonePolicy policy = new ArchivePheromonePolicy();
-	policy.update(graph, list);
+        ArchivePheromonePolicy policy = new ArchivePheromonePolicy();
+        policy.update(graph, list);
     }
 }

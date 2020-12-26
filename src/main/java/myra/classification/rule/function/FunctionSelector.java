@@ -42,16 +42,16 @@ public class FunctionSelector {
      * The available rule evaluation functions.
      */
     private static final RuleFunction[] FUNCTIONS =
-	    new RuleFunction[] { new Accuracy(),
-				 new ConfidenceCoverage(),
-				 new CostMeasure(),
-				 new Fmeasure(),
-				 new Jaccard(),
-				 new Klosgen(),
-				 new MEstimate(),
-				 new PessimisticAccuracy(),
-				 new RelativeCostMeasure(),
-				 new SensitivitySpecificity() };
+            new RuleFunction[] { new Accuracy(),
+                                 new ConfidenceCoverage(),
+                                 new CostMeasure(),
+                                 new Fmeasure(),
+                                 new Jaccard(),
+                                 new Klosgen(),
+                                 new MEstimate(),
+                                 new PessimisticAccuracy(),
+                                 new RelativeCostMeasure(),
+                                 new SensitivitySpecificity() };
 
     /**
      * The pheromone matrix for the selection.
@@ -62,13 +62,13 @@ public class FunctionSelector {
      * Default constructor.
      */
     public FunctionSelector() {
-	pheromone = new Entry[FUNCTIONS.length];
+        pheromone = new Entry[FUNCTIONS.length];
 
-	for (int i = 0; i < pheromone.length; i++) {
-	    pheromone[i] = new Entry();
-	    pheromone[i].setInitial(INITIAL_PHEROMONE);
-	    pheromone[i].set(0, INITIAL_PHEROMONE);
-	}
+        for (int i = 0; i < pheromone.length; i++) {
+            pheromone[i] = new Entry();
+            pheromone[i].setInitial(INITIAL_PHEROMONE);
+            pheromone[i].set(0, INITIAL_PHEROMONE);
+        }
     }
 
     /**
@@ -80,41 +80,41 @@ public class FunctionSelector {
      * @return the index of the selected function for the specified level.
      */
     public int select(int level) {
-	double[] roulette = new double[pheromone.length];
-	double total = 0.0;
+        double[] roulette = new double[pheromone.length];
+        double total = 0.0;
 
-	for (int i = 0; i < pheromone.length; i++) {
-	    roulette[i] = pheromone[i].value(level);
-	    total += pheromone[i].value(level);
-	}
+        for (int i = 0; i < pheromone.length; i++) {
+            roulette[i] = pheromone[i].value(level);
+            total += pheromone[i].value(level);
+        }
 
-	double cumulative = 0.0;
+        double cumulative = 0.0;
 
-	for (int i = 0; i < pheromone.length; i++) {
-	    if (roulette[i] > 0) {
-		roulette[i] = cumulative + (roulette[i] / total);
-		cumulative = roulette[i];
-	    }
-	}
+        for (int i = 0; i < pheromone.length; i++) {
+            if (roulette[i] > 0) {
+                roulette[i] = cumulative + (roulette[i] / total);
+                cumulative = roulette[i];
+            }
+        }
 
-	for (int i = (roulette.length - 1); i >= 0; i--) {
-	    if (roulette[i] > 0) {
-		roulette[i] = 1.0;
-		break;
-	    }
-	}
+        for (int i = (roulette.length - 1); i >= 0; i--) {
+            if (roulette[i] > 0) {
+                roulette[i] = 1.0;
+                break;
+            }
+        }
 
-	double slot = CONFIG.get(RANDOM_GENERATOR).nextDouble();
-	int selected = -1;
+        double slot = CONFIG.get(RANDOM_GENERATOR).nextDouble();
+        int selected = -1;
 
-	for (int i = 0; i < roulette.length; i++) {
-	    if (slot < roulette[i]) {
-		selected = i;
-		break;
-	    }
-	}
+        for (int i = 0; i < roulette.length; i++) {
+            if (slot < roulette[i]) {
+                selected = i;
+                break;
+            }
+        }
 
-	return selected;
+        return selected;
     }
 
     /**
@@ -126,7 +126,7 @@ public class FunctionSelector {
      * @return the rule evaluation function for the specified index.
      */
     public RuleFunction get(int index) {
-	return FUNCTIONS[index];
+        return FUNCTIONS[index];
     }
 
     /**
@@ -141,36 +141,36 @@ public class FunctionSelector {
      * @see PheromonePolicy
      */
     public void update(RuleList list, LevelPheromonePolicy policy) {
-	final double factor = CONFIG.get(EVAPORATION_FACTOR);
+        final double factor = CONFIG.get(EVAPORATION_FACTOR);
 
-	Rule[] rules = list.rules();
-	double delta = list.getQuality().adjusted() / 5.0;
+        Rule[] rules = list.rules();
+        double delta = list.getQuality().adjusted() / 5.0;
 
-	double truncMin = precision(policy.min());
-	double truncMax = precision(policy.max());
+        double truncMin = precision(policy.min());
+        double truncMax = precision(policy.max());
 
-	for (int i = 0; i < rules.length; i++) {
-	    if (!rules[i].isEmpty()) {
-		for (int j = 0; j < FUNCTIONS.length; j++) {
-		    double value = pheromone[j].value(i);
-		    value = value * factor;
+        for (int i = 0; i < rules.length; i++) {
+            if (!rules[i].isEmpty()) {
+                for (int j = 0; j < FUNCTIONS.length; j++) {
+                    double value = pheromone[j].value(i);
+                    value = value * factor;
 
-		    if (j == rules[i].getFunction()) {
-			value = value + delta;
-		    }
+                    if (j == rules[i].getFunction()) {
+                        value = value + delta;
+                    }
 
-		    double truncValue = precision(value);
+                    double truncValue = precision(value);
 
-		    if (truncValue > truncMax) {
-			value = policy.max();
-		    } else if (truncValue < truncMin) {
-			value = policy.min();
-		    }
+                    if (truncValue > truncMax) {
+                        value = policy.max();
+                    } else if (truncValue < truncMin) {
+                        value = policy.min();
+                    }
 
-		    pheromone[j].set(i, value);
-		}
-	    }
-	}
+                    pheromone[j].set(i, value);
+                }
+            }
+        }
     }
 
     /**
@@ -182,6 +182,6 @@ public class FunctionSelector {
      * @return the truncated value.
      */
     private double precision(double value) {
-	return ((int) (value * 100)) / 100.0;
+        return ((int) (value * 100)) / 100.0;
     }
 }

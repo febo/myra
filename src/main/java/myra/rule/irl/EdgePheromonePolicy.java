@@ -45,25 +45,25 @@ public final class EdgePheromonePolicy implements PheromonePolicy {
      *            the construction graph to be initialised.
      */
     public void initialise(Graph graph) {
-	Entry[][] matrix = graph.matrix();
+        Entry[][] matrix = graph.matrix();
 
-	for (int i = 0; i < matrix.length; i++) {
-	    int count = 0;
+        for (int i = 0; i < matrix.length; i++) {
+            int count = 0;
 
-	    for (int j = 0; j < matrix[i].length; j++) {
-		if (matrix[i][j] != null) {
-		    count++;
-		}
-	    }
+            for (int j = 0; j < matrix[i].length; j++) {
+                if (matrix[i][j] != null) {
+                    count++;
+                }
+            }
 
-	    double initial = 1.0 / count;
+            double initial = 1.0 / count;
 
-	    for (int j = 0; j < matrix[i].length; j++) {
-		if (matrix[i][j] != null) {
-		    matrix[i][j] = new Entry(initial, initial);
-		}
-	    }
-	}
+            for (int j = 0; j < matrix[i].length; j++) {
+                if (matrix[i][j] != null) {
+                    matrix[i][j] = new Entry(initial, initial);
+                }
+            }
+        }
     }
 
     /**
@@ -77,38 +77,38 @@ public final class EdgePheromonePolicy implements PheromonePolicy {
      *            the rule to guide the update.
      */
     public void update(Graph graph, Rule rule) {
-	Term[] terms = rule.terms();
-	Entry[][] matrix = graph.matrix();
+        Term[] terms = rule.terms();
+        Entry[][] matrix = graph.matrix();
 
-	final double q = rule.getQuality().raw();
-	int from = START_INDEX;
+        final double q = rule.getQuality().raw();
+        int from = START_INDEX;
 
-	for (int i = 0; i < terms.length; i++) {
-	    Entry entry = matrix[from][terms[i].index()];
-	    double value = entry.value(0);
-	    entry.set(0, value + (value * q));
+        for (int i = 0; i < terms.length; i++) {
+            Entry entry = matrix[from][terms[i].index()];
+            double value = entry.value(0);
+            entry.set(0, value + (value * q));
 
-	    from = terms[i].index();
-	}
+            from = terms[i].index();
+        }
 
-	// normalises the pheromone values (it has the effect of
-	// evaporation for edges that have not being updated)
+        // normalises the pheromone values (it has the effect of
+        // evaporation for edges that have not being updated)
 
-	for (int i = 0; i < matrix.length; i++) {
-	    double total = 0.0;
+        for (int i = 0; i < matrix.length; i++) {
+            double total = 0.0;
 
-	    for (int j = 0; j < matrix[i].length; j++) {
-		if (matrix[i][j] != null) {
-		    total += matrix[i][j].value(0);
-		}
-	    }
+            for (int j = 0; j < matrix[i].length; j++) {
+                if (matrix[i][j] != null) {
+                    total += matrix[i][j].value(0);
+                }
+            }
 
-	    for (int j = 0; j < matrix[i].length; j++) {
-		if (matrix[i][j] != null) {
-		    double value = matrix[i][j].value(0);
-		    matrix[i][j].set(0, value / total);
-		}
-	    }
-	}
+            for (int j = 0; j < matrix[i].length; j++) {
+                if (matrix[i][j] != null) {
+                    double value = matrix[i][j].value(0);
+                    matrix[i][j].set(0, value / total);
+                }
+            }
+        }
     }
 }

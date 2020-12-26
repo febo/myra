@@ -33,9 +33,9 @@ import myra.rule.RuleList;
  * @author Fernando Esteban Barril Otero
  */
 public class ListAccuracy extends myra.classification.Accuracy
-	implements ListMeasure {
+        implements ListMeasure {
     @Override
     public Cost evaluate(Dataset dataset, RuleList list) {
-	return evaluate(dataset, new ClassificationModel(list));
+        return evaluate(dataset, new ClassificationModel(list));
     }
 }

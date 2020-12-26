@@ -64,15 +64,15 @@ public final class Graph {
      *            the current dataset.
      */
     public Graph(Dataset dataset) {
-	Attribute[] attributes = dataset.attributes();
-	template = new double[attributes.length - 1];
+        Attribute[] attributes = dataset.attributes();
+        template = new double[attributes.length - 1];
 
-	matrix = new HashMap<Integer, double[]>();
-	mapping = new HashMap<String, Integer>(template.length, 1.0f);
+        matrix = new HashMap<Integer, double[]>();
+        mapping = new HashMap<String, Integer>(template.length, 1.0f);
 
-	for (int i = 0; i < template.length; i++) {
-	    mapping.put(dataset.attributes()[i].getName(), i);
-	}
+        for (int i = 0; i < template.length; i++) {
+            mapping.put(dataset.attributes()[i].getName(), i);
+        }
     }
 
     /**
@@ -81,7 +81,7 @@ public final class Graph {
      * @return the number of vertices of the graph.
      */
     public int size() {
-	return template.length;
+        return template.length;
     }
 
     /**
@@ -95,13 +95,13 @@ public final class Graph {
      * @return the structure representing the pheromone matrix.
      */
     public double[] pheromone(int encoding) {
-	double[] pheromone = matrix.get(encoding);
+        double[] pheromone = matrix.get(encoding);
 
-	if (pheromone == null) {
-	    return template;
-	}
+        if (pheromone == null) {
+            return template;
+        }
 
-	return pheromone;
+        return pheromone;
     }
 
     /**
@@ -116,15 +116,15 @@ public final class Graph {
      * @return the pheromone entry for the specified <code>encoding</code>.
      */
     public double[] entry(int encoding, double tMax) {
-	double[] slots = matrix.get(encoding);
+        double[] slots = matrix.get(encoding);
 
-	if (slots == null) {
-	    slots = new double[template.length];
-	    Arrays.fill(slots, tMax);
-	    matrix.put(encoding, slots);
-	}
+        if (slots == null) {
+            slots = new double[template.length];
+            Arrays.fill(slots, tMax);
+            matrix.put(encoding, slots);
+        }
 
-	return slots;
+        return slots;
     }
 
     /**
@@ -136,7 +136,7 @@ public final class Graph {
      * @return the index of the attribute given a vertex name.
      */
     public int index(String name) {
-	return mapping.get(name);
+        return mapping.get(name);
     }
 
     /**
@@ -145,6 +145,6 @@ public final class Graph {
      * @return the collection of entries in the pheromone matrix.
      */
     public Collection<Integer> entries() {
-	return matrix.keySet();
+        return matrix.keySet();
     }
 }

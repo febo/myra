@@ -39,23 +39,23 @@ public class GraphTest extends TestCase {
 
     @Override
     protected void setUp() throws Exception {
-	ARFFReader reader = new ARFFReader();
-	dataset = reader.read(new InputStreamReader(getClass()
-		.getResourceAsStream("/weather.arff")));
-	
-	CONFIG.set(Archive.ARCHIVE_SIZE, 5);
-	CONFIG.set(VariableArchive.PRECISION, 2.0);
-	CONFIG.set(RANDOM_GENERATOR, new Random(System.currentTimeMillis()));
+        ARFFReader reader = new ARFFReader();
+        dataset = reader.read(new InputStreamReader(getClass()
+                .getResourceAsStream("/weather.arff")));
+
+        CONFIG.set(Archive.ARCHIVE_SIZE, 5);
+        CONFIG.set(VariableArchive.PRECISION, 2.0);
+        CONFIG.set(RANDOM_GENERATOR, new Random(System.currentTimeMillis()));
     }
 
     public void testVertices() {
-	Graph graph = new Graph(dataset);
-	
-	// START, END and 4 predictor attributes
-	assertEquals(6, graph.vertices().length);
-	assertEquals(6, graph.size());
-	
-	Graph.Vertex vertex = graph.vertices()[2];
-	assertNotNull(vertex.initial.sample());
+        Graph graph = new Graph(dataset);
+
+        // START, END and 4 predictor attributes
+        assertEquals(6, graph.vertices().length);
+        assertEquals(6, graph.size());
+
+        Graph.Vertex vertex = graph.vertices()[2];
+        assertNotNull(vertex.initial.sample());
     }
 }

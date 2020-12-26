@@ -22,7 +22,6 @@ package myra;
 import static myra.Config.CONFIG;
 
 import java.util.Arrays;
-import java.util.Comparator;
 
 import myra.Config.ConfigKey;
 
@@ -139,149 +138,146 @@ public interface Archive<E extends Weighable<E>> {
      * @author Fernando Esteban Barril Otero
      */
     public class DefaultArchive<E extends Weighable<E>> implements Archive<E> {
-	/**
-	 * The solutions in the archive.
-	 */
-	private E[] solutions;
+        /**
+         * The solutions in the archive.
+         */
+        private E[] solutions;
 
-	/**
-	 * The number of solutions in the archive.
-	 */
-	private int size;
+        /**
+         * The number of solutions in the archive.
+         */
+        private int size;
 
-	/**
-	 * Creates a new <code>Archive</code>.
-	 * 
-	 * @param capacity
-	 *            the size of the solution archive.
-	 */
-	@SuppressWarnings("unchecked")
-	public DefaultArchive(int capacity) {
-	    if (capacity == 0) {
-		throw new IllegalArgumentException("Invalid capacity for archive: "
-			+ capacity);
-	    }
+        /**
+         * Creates a new <code>Archive</code>.
+         * 
+         * @param capacity
+         *            the size of the solution archive.
+         */
+        @SuppressWarnings("unchecked")
+        public DefaultArchive(int capacity) {
+            if (capacity == 0) {
+                throw new IllegalArgumentException("Invalid capacity for archive: "
+                        + capacity);
+            }
 
-	    solutions = (E[]) new Weighable[capacity];
-	    size = 0;
-	}
+            solutions = (E[]) new Weighable[capacity];
+            size = 0;
+        }
 
-	@Override
-	public boolean add(E e) {
-	    if (size == 0 || (size < solutions.length
-		    && e.compareTo(solutions[size - 1]) <= 0)) {
-		solutions[size] = e;
-		size++;
-	    } else if (e.compareTo(solutions[size - 1]) > 0) {
-		E previous = null;
-		int position = -1;
+        @Override
+        public boolean add(E e) {
+            if (size == 0 || (size < solutions.length
+                    && e.compareTo(solutions[size - 1]) <= 0)) {
+                solutions[size] = e;
+                size++;
+            } else if (e.compareTo(solutions[size - 1]) > 0) {
+                E previous = null;
+                int position = -1;
 
-		// finds the position to insert the new element (insertion sort)
-		for (int i = 0; i < solutions.length; i++) {
-		    if (solutions[i] == null || e.compareTo(solutions[i]) > 0) {
-			previous = solutions[i];
-			position = i + 1;
-			// adds the new solution
-			solutions[i] = e;
-			break;
-		    }
-		}
-		// shift the remaining solutions
-		for (int i = position; i < solutions.length
-			&& previous != null; i++) {
-		    E element = solutions[i];
-		    solutions[i] = previous;
-		    previous = element;
-		}
+                // finds the position to insert the new element (insertion sort)
+                for (int i = 0; i < solutions.length; i++) {
+                    if (solutions[i] == null || e.compareTo(solutions[i]) > 0) {
+                        previous = solutions[i];
+                        position = i + 1;
+                        // adds the new solution
+                        solutions[i] = e;
+                        break;
+                    }
+                }
+                // shift the remaining solutions
+                for (int i = position; i < solutions.length
+                        && previous != null; i++) {
+                    E element = solutions[i];
+                    solutions[i] = previous;
+                    previous = element;
+                }
 
-		if (size < solutions.length) {
-		    size++;
-		}
-	    } else {
-		// the solutions will not be added to the archive
-		return false;
-	    }
+                if (size < solutions.length) {
+                    size++;
+                }
+            } else {
+                // the solutions will not be added to the archive
+                return false;
+            }
 
-	    return true;
-	}
+            return true;
+        }
 
-	@Override
-	public int capacity() {
-	    return solutions.length;
-	}
+        @Override
+        public int capacity() {
+            return solutions.length;
+        }
 
-	@Override
-	public int size() {
-	    return size;
-	}
+        @Override
+        public int size() {
+            return size;
+        }
 
-	@Override
-	public void clear() {
-	    Arrays.fill(solutions, null);
-	    size = 0;
-	}
+        @Override
+        public void clear() {
+            Arrays.fill(solutions, null);
+            size = 0;
+        }
 
-	@Override
-	public E lowest() {
-	    return solutions[size - 1];
-	}
+        @Override
+        public E lowest() {
+            return solutions[size - 1];
+        }
 
-	@Override
-	public E highest() {
-	    return solutions[0];
-	}
+        @Override
+        public E highest() {
+            return solutions[0];
+        }
 
-	@Override
-	public void sort() {
-	    Arrays.sort(solutions, new Comparator<E>() {
-		public int compare(E o1, E o2) {
-		    return -o1.compareTo(o2);
-		};
-	    });
-	}
+        @Override
+        public void sort() {
+            Arrays.sort(solutions, (o1, o2) -> -o1.compareTo(o2));
+        }
 
-	@Override
-	@SuppressWarnings("unchecked")
-	public E[] topN(int n) {
-	    if (size < n) {
-		throw new IllegalArgumentException("Invalid number of solutions: "
-			+ "expected " + size + ", actual " + n);
-	    }
+        @Override
+        @SuppressWarnings("unchecked")
+        public E[] topN(int n) {
+            if (size < n) {
+                throw new IllegalArgumentException("Invalid number of solutions: "
+                        + "expected " + size + ", actual " + n);
+            }
 
-	    E[] top = (E[]) new Comparable[n];
-	    System.arraycopy(solutions, 0, top, 0, n);
-	    return top;
-	}
+            E[] top = (E[]) new Comparable[n];
+            System.arraycopy(solutions, 0, top, 0, n);
+            return top;
+        }
 
-	@Override
-	public boolean isFull() {
-	    return size() == capacity();
-	}
+        @Override
+        public boolean isFull() {
+            return size() == capacity();
+        }
 
-	/**
-	 * Returns the sorted solutions in the archive.
-	 * 
-	 * @return the sorted solutions in the archive.
-	 */
-	public E[] solutions() {
-	    return solutions;
-	}
+        /**
+         * Returns the sorted solutions in the archive.
+         * 
+         * @return the sorted solutions in the archive.
+         */
+        public E[] solutions() {
+            return solutions;
+        }
 
-	/**
-	 * Updates the archive weights.
-	 */
-	public void update() {
-	    double q = CONFIG.get(Q);
-	    double k = size();
+        /**
+         * Updates the archive weights.
+         */
+        public void update() {
+            double q = CONFIG.get(Q);
+            double k = size();
 
-	    for (int i = 0; i < size(); i++) {
-		E c = (E) solutions[i];
+            for (int i = 0; i < size(); i++) {
+                E c = solutions[i];
 
-		double exp = -Math.pow((i + 1) - 1, 2) / (2 * q * q * k * k);
-		c.setWeight((1 / (q * k * Math.sqrt(2 * Math.PI)))
-			* Math.pow(Math.E, exp));
-	    }
-	}
+                double exp = -Math.pow((i + 1) - (double) 1, 2)
+                        / (2 * q * q * k * k);
+                c.setWeight((1 / (q * k * Math.sqrt(2 * Math.PI)))
+                        * Math.pow(Math.E, exp));
+            }
+        }
 
     }
 
@@ -291,64 +287,70 @@ public interface Archive<E extends Weighable<E>> {
      * @author Fernando Esteban Barril Otero
      */
     public class SynchronizedArchive<E extends Weighable<E>>
-	    implements Archive<E> {
-	/**
-	 * The backing archive.
-	 */
-	private final Archive<E> archive;
+            implements Archive<E> {
+        /**
+         * The backing archive.
+         */
+        private final Archive<E> archive;
 
-	public SynchronizedArchive(Archive<E> archive) {
-	    this.archive = archive;
-	}
+        /**
+         * Default constructor.
+         * 
+         * @param archive
+         *            the wrapped archive instance.
+         */
+        public SynchronizedArchive(Archive<E> archive) {
+            this.archive = archive;
+        }
 
-	@Override
-	public synchronized boolean add(E e) {
-	    return this.archive.add(e);
-	}
+        @Override
+        public synchronized boolean add(E e) {
+            return this.archive.add(e);
+        }
 
-	@Override
-	public synchronized int capacity() {
-	    return this.archive.capacity();
-	}
+        @Override
+        public synchronized int capacity() {
+            return this.archive.capacity();
+        }
 
-	@Override
-	public synchronized int size() {
-	    return this.archive.size();
-	}
+        @Override
+        public synchronized int size() {
+            return this.archive.size();
+        }
 
-	@Override
-	public synchronized void clear() {
-	    this.archive.clear();
-	}
+        @Override
+        public synchronized void clear() {
+            this.archive.clear();
+        }
 
-	@Override
-	public synchronized E lowest() {
-	    return this.archive.lowest();
-	}
+        @Override
+        public synchronized E lowest() {
+            return this.archive.lowest();
+        }
 
-	@Override
-	public synchronized E highest() {
-	    return this.archive.highest();
-	}
+        @Override
+        public synchronized E highest() {
+            return this.archive.highest();
+        }
 
-	@Override
-	public synchronized void sort() {
-	    this.archive.sort();
-	}
+        @Override
+        public synchronized void sort() {
+            this.archive.sort();
+        }
 
-	@Override
-	public synchronized E[] topN(int n) {
-	    return this.archive.topN(n);
-	}
+        @Override
+        public synchronized E[] topN(int n) {
+            return this.archive.topN(n);
+        }
 
-	@Override
-	public synchronized boolean isFull() {
-	    return size() == capacity();
-	}
+        @Override
+        public synchronized boolean isFull() {
+            return size() == capacity();
+        }
 
-	@Override
-	public synchronized void update() {
-	    this.archive.update();
-	}
+        @Override
+        public synchronized void update() {
+            this.archive.update();
+        }
     }
 }

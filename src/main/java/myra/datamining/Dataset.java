@@ -22,11 +22,15 @@ package myra.datamining;
 import static myra.Config.CONFIG;
 import static myra.datamining.Attribute.Type.CONTINUOUS;
 import static myra.datamining.Attribute.Type.NOMINAL;
+import static myra.datamining.Hierarchy.SEPARATOR;
 
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.HashSet;
 
 import myra.classification.Classifier;
+import myra.classification.Label;
+import myra.datamining.Hierarchy.Node;
 
 /**
  * This class represents the data.
@@ -76,7 +80,7 @@ public final class Dataset {
     private double[] instances;
 
     /**
-     * Class frequency distribution (only valid for classificatino problems).
+     * Class frequency distribution (only valid for classification problems).
      */
     private double[] distribution;
 
@@ -86,13 +90,24 @@ public final class Dataset {
     private double mean;
 
     /**
+     * Label hierarchy (only valid for hierarchical problems).
+     */
+    private Hierarchy hierarchy;
+
+    /**
+     * Instance labels for hierarchical/multi-label problems.
+     */
+    private Label[] labels;
+
+    /**
      * Default constructor.
      */
     public Dataset() {
-	attributes = new Attribute[0];
-	instances = new double[0];
-	distribution = new double[0];
-	mean = 0;
+        attributes = new Attribute[0];
+        instances = new double[0];
+        distribution = new double[0];
+        labels = new Label[0];
+        mean = 0;
     }
 
     /**
@@ -104,7 +119,7 @@ public final class Dataset {
      * @return the attribute of the dataset at the specified index.
      */
     public Attribute getAttribute(int index) {
-	return attributes[index];
+        return attributes[index];
     }
 
     /**
@@ -113,7 +128,7 @@ public final class Dataset {
      * @return the target attribute.
      */
     public Attribute getTarget() {
-	return attributes[classIndex()];
+        return attributes[classIndex()];
     }
 
     /**
@@ -122,7 +137,7 @@ public final class Dataset {
      * @return the attributes of the dataset.
      */
     public Attribute[] attributes() {
-	return attributes;
+        return attributes;
     }
 
     /**
@@ -134,13 +149,13 @@ public final class Dataset {
      * @return the attribute with the specified name.
      */
     public Attribute findAttribute(String name) {
-	for (Attribute attribute : attributes) {
-	    if (attribute.getName().equals(name)) {
-		return attribute;
-	    }
-	}
+        for (Attribute attribute : attributes) {
+            if (attribute.getName().equals(name)) {
+                return attribute;
+            }
+        }
 
-	throw new IllegalArgumentException("Attribute not found: " + name);
+        throw new IllegalArgumentException("Attribute not found: " + name);
     }
 
     /**
@@ -149,7 +164,7 @@ public final class Dataset {
      * @return the dataset name.
      */
     public String getName() {
-	return name;
+        return name;
     }
 
     /**
@@ -159,7 +174,7 @@ public final class Dataset {
      *            the name to set.
      */
     public void setName(String name) {
-	this.name = name;
+        this.name = name;
     }
 
     /**
@@ -168,7 +183,7 @@ public final class Dataset {
      * @return the number of instances in the dataset.
      */
     public final int size() {
-	return (instances.length / attributes.length);
+        return (instances.length / attributes.length);
     }
 
     /**
@@ -182,15 +197,15 @@ public final class Dataset {
      *         specified class value.
      */
     public final int size(int value) {
-	int count = 0;
+        int count = 0;
 
-	for (int i = 0; i < size(); i++) {
-	    if (instances[(i * attributes.length) + classIndex()] == value) {
-		count++;
-	    }
-	}
+        for (int i = 0; i < size(); i++) {
+            if (instances[(i * attributes.length) + classIndex()] == value) {
+                count++;
+            }
+        }
 
-	return count;
+        return count;
     }
 
     /**
@@ -200,16 +215,16 @@ public final class Dataset {
      *            the attribute to add.
      */
     public void add(Attribute attribute) {
-	if (instances.length > 0) {
-	    throw new IllegalStateException("Dataset metadata cannot"
-		    + " change after adding instances.");
-	}
+        if (instances.length > 0) {
+            throw new IllegalStateException("Dataset metadata cannot"
+                    + " change after adding instances.");
+        }
 
-	int index = attributes.length;
-	attributes = Arrays.copyOf(attributes, attributes.length + 1);
+        int index = attributes.length;
+        attributes = Arrays.copyOf(attributes, attributes.length + 1);
 
-	attributes[index] = attribute;
-	attribute.setIndex(index);
+        attributes[index] = attribute;
+        attribute.setIndex(index);
     }
 
     /**
@@ -219,50 +234,73 @@ public final class Dataset {
      *            the values of the instance to add.
      */
     public void add(String[] values) {
-	if (values.length != attributes.length) {
-	    throw new IllegalArgumentException("Invalid instance length: "
-		    + values.length + " (expected " + attributes.length + ")");
-	}
+        if (values.length != attributes.length) {
+            throw new IllegalArgumentException("Invalid instance length: "
+                    + values.length + " (expected " + attributes.length + ")");
+        }
 
-	double[] instance = new double[attributes.length];
+        double[] instance = new double[attributes.length];
 
-	for (int i = 0; i < attributes.length; i++) {
-	    if (values[i].equals(MISSING_VALUE)) {
-		switch (attributes[i].getType()) {
-		case NOMINAL:
-		    instance[i] = MISSING_VALUE_INDEX;
-		    break;
+        for (int i = 0; i < attributes.length; i++) {
+            if (values[i].equals(MISSING_VALUE)) {
+                switch (attributes[i].getType()) {
+                case NOMINAL:
+                    instance[i] = MISSING_VALUE_INDEX;
+                    break;
 
-		case CONTINUOUS:
-		    instance[i] = Double.NaN;
-		    break;
-		}
-	    } else if (attributes[i].getType() == CONTINUOUS) {
-		instance[i] = Double.parseDouble(values[i]);
-	    } else if (attributes[i].getType() == NOMINAL) {
-		int index = MISSING_VALUE_INDEX;
+                case CONTINUOUS:
+                    instance[i] = Double.NaN;
+                    break;
+                }
+            } else if (attributes[i].getType() == CONTINUOUS) {
+                instance[i] = Double.parseDouble(values[i]);
+            } else if (attributes[i].getType() == NOMINAL) {
+                // are we dealing with a hierarchical problem?
+                if (i == classIndex() && hierarchy != null) {
+                    HashSet<String> labels = new HashSet<String>();
 
-		for (int j = 0; j < attributes[i].values().length; j++) {
-		    if (values[i].equals(attributes[i].value(j))) {
-			index = j;
-			break;
-		    }
-		}
+                    for (String label : values[i].split(SEPARATOR)) {
+                        labels.add(hierarchy.get(label).getLabel());
 
-		// sanity check: did we find the value that we are looking
-		// for or not?
-		if (index == MISSING_VALUE_INDEX) {
-		    throw new IllegalArgumentException(String
-			    .format("Value for attribute %s not found: %s",
-				    attributes[i].getName(),
-				    values[i]));
-		}
+                        for (Node ancestor : hierarchy.get(label)
+                                .getAncestors()) {
+                            labels.add(ancestor.getLabel());
+                        }
+                    }
 
-		instance[i] = index;
-	    }
-	}
+                    Label label = Label.toLabel(attributes[i], labels);
+                    instance[i] = label.hashCode();
 
-	add(instance);
+                    int length = this.labels.length;
+                    this.labels = Arrays.copyOf(this.labels, length + 1);
+                    this.labels[length] = label;
+                    // updates the class label frequency
+                    hierarchy.increment(label.active());
+                } else {
+                    int index = MISSING_VALUE_INDEX;
+
+                    for (int j = 0; j < attributes[i].values().length; j++) {
+                        if (values[i].equals(attributes[i].value(j))) {
+                            index = j;
+                            break;
+                        }
+                    }
+
+                    // sanity check: did we find the value that we are looking
+                    // for or not?
+                    if (index == MISSING_VALUE_INDEX) {
+                        throw new IllegalArgumentException(String
+                                .format("Value for attribute %s not found: %s",
+                                        attributes[i].getName(),
+                                        values[i]));
+                    }
+
+                    instance[i] = index;
+                }
+            }
+        }
+
+        add(instance);
     }
 
     /**
@@ -272,39 +310,40 @@ public final class Dataset {
      *            the values of the instance to add.
      */
     public void add(double[] values) {
-	if (values.length != attributes.length) {
-	    throw new IllegalArgumentException("Invalid instance length: "
-		    + values.length + " (expected " + attributes.length + ")");
-	}
+        if (values.length != attributes.length) {
+            throw new IllegalArgumentException("Invalid instance length: "
+                    + values.length + " (expected " + attributes.length + ")");
+        }
 
-	int offset = instances.length;
+        int offset = instances.length;
 
-	instances =
-		Arrays.copyOf(instances, instances.length + attributes.length);
+        instances =
+                Arrays.copyOf(instances, instances.length + attributes.length);
 
-	System.arraycopy(values, 0, instances, offset, values.length);
+        System.arraycopy(values, 0, instances, offset, values.length);
 
-	// increments the class distribution
-	// (if dealing with a classification problem)
-	if (attributes[classIndex()].getType() == NOMINAL) {
-	    if (distribution.length == 0) {
-		distribution = new double[classLength()];
-	    }
+        // increments the class distribution
+        // (if dealing with a classification problem)
+        if (attributes[classIndex()].getType() == NOMINAL
+                && hierarchy == null) {
+            if (distribution.length == 0) {
+                distribution = new double[classLength()];
+            }
 
-	    distribution[(int) values[classIndex()]]++;
-	}
-	// increments the mean
-	// (if dealing with a regression problem)
-	else if (attributes[classIndex()].getType() == CONTINUOUS) {
-	    mean += values[classIndex()];
-	}
+            distribution[(int) values[classIndex()]]++;
+        }
+        // increments the mean
+        // (if dealing with a regression problem)
+        else if (attributes[classIndex()].getType() == CONTINUOUS) {
+            mean += values[classIndex()];
+        }
 
-	for (int i = 0; i < values.length; i++) {
-	    if (attributes[i].getType() == CONTINUOUS) {
-		attributes[i].lower(values[i]);
-		attributes[i].upper(values[i]);
-	    }
-	}
+        for (int i = 0; i < values.length; i++) {
+            if (attributes[i].getType() == CONTINUOUS) {
+                attributes[i].lower(values[i]);
+                attributes[i].upper(values[i]);
+            }
+        }
     }
 
     /**
@@ -316,14 +355,14 @@ public final class Dataset {
      * @return the values of the specified instance.
      */
     public double[] get(int index) {
-	double[] values = new double[attributes.length];
-	System.arraycopy(instances,
-			 index * values.length,
-			 values,
-			 0,
-			 values.length);
+        double[] values = new double[attributes.length];
+        System.arraycopy(instances,
+                         index * values.length,
+                         values,
+                         0,
+                         values.length);
 
-	return values;
+        return values;
     }
 
     /**
@@ -335,44 +374,44 @@ public final class Dataset {
      * @return the size of the dataset after the removal of the instances.
      */
     public int remove(int... indexes) {
-	double[] resized = new double[instances.length
-		- (indexes.length * attributes.length)];
+        double[] resized = new double[instances.length
+                - (indexes.length * attributes.length)];
 
-	int current = 0;
-	int target = 0;
+        int current = 0;
+        int target = 0;
 
-	for (int removed : indexes) {
-	    if (attributes[classIndex()].getType() == NOMINAL) {
-		// updates the class frequency
-		distribution[(int) value(removed, classIndex())]--;
-	    } else if (attributes[classIndex()].getType() == CONTINUOUS) {
-		// updates the mean
-		mean -= distribution[(int) value(removed, classIndex())];
-	    }
+        for (int removed : indexes) {
+            if (attributes[classIndex()].getType() == NOMINAL) {
+                // updates the class frequency
+                distribution[(int) value(removed, classIndex())]--;
+            } else if (attributes[classIndex()].getType() == CONTINUOUS) {
+                // updates the mean
+                mean -= distribution[(int) value(removed, classIndex())];
+            }
 
-	    if (current == removed) {
-		current++;
-	    } else {
-		int length = (removed - current) * attributes.length;
-		int source = current * attributes.length;
+            if (current == removed) {
+                current++;
+            } else {
+                int length = (removed - current) * attributes.length;
+                int source = current * attributes.length;
 
-		System.arraycopy(instances, source, resized, target, length);
+                System.arraycopy(instances, source, resized, target, length);
 
-		target += length;
-		current = removed + 1;
-	    }
-	}
+                target += length;
+                current = removed + 1;
+            }
+        }
 
-	if (target != resized.length) {
-	    int length = resized.length - target;
-	    int source = current * attributes.length;
+        if (target != resized.length) {
+            int length = resized.length - target;
+            int source = current * attributes.length;
 
-	    System.arraycopy(instances, source, resized, target, length);
-	}
+            System.arraycopy(instances, source, resized, target, length);
+        }
 
-	this.instances = resized;
+        this.instances = resized;
 
-	return size();
+        return size();
     }
 
     /**
@@ -388,18 +427,18 @@ public final class Dataset {
      * @return the index of the majority class.
      */
     public int findMajority(Instance[] instances, byte flag) {
-	int classIndex = classIndex();
-	double[] frequencies =
-		new double[attributes[classIndex].values().length];
+        int classIndex = classIndex();
+        double[] frequencies =
+                new double[attributes[classIndex].values().length];
 
-	for (int i = 0; i < size(); i++) {
-	    if (instances[i].flag == flag) {
-		int index = (i * attributes.length) + classIndex;
-		frequencies[(int) this.instances[index]] += instances[i].weight;
-	    }
-	}
+        for (int i = 0; i < size(); i++) {
+            if (instances[i].flag == flag) {
+                int index = (i * attributes.length) + classIndex;
+                frequencies[(int) this.instances[index]] += instances[i].weight;
+            }
+        }
 
-	return findMajority(frequencies, findMajority(distribution, -1));
+        return findMajority(frequencies, findMajority(distribution, -1));
     }
 
     /**
@@ -416,31 +455,31 @@ public final class Dataset {
      * @return the index of the majority frequency of the distribution.
      */
     private int findMajority(double[] values, int bias) {
-	ArrayList<Integer> candidates = new ArrayList<>(values.length);
-	int majority = -1;
+        ArrayList<Integer> candidates = new ArrayList<>(values.length);
+        int majority = -1;
 
-	for (int i = 0; i < values.length; i++) {
-	    if (majority == -1 || values[majority] < values[i]) {
-		majority = i;
-		// removes previous values
-		candidates.clear();
-		candidates.add(majority);
-	    } else if (values[majority] == values[i]) {
-		candidates.add(i);
-	    }
-	}
+        for (int i = 0; i < values.length; i++) {
+            if (majority == -1 || values[majority] < values[i]) {
+                majority = i;
+                // removes previous values
+                candidates.clear();
+                candidates.add(majority);
+            } else if (values[majority] == values[i]) {
+                candidates.add(i);
+            }
+        }
 
-	if (candidates.size() > 1) {
-	    if (candidates.contains(bias)) {
-		majority = bias;
-	    } else {
-		majority =
-			candidates.get(CONFIG.get(Classifier.RANDOM_GENERATOR)
-				.nextInt(candidates.size()));
-	    }
-	}
+        if (candidates.size() > 1) {
+            if (candidates.contains(bias)) {
+                majority = bias;
+            } else {
+                majority =
+                        candidates.get(CONFIG.get(Classifier.RANDOM_GENERATOR)
+                                .nextInt(candidates.size()));
+            }
+        }
 
-	return majority;
+        return majority;
     }
 
     /**
@@ -449,7 +488,7 @@ public final class Dataset {
      * @return the index of the class attribute.
      */
     public final int classIndex() {
-	return attributes.length - 1;
+        return attributes.length - 1;
     }
 
     /**
@@ -458,12 +497,12 @@ public final class Dataset {
      * @return the number of class values.
      */
     public final int classLength() {
-	if (attributes[classIndex()].getType() == Attribute.Type.NOMINAL) {
-	    return attributes[classIndex()].values().length;
-	}
+        if (attributes[classIndex()].getType() == Attribute.Type.NOMINAL) {
+            return attributes[classIndex()].values().length;
+        }
 
-	throw new UnsupportedOperationException("Invalid class attribute: "
-		+ attributes[classIndex()].getType());
+        throw new UnsupportedOperationException("Invalid class attribute: "
+                + attributes[classIndex()].getType());
     }
 
     /**
@@ -475,12 +514,12 @@ public final class Dataset {
      * @return the class frequency distribution.
      */
     public final int distribution(int index) {
-	if (attributes[classIndex()].getType() == Attribute.Type.NOMINAL) {
-	    return (int) distribution[index];
-	}
+        if (attributes[classIndex()].getType() == Attribute.Type.NOMINAL) {
+            return (int) distribution[index];
+        }
 
-	throw new UnsupportedOperationException("Invalid class attribute: "
-		+ attributes[classIndex()].getType());
+        throw new UnsupportedOperationException("Invalid class attribute: "
+                + attributes[classIndex()].getType());
     }
 
     /**
@@ -491,7 +530,7 @@ public final class Dataset {
      *         dataset.
      */
     public final double mean() {
-	return mean / size();
+        return mean / size();
     }
 
     /**
@@ -507,19 +546,19 @@ public final class Dataset {
      *         value; <code>false</code> otherwise.
      */
     public boolean isMissing(Attribute attribute, double value) {
-	boolean missing = false;
+        boolean missing = false;
 
-	switch (attribute.getType()) {
-	case CONTINUOUS:
-	    missing = Double.isNaN(value);
-	    break;
+        switch (attribute.getType()) {
+        case CONTINUOUS:
+            missing = Double.isNaN(value);
+            break;
 
-	case NOMINAL:
-	    missing = (value == MISSING_VALUE_INDEX);
-	    break;
-	}
+        case NOMINAL:
+            missing = (value == MISSING_VALUE_INDEX);
+            break;
+        }
 
-	return missing;
+        return missing;
     }
 
     /**
@@ -533,7 +572,19 @@ public final class Dataset {
      * @return the attribute value of a given instance.
      */
     public double value(int instance, int attribute) {
-	return instances[(instance * attributes.length) + attribute];
+        return instances[(instance * attributes.length) + attribute];
+    }
+
+    /**
+     * Returns the label of a given instance.
+     * 
+     * @param instance
+     *            the instance index.
+     * 
+     * @return the label of a given instance.
+     */
+    public Label label(int instance) {
+        return labels[instance];
     }
 
     /**
@@ -547,17 +598,17 @@ public final class Dataset {
      *         instances).
      */
     public static int markCovered(Instance[] covered) {
-	int available = 0;
+        int available = 0;
 
-	for (int j = 0; j < covered.length; j++) {
-	    if (covered[j].flag == RULE_COVERED) {
-		covered[j].flag = COVERED;
-	    } else if (covered[j].flag == NOT_COVERED) {
-		available++;
-	    }
-	}
+        for (int j = 0; j < covered.length; j++) {
+            if (covered[j].flag == RULE_COVERED) {
+                covered[j].flag = COVERED;
+            } else if (covered[j].flag == NOT_COVERED) {
+                available++;
+            }
+        }
 
-	return available;
+        return available;
     }
 
     /**
@@ -576,22 +627,22 @@ public final class Dataset {
      * @return the number of correctly covered instances.
      */
     public static int markCorrect(Dataset dataset,
-				  Instance[] covered,
-				  int predicted) {
-	int marked = 0;
+                                  Instance[] covered,
+                                  int predicted) {
+        int marked = 0;
 
-	for (int j = 0; j < covered.length; j++) {
-	    if (covered[j].flag == RULE_COVERED) {
-		if (dataset.value(j, dataset.classIndex()) == predicted) {
-		    covered[j].flag = COVERED;
-		    marked++;
-		} else {
-		    covered[j].flag = NOT_COVERED;
-		}
-	    }
-	}
+        for (int j = 0; j < covered.length; j++) {
+            if (covered[j].flag == RULE_COVERED) {
+                if (dataset.value(j, dataset.classIndex()) == predicted) {
+                    covered[j].flag = COVERED;
+                    marked++;
+                } else {
+                    covered[j].flag = NOT_COVERED;
+                }
+            }
+        }
 
-	return marked;
+        return marked;
     }
 
     /**
@@ -608,155 +659,184 @@ public final class Dataset {
      * @return a copy of the dataset.
      */
     public static Dataset filter(Dataset dataset,
-				 Instance[] covered,
-				 int flag) {
-	Dataset clone = new Dataset();
-	clone.attributes = dataset.attributes.clone();
-	clone.name = dataset.name;
+                                 Instance[] covered,
+                                 int flag) {
+        Dataset clone = new Dataset();
+        clone.attributes = dataset.attributes.clone();
+        clone.name = dataset.name;
 
-	for (int i = 0; i < dataset.size(); i++) {
-	    if (covered[i].flag == flag) {
-		int start = clone.instances.length;
-		int length = dataset.attributes.length;
+        for (int i = 0; i < dataset.size(); i++) {
+            if (covered[i].flag == flag) {
+                int start = clone.instances.length;
+                int length = dataset.attributes.length;
 
-		clone.instances =
-			Arrays.copyOf(clone.instances,
-				      start + clone.attributes.length);
+                clone.instances =
+                        Arrays.copyOf(clone.instances,
+                                      start + clone.attributes.length);
 
-		System.arraycopy(dataset.instances,
-				 (i * length),
-				 clone.instances,
-				 start,
-				 length);
-	    }
-	}
+                System.arraycopy(dataset.instances,
+                                 (i * length),
+                                 clone.instances,
+                                 start,
+                                 length);
+            }
+        }
 
-	return clone;
+        return clone;
+    }
+
+    /**
+     * Returns the label hierarchy.
+     * 
+     * @return the label hierarchy; <code>null</code> if this is not a
+     *         hierarchical dataset.
+     */
+    public Hierarchy getHierarchy() {
+        return hierarchy;
+    }
+
+    /**
+     * Sets the label hierarchy.
+     * 
+     * @param hierarchy
+     *            the hierarchy to set.
+     */
+    public void setHierarchy(Hierarchy hierarchy) {
+        this.hierarchy = hierarchy;
+    }
+
+    /**
+     * Returns <code>true</code> if this represents a hierarchical dataset.
+     * 
+     * @return <code>true</code> if this represents a hierarchical dataset.
+     */
+    public boolean isHierarchical() {
+        return (hierarchy != null);
     }
 
     /**
      * Struct-like class to hold the information about an instance.
      */
     public static final class Instance implements Cloneable {
-	/**
-	 * The weight of the instance.
-	 */
-	public double weight = 1.0;
+        /**
+         * The weight of the instance.
+         */
+        public double weight = 1.0;
 
-	/**
-	 * The coverage flag of the instance.
-	 */
-	public byte flag = NOT_COVERED;
+        /**
+         * The coverage flag of the instance.
+         */
+        public byte flag = NOT_COVERED;
 
-	/**
-	 * Default constructor.
-	 */
-	public Instance() {
-	    this(1.0, NOT_COVERED);
-	}
+        /**
+         * Default constructor.
+         */
+        public Instance() {
+            this(1.0, NOT_COVERED);
+        }
 
-	/**
-	 * Create a new <code>Instance</code>.
-	 * 
-	 * @param weight
-	 *            the weight of the instance.
-	 * @param flag
-	 *            the covered flag of the instance.
-	 */
-	public Instance(double weight, byte flag) {
-	    this.weight = weight;
-	    this.flag = flag;
-	}
+        /**
+         * Create a new <code>Instance</code>.
+         * 
+         * @param weight
+         *            the weight of the instance.
+         * @param flag
+         *            the covered flag of the instance.
+         */
+        public Instance(double weight, byte flag) {
+            this.weight = weight;
+            this.flag = flag;
+        }
 
-	/**
-	 * Returns a new instance array.
-	 * 
-	 * @param size
-	 *            the size of the array.
-	 * 
-	 * @return a new instance array.
-	 */
-	public static Instance[] newArray(int size) {
-	    Instance[] instances = new Instance[size];
+        /**
+         * Returns a new instance array.
+         * 
+         * @param size
+         *            the size of the array.
+         * 
+         * @return a new instance array.
+         */
+        public static Instance[] newArray(int size) {
+            Instance[] instances = new Instance[size];
 
-	    for (int i = 0; i < size; i++) {
-		instances[i] = new Instance();
-	    }
+            for (int i = 0; i < size; i++) {
+                instances[i] = new Instance();
+            }
 
-	    return instances;
-	}
+            return instances;
+        }
 
-	/**
-	 * Returns a string representation of the instances' flags.
-	 * 
-	 * @param instances
-	 *            the array of instances.
-	 * 
-	 * @return a string representation of the instances' flags.
-	 */
-	public static String toString(Instance[] instances) {
-	    StringBuffer output = new StringBuffer();
-	    output.append("[");
+        /**
+         * Returns a string representation of the instances' flags.
+         * 
+         * @param instances
+         *            the array of instances.
+         * 
+         * @return a string representation of the instances' flags.
+         */
+        public static String toString(Instance[] instances) {
+            StringBuffer output = new StringBuffer();
+            output.append("[");
 
-	    for (Instance instance : instances) {
-		output.append(" ");
-		output.append(instance.flag);
-	    }
+            for (Instance instance : instances) {
+                output.append(" ");
+                output.append(instance.flag);
+            }
 
-	    output.append(" ]");
+            output.append(" ]");
 
-	    return output.toString();
-	}
+            return output.toString();
+        }
 
-	/**
-	 * Returns a copy of the specified instance array.
-	 * 
-	 * @param instances
-	 *            the instance array.
-	 * 
-	 * @return a copy of the specified instance array.
-	 */
-	public static Instance[] copyOf(Instance[] instances) {
-	    Instance[] copy = new Instance[instances.length];
+        /**
+         * Returns a copy of the specified instance array.
+         * 
+         * @param instances
+         *            the instance array.
+         * 
+         * @return a copy of the specified instance array.
+         */
+        public static Instance[] copyOf(Instance[] instances) {
+            Instance[] copy = new Instance[instances.length];
 
-	    for (int i = 0; i < copy.length; i++) {
-		copy[i] = new Instance(instances[i].weight, instances[i].flag);
-	    }
+            for (int i = 0; i < copy.length; i++) {
+                copy[i] = new Instance(instances[i].weight, instances[i].flag);
+            }
 
-	    return copy;
-	}
+            return copy;
+        }
 
-	/**
-	 * Sets the instances' flags to the specified flag.
-	 * 
-	 * @param instances
-	 *            the instance array.
-	 * @param flag
-	 *            the flag to set.
-	 */
-	public static void markAll(Instance[] instances, byte flag) {
-	    for (int i = 0; i < instances.length; i++) {
-		instances[i].flag = flag;
-	    }
-	}
+        /**
+         * Sets the instances' flags to the specified flag.
+         * 
+         * @param instances
+         *            the instance array.
+         * @param flag
+         *            the flag to set.
+         */
+        public static void markAll(Instance[] instances, byte flag) {
+            for (int i = 0; i < instances.length; i++) {
+                instances[i].flag = flag;
+            }
+        }
 
-	/**
-	 * Sets the <code>from</code> flags to the specified <code>to</code>
-	 * flag.
-	 * 
-	 * @param instances
-	 *            the instance array.
-	 * @param from
-	 *            the original flag.
-	 * @param to
-	 *            the flag to set.
-	 */
-	public static void mark(Instance[] instances, byte from, byte to) {
-	    for (int i = 0; i < instances.length; i++) {
-		if (instances[i].flag == from) {
-		    instances[i].flag = to;
-		}
-	    }
-	}
+        /**
+         * Sets the <code>from</code> flags to the specified <code>to</code>
+         * flag.
+         * 
+         * @param instances
+         *            the instance array.
+         * @param from
+         *            the original flag.
+         * @param to
+         *            the flag to set.
+         */
+        public static void mark(Instance[] instances, byte from, byte to) {
+            for (int i = 0; i < instances.length; i++) {
+                if (instances[i].flag == from) {
+                    instances[i].flag = to;
+                }
+            }
+        }
     }
 }

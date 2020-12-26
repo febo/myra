@@ -33,9 +33,9 @@ import myra.datamining.Dataset.Instance;
 public class Jaccard extends ClassificationRuleFunction {
     @Override
     public Maximise evaluate(Dataset dataset,
-			     ClassificationRule rule,
-			     Instance[] instances) {
-	BinaryConfusionMatrix m = fill(rule);
-	return new Maximise(m.TP / (m.TP + m.FP + m.FN));
+                             ClassificationRule rule,
+                             Instance[] instances) {
+        BinaryConfusionMatrix m = fill(rule);
+        return new Maximise(m.TP / (m.TP + m.FP + m.FN));
     }
 }

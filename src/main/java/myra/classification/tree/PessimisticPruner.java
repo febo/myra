@@ -44,85 +44,87 @@ public class PessimisticPruner extends AbstractPruner {
      */
     @Override
     protected void prune(Dataset dataset,
-			 Tree tree,
-			 InternalNode node,
-			 InternalNode parent,
-			 final int index) {
-	for (int i = 0; i < node.children.length; i++) {
-	    if (!node.children[i].isLeaf()) {
-		prune(dataset, tree, (InternalNode) node.children[i], node, i);
-	    }
-	}
+                         Tree tree,
+                         InternalNode node,
+                         InternalNode parent,
+                         final int index) {
+        for (int i = 0; i < node.children.length; i++) {
+            if (!node.children[i].isLeaf()) {
+                prune(dataset, tree, (InternalNode) node.children[i], node, i);
+            }
+        }
 
-	InternalNode internal = (InternalNode) node;
-	double[] distribution = internal.getDistribution();
+        InternalNode internal = (InternalNode) node;
+        double[] distribution = internal.getDistribution();
 
-	// the (sub)tree error
-	double treeError = TreeStats.estimated(internal);
+        // the (sub)tree error
+        double treeError = TreeStats.estimated(internal);
 
-	// the error if the (sub)tree is replaced by a leaf node
-	double leafError = TreeStats.estimated(distribution);
+        // the error if the (sub)tree is replaced by a leaf node
+        double leafError = TreeStats.estimated(distribution);
 
-	// the error if the (sub)tree is replaced by its most used
-	// branch
-	double branchError = 0;
-	int frequent = internal.frequentBranch();
-	InternalNode subtree = null;
+        // the error if the (sub)tree is replaced by its most used
+        // branch
+        double branchError = 0;
+        int frequent = internal.frequentBranch();
+        InternalNode subtree = null;
 
-	if (!internal.children[frequent].isLeaf()) {
-	    subtree = (InternalNode) internal.children[frequent];
-	    subtree.setCoverage(internal.getCoverage());
-	    subtree.setDistribution(distribution);
+        if (!internal.children[frequent].isLeaf()) {
+            subtree = (InternalNode) internal.children[frequent];
+            subtree.setCoverage(internal.getCoverage());
+            subtree.setDistribution(distribution);
 
-	    recalculate(dataset, subtree);
-	    branchError = TreeStats.estimated(subtree);
-	} else {
-	    // if the frequent branch leads to a leaf node, we set the
-	    // error to be equal to the leaf error; the subtree will
-	    // be replaced by a leaf node if the leaf error is lower
-	    // than the (sub-)tree error
-	    branchError = leafError;
-	}
+            recalculate(dataset, subtree);
+            branchError = TreeStats.estimated(subtree);
+        } else {
+            // if the frequent branch leads to a leaf node, we set the
+            // error to be equal to the leaf error; the subtree will
+            // be replaced by a leaf node if the leaf error is lower
+            // than the (sub-)tree error
+            branchError = leafError;
+        }
 
-	// checks if any of the above step leads to a better error rate
+        // checks if any of the above step leads to a better error rate
 
-	Node substitute = null;
+        Node substitute = null;
 
-	if (leafError <= (treeError + 0.1)
-		&& leafError <= (branchError + 0.1)) {
-	    Label prediction = new Label(dataset
-		    .findMajority(internal.getCoverage(), RULE_COVERED));
+        if (leafError <= (treeError + 0.1)
+                && leafError <= (branchError + 0.1)) {
+            Label prediction =
+                    new Label(dataset.getTarget(),
+                              dataset.findMajority(internal.getCoverage(),
+                                                   RULE_COVERED));
 
-	    substitute = new LeafNode(
-				      dataset.attributes()[dataset.classIndex()]
-					      .value(prediction.value()),
-				      internal.getLevel(),
-				      prediction);
-	    substitute.setDistribution(distribution);
-	} else if (branchError <= (treeError + 0.1)) {
-	    substitute = subtree;
-	}
+            substitute = new LeafNode(
+                                      dataset.attributes()[dataset.classIndex()]
+                                              .value(prediction.value()),
+                                      internal.getLevel(),
+                                      prediction);
+            substitute.setDistribution(distribution);
+        } else if (branchError <= (treeError + 0.1)) {
+            substitute = subtree;
+        }
 
-	if (substitute != null) {
-	    if (parent == null) {
-		// we must be dealing with the root of the tree
-		tree.setRoot(substitute);
-	    } else {
-		parent.children[index] = substitute;
-		substitute.setLevel(internal.getLevel());
+        if (substitute != null) {
+            if (parent == null) {
+                // we must be dealing with the root of the tree
+                tree.setRoot(substitute);
+            } else {
+                parent.children[index] = substitute;
+                substitute.setLevel(internal.getLevel());
 
-		if (!substitute.isLeaf()) {
-		    // the distribution has changes, so we need to prune the
-		    // (sub-)tree again
-		    prune(dataset,
-			  tree,
-			  (InternalNode) substitute,
-			  parent,
-			  index);
-		}
-	    }
-	} else if (!internal.children[frequent].isLeaf()) {
-	    recalculate(dataset, internal);
-	}
+                if (!substitute.isLeaf()) {
+                    // the distribution has changes, so we need to prune the
+                    // (sub-)tree again
+                    prune(dataset,
+                          tree,
+                          (InternalNode) substitute,
+                          parent,
+                          index);
+                }
+            }
+        } else if (!internal.children[frequent].isLeaf()) {
+            recalculate(dataset, internal);
+        }
     }
 }

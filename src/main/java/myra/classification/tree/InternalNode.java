@@ -66,17 +66,17 @@ public final class InternalNode extends Node {
      *            the conditions for the branches originating from this node.
      */
     public InternalNode(Attribute attribute,
-			int level,
-			Condition[] conditions) {
-	super(attribute.getName(), level);
-	this.attribute = attribute.getIndex();
-	this.conditions = conditions;
-	this.children = new Node[conditions.length];
+                        int level,
+                        Condition[] conditions) {
+        super(attribute.getName(), level);
+        this.attribute = attribute.getIndex();
+        this.conditions = conditions;
+        this.children = new Node[conditions.length];
     }
 
     @Override
     public boolean isLeaf() {
-	return false;
+        return false;
     }
 
     /**
@@ -85,7 +85,7 @@ public final class InternalNode extends Node {
      * @return the information of the instances reaching this node.
      */
     public Instance[] getCoverage() {
-	return coverage;
+        return coverage;
     }
 
     /**
@@ -95,7 +95,7 @@ public final class InternalNode extends Node {
      *            the information to set.
      */
     public void setCoverage(Instance[] coverage) {
-	this.coverage = coverage;
+        this.coverage = coverage;
     }
 
     /**
@@ -104,7 +104,7 @@ public final class InternalNode extends Node {
      * @return the index of the attribute represented by this node.
      */
     public int attribute() {
-	return attribute;
+        return attribute;
     }
 
     /**
@@ -113,57 +113,57 @@ public final class InternalNode extends Node {
      * @return the index of the most frequent branch.
      */
     public int frequentBranch() {
-	int index = 0;
+        int index = 0;
 
-	for (int i = 1; i < children.length; i++) {
-	    if (children[i].getTotal() >= children[index].getTotal()) {
-		index = i;
-	    }
-	}
+        for (int i = 1; i < children.length; i++) {
+            if (children[i].getTotal() >= children[index].getTotal()) {
+                index = i;
+            }
+        }
 
-	return index;
+        return index;
     }
 
     @Override
     public void setLevel(int level) {
-	super.setLevel(level);
+        super.setLevel(level);
 
-	for (int i = 0; i < children.length; i++) {
-	    if (children[i] != null) {
-		children[i].setLevel(level + 1);
-	    }
-	}
+        for (int i = 0; i < children.length; i++) {
+            if (children[i] != null) {
+                children[i].setLevel(level + 1);
+            }
+        }
     }
 
     @Override
     public void sort() {
-	for (int i = 0; i < children.length; i++) {
-	    if (!children[i].isLeaf()) {
-		int toIndex = -1;
+        for (int i = 0; i < children.length; i++) {
+            if (!children[i].isLeaf()) {
+                int toIndex = -1;
 
-		for (int j = i + 1; j < children.length; j++) {
-		    if (children[j].isLeaf()) {
-			toIndex = j;
-			break;
-		    }
-		}
+                for (int j = i + 1; j < children.length; j++) {
+                    if (children[j].isLeaf()) {
+                        toIndex = j;
+                        break;
+                    }
+                }
 
-		if (toIndex == -1) {
-		    children[i].sort();
-		} else {
-		    Node child = children[toIndex];
-		    Condition condition = conditions[toIndex];
+                if (toIndex == -1) {
+                    children[i].sort();
+                } else {
+                    Node child = children[toIndex];
+                    Condition condition = conditions[toIndex];
 
-		    for (int j = toIndex; j > i; j--) {
-			children[j] = children[j - 1];
-			conditions[j] = conditions[j - 1];
-		    }
+                    for (int j = toIndex; j > i; j--) {
+                        children[j] = children[j - 1];
+                        conditions[j] = conditions[j - 1];
+                    }
 
-		    children[i] = child;
-		    conditions[i] = condition;
-		}
-	    }
-	}
+                    children[i] = child;
+                    conditions[i] = condition;
+                }
+            }
+        }
     }
 
     /**
@@ -178,13 +178,13 @@ public final class InternalNode extends Node {
      * @return the code of the specified branch.
      */
     public static int encode(InternalNode from, Condition condition) {
-	StringBuffer buffer = new StringBuffer();
+        StringBuffer buffer = new StringBuffer();
 
-	buffer.append(from.getName());
-	buffer.append(condition.toString());
-	buffer.append(from.getLevel());
+        buffer.append(from.getName());
+        buffer.append(condition.toString());
+        buffer.append(from.getLevel());
 
-	return buffer.toString().hashCode();
+        return buffer.toString().hashCode();
     }
 
     /**
@@ -204,14 +204,14 @@ public final class InternalNode extends Node {
      *         attribute value.
      */
     public static Condition[] branch(Graph graph,
-				     Dataset dataset,
-				     Attribute attribute,
-				     Instance[] instances) {
-	if (attribute.getType() == Attribute.Type.NOMINAL) {
-	    return branchNominal(graph, attribute);
-	} else {
-	    return branchContinuous(graph, dataset, attribute, instances);
-	}
+                                     Dataset dataset,
+                                     Attribute attribute,
+                                     Instance[] instances) {
+        if (attribute.getType() == Attribute.Type.NOMINAL) {
+            return branchNominal(graph, attribute);
+        } else {
+            return branchContinuous(graph, dataset, attribute, instances);
+        }
     }
 
     /**
@@ -227,18 +227,18 @@ public final class InternalNode extends Node {
      *         nominal value.
      */
     private static Condition[] branchNominal(Graph graph, Attribute attribute) {
-	Condition[] conditions = new Condition[attribute.values().length];
+        Condition[] conditions = new Condition[attribute.values().length];
 
-	for (int i = 0; i < conditions.length; i++) {
-	    Condition condition = new Condition();
-	    condition.attribute = attribute.getIndex();
-	    condition.relation = EQUAL_TO;
-	    condition.value[0] = i;
+        for (int i = 0; i < conditions.length; i++) {
+            Condition condition = new Condition();
+            condition.attribute = attribute.getIndex();
+            condition.relation = EQUAL_TO;
+            condition.value[0] = i;
 
-	    conditions[i] = condition;
-	}
+            conditions[i] = condition;
+        }
 
-	return conditions;
+        return conditions;
     }
 
     /**
@@ -258,10 +258,10 @@ public final class InternalNode extends Node {
      *         for each discrete interval.
      */
     private static Condition[] branchContinuous(Graph graph,
-						Dataset dataset,
-						Attribute attribute,
-						Instance[] instances) {
-	return IntervalBuilder.singleton()
-		.multiple(dataset, instances, attribute.getIndex());
+                                                Dataset dataset,
+                                                Attribute attribute,
+                                                Instance[] instances) {
+        return IntervalBuilder.singleton()
+                .multiple(dataset, instances, attribute.getIndex());
     }
 }

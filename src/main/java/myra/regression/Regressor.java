@@ -33,18 +33,18 @@ public abstract class Regressor extends Algorithm {
 
     @Override
     protected void evaluate(Dataset dataset, Model model) {
-	RRMSE rrmse = new RRMSE();
-	double value = rrmse.evaluate(dataset, model).raw();
+        RRMSE rrmse = new RRMSE();
+        double value = rrmse.evaluate(dataset, model).raw();
 
-	Logger.log("RRMSE on training set: %f (%.4f)\n", value, value);
+        Logger.log("RRMSE on training set: %f (%.4f)\n", value, value);
 
     }
 
     @Override
     protected void test(Dataset dataset, Model model) {
-	RRMSE rrmse = new RRMSE();
-	double value = rrmse.evaluate(dataset, model).raw();
+        RRMSE rrmse = new RRMSE();
+        double value = rrmse.evaluate(dataset, model).raw();
 
-	Logger.log("RRMSE on test set: %f (%.4f)\n", value, value);
+        Logger.log("RRMSE on test set: %f (%.4f)\n", value, value);
     }
 }

@@ -38,40 +38,40 @@ import myra.rule.Rule.Term;
 public class TopDownListPruner implements ListPruner {
     @Override
     public void prune(Dataset dataset, RuleList list) {
-	ListMeasure measure = CONFIG.get(DEFAULT_MEASURE);
-	// quality of the original list of rules
-	Cost best = measure.evaluate(dataset, list);
+        ListMeasure measure = CONFIG.get(DEFAULT_MEASURE);
+        // quality of the original list of rules
+        Cost best = measure.evaluate(dataset, list);
 
-	for (int i = 0; i < list.rules.length; i++) {
-	    while (list.rules[i].isEnabled() && !list.rules[i].isEmpty()) {
-		// removes the last term of the rule
-		Term last = list.rules[i].pop();
+        for (int i = 0; i < list.rules.length; i++) {
+            while (list.rules[i].isEnabled() && !list.rules[i].isEmpty()) {
+                // removes the last term of the rule
+                Term last = list.rules[i].pop();
 
-		if (list.rules[i].isEmpty()) {
-		    list.rules[i].setEnabled(false);
-		}
+                if (list.rules[i].isEmpty()) {
+                    list.rules[i].setEnabled(false);
+                }
 
-		// updated rule coverage
-		update(dataset, list, i);
-		// evaluates the list after modifying the rule
-		Cost current = measure.evaluate(dataset, list);
+                // updated rule coverage
+                update(dataset, list, i);
+                // evaluates the list after modifying the rule
+                Cost current = measure.evaluate(dataset, list);
 
-		if (current.compareTo(best) >= 0) {
-		    // updates the current best quality and continues to
-		    // refine the rule
-		    best = current;
-		} else {
-		    list.rules[i].push(last);
-		    list.rules[i].setEnabled(true);
-		    // if the quality decreases, reverts the change
-		    update(dataset, list, i);
+                if (current.compareTo(best) >= 0) {
+                    // updates the current best quality and continues to
+                    // refine the rule
+                    best = current;
+                } else {
+                    list.rules[i].push(last);
+                    list.rules[i].setEnabled(true);
+                    // if the quality decreases, reverts the change
+                    update(dataset, list, i);
 
-		    break;
-		}
-	    }
-	}
+                    break;
+                }
+            }
+        }
 
-	list.compact();
+        list.compact();
     }
 
     /**
@@ -85,33 +85,33 @@ public class TopDownListPruner implements ListPruner {
      *            the index of the current rule being updated.
      */
     private void update(Dataset dataset, RuleList list, int index) {
-	Instance[] instances = Instance.newArray(dataset.size());
-	Instance.markAll(instances, NOT_COVERED);
+        Instance[] instances = Instance.newArray(dataset.size());
+        Instance.markAll(instances, NOT_COVERED);
 
-	for (int i = 0; i < list.rules.length; i++) {
-	    // we consider rules below the current one even if they are
-	    // disabled since their coverage might change
-	    if (list.rules[i].isEnabled() || i > index) {
-		// updates the rule coverage
-		int coverage = list.rules[i].apply(dataset, instances);
+        for (int i = 0; i < list.rules.length; i++) {
+            // we consider rules below the current one even if they are
+            // disabled since their coverage might change
+            if (list.rules[i].isEnabled() || i > index) {
+                // updates the rule coverage
+                int coverage = list.rules[i].apply(dataset, instances);
 
-		if (coverage >= CONFIG.get(MINIMUM_CASES)) {
-		    CONFIG.get(ASSIGNATOR)
-			    .assign(dataset, list.rules[i], instances);
-		    Dataset.markCovered(instances);
-		    // in case this rule was disabled
-		    list.rules[i].setEnabled(true);
-		} else if (!list.rules[i].isEmpty()) {
-		    list.rules[i].setEnabled(false);
-		    // sanity check, we should not need to disable any
-		    // rule above the current one
-		    if (i <= index) {
-			throw new IllegalStateException("Invalid rule coverage during update: "
-				+ "current rule " + index + ", disabled rule "
-				+ i);
-		    }
-		}
-	    }
-	}
+                if (coverage >= CONFIG.get(MINIMUM_CASES)) {
+                    CONFIG.get(ASSIGNATOR)
+                            .assign(dataset, list.rules[i], instances);
+                    Dataset.markCovered(instances);
+                    // in case this rule was disabled
+                    list.rules[i].setEnabled(true);
+                } else if (!list.rules[i].isEmpty()) {
+                    list.rules[i].setEnabled(false);
+                    // sanity check, we should not need to disable any
+                    // rule above the current one
+                    if (i <= index) {
+                        throw new IllegalStateException("Invalid rule coverage during update: "
+                                + "current rule " + index + ", disabled rule "
+                                + i);
+                    }
+                }
+            }
+        }
     }
 }

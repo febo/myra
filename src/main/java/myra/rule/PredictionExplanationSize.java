@@ -37,11 +37,11 @@ public class PredictionExplanationSize implements ListMeasure {
 
     @Override
     public Cost evaluate(Dataset dataset, RuleList list) {
-	if (list instanceof RuleSet) {
-	    return average(dataset, (RuleSet) list);
-	}
+        if (list instanceof RuleSet) {
+            return average(dataset, (RuleSet) list);
+        }
 
-	return average(dataset, list);
+        return average(dataset, list);
     }
 
     /**
@@ -56,26 +56,26 @@ public class PredictionExplanationSize implements ListMeasure {
      * @return the average number of terms of the predictions.
      */
     private Cost average(Dataset dataset, RuleList list) {
-	double terms = 0.0;
+        double terms = 0.0;
 
-	for (int i = 0; i < dataset.size(); i++) {
-	    boolean found = false;
+        for (int i = 0; i < dataset.size(); i++) {
+            boolean found = false;
 
-	    for (Rule rule : list.rules()) {
-		terms += rule.size();
+            for (Rule rule : list.rules()) {
+                terms += rule.size();
 
-		if (rule.covers(dataset, i)) {
-		    found = true;
-		    break;
-		}
-	    }
+                if (rule.covers(dataset, i)) {
+                    found = true;
+                    break;
+                }
+            }
 
-	    if (!found) {
-		throw new RuntimeException("Example not covered.");
-	    }
-	}
+            if (!found) {
+                throw new RuntimeException("Example not covered.");
+            }
+        }
 
-	return new Minimise(terms / dataset.size());
+        return new Minimise(terms / dataset.size());
     }
 
     /**
@@ -90,54 +90,54 @@ public class PredictionExplanationSize implements ListMeasure {
      * @return the average number of terms of the predictions.
      */
     private Cost average(Dataset dataset, RuleSet set) {
-	double terms = 0.0;
+        double terms = 0.0;
 
-	if (CONFIG.get(CONFLICT_RESOLUTION) == FREQUENT_CLASS) {
-	    for (int i = 0; i < dataset.size(); i++) {
-		boolean found = false;
+        if (CONFIG.get(CONFLICT_RESOLUTION) == FREQUENT_CLASS) {
+            for (int i = 0; i < dataset.size(); i++) {
+                boolean found = false;
 
-		for (Rule rule : set.rules()) {
-		    if (!rule.isEmpty() && rule.covers(dataset, i)) {
-			terms += rule.size();
-			found = true;
-		    }
-		}
+                for (Rule rule : set.rules()) {
+                    if (!rule.isEmpty() && rule.covers(dataset, i)) {
+                        terms += rule.size();
+                        found = true;
+                    }
+                }
 
-		if (!found && set.defaultRule() == null) {
-		    throw new RuntimeException("Example not covered.");
-		}
-	    }
-	} else {
-	    for (int i = 0; i < dataset.size(); i++) {
-		double best = Double.MIN_VALUE;
-		double length = 0.0;
+                if (!found && set.defaultRule() == null) {
+                    throw new RuntimeException("Example not covered.");
+                }
+            }
+        } else {
+            for (int i = 0; i < dataset.size(); i++) {
+                double best = Double.MIN_VALUE;
+                double length = 0.0;
 
-		for (ClassificationRule rule : (ClassificationRule[]) set
-			.rules()) {
-		    if (!rule.isEmpty() && rule.covers(dataset, i)) {
-			int[] frequency = rule.covered();
-			int total = 0;
+                for (ClassificationRule rule : (ClassificationRule[]) set
+                        .rules()) {
+                    if (!rule.isEmpty() && rule.covers(dataset, i)) {
+                        int[] frequency = rule.covered();
+                        int total = 0;
 
-			for (int j = 0; j < frequency.length; j++) {
-			    total += frequency[j];
-			}
+                        for (int j = 0; j < frequency.length; j++) {
+                            total += frequency[j];
+                        }
 
-			double laplace =
-				(frequency[rule.getConsequent().value()] + 1)
-					/ (double) (total
-						+ dataset.classLength());
+                        double laplace =
+                                (frequency[rule.getConsequent().value()] + 1)
+                                        / (double) (total
+                                                + dataset.classLength());
 
-			if (laplace > best) {
-			    best = laplace;
-			    length = rule.size();
-			}
-		    }
-		}
+                        if (laplace > best) {
+                            best = laplace;
+                            length = rule.size();
+                        }
+                    }
+                }
 
-		terms += length;
-	    }
-	}
+                terms += length;
+            }
+        }
 
-	return new Minimise(terms / dataset.size());
+        return new Minimise(terms / dataset.size());
     }
 }

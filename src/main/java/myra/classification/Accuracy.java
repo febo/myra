@@ -31,21 +31,21 @@ import myra.datamining.Dataset;
 public class Accuracy extends Measure {
     @Override
     public Cost evaluate(Dataset dataset, ClassificationModel model) {
-	int[][] matrix = Measure.fill(dataset, model);
+        int[][] matrix = Measure.fill(dataset, model);
 
-	int correct = 0;
-	int total = 0;
+        int correct = 0;
+        int total = 0;
 
-	for (int i = 0; i < matrix.length; i++) {
-	    for (int j = 0; j < matrix.length; j++) {
-		if (i == j) {
-		    correct += matrix[i][j];
-		}
+        for (int i = 0; i < matrix.length; i++) {
+            for (int j = 0; j < matrix.length; j++) {
+                if (i == j) {
+                    correct += matrix[i][j];
+                }
 
-		total += matrix[i][j];
-	    }
-	}
+                total += matrix[i][j];
+            }
+        }
 
-	return new Maximise(correct / (double) total);
+        return new Maximise(correct / (double) total);
     }
 }

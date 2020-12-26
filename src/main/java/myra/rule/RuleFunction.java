@@ -34,7 +34,7 @@ public abstract class RuleFunction {
      * The config key for the default rule function instance.
      */
     public final static ConfigKey<RuleFunction> DEFAULT_FUNCTION =
-	    new ConfigKey<RuleFunction>();
+            new ConfigKey<RuleFunction>();
 
     /**
      * Evaluates the specified rule.
@@ -49,6 +49,6 @@ public abstract class RuleFunction {
      * @return the quality of the rule.
      */
     public abstract Cost evaluate(Dataset dataset,
-				  Rule rule,
-				  Instance[] instances);
+                                  Rule rule,
+                                  Instance[] instances);
 }

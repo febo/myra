@@ -51,7 +51,7 @@ public class LevelPheromonePolicy {
      * The config key for the evaporation factor.
      */
     public final static ConfigKey<Double> EVAPORATION_FACTOR =
-	    new ConfigKey<Double>();
+            new ConfigKey<Double>();
 
     /**
      * The config key for the MAX-MIN p_best value.
@@ -82,9 +82,9 @@ public class LevelPheromonePolicy {
      * Default constructor.
      */
     public LevelPheromonePolicy() {
-	global = null;
-	tMax = 0.0;
-	tMin = 0.0;
+        global = null;
+        tMax = 0.0;
+        tMin = 0.0;
     }
 
     /**
@@ -94,16 +94,16 @@ public class LevelPheromonePolicy {
      *            the construction graph to be initialised.
      */
     public void initialise(Graph graph) {
-	Entry[][] matrix = graph.matrix();
+        Entry[][] matrix = graph.matrix();
 
-	for (int i = 0; i < graph.size(); i++) {
-	    for (int j = 0; j < graph.size(); j++) {
-		if (matrix[i][j] != null) {
-		    matrix[i][j] =
-			    new Entry(INITIAL_PHEROMONE, INITIAL_PHEROMONE);
-		}
-	    }
-	}
+        for (int i = 0; i < graph.size(); i++) {
+            for (int j = 0; j < graph.size(); j++) {
+                if (matrix[i][j] != null) {
+                    matrix[i][j] =
+                            new Entry(INITIAL_PHEROMONE, INITIAL_PHEROMONE);
+                }
+            }
+        }
     }
 
     /**
@@ -117,94 +117,94 @@ public class LevelPheromonePolicy {
      *            the list of rules.
      */
     public void update(Graph graph, RuleList list) {
-	final double factor = CONFIG.get(EVAPORATION_FACTOR);
-	// the default rule is not used
-	final int size = list.size() - (list.hasDefault() ? 1 : 0);
+        final double factor = CONFIG.get(EVAPORATION_FACTOR);
+        // the default rule is not used
+        final int size = list.size() - (list.hasDefault() ? 1 : 0);
 
-	// updates the pheromone limits if we have a new best solution
+        // updates the pheromone limits if we have a new best solution
 
-	if (global == null || list.getQuality().compareTo(global) > 0) {
-	    global = list.getQuality();
-	    double n = graph.size();
+        if (global == null || list.getQuality().compareTo(global) > 0) {
+            global = list.getQuality();
+            double n = graph.size();
 
-	    double average = (n / 2.0);
-	    double pDec = Math.pow(CONFIG.get(P_BEST), 1.0 / n);
+            double average = (n / 2.0);
+            double pDec = Math.pow(CONFIG.get(P_BEST), 1.0 / n);
 
-	    tMax = (1 / (1 - factor)) * (global.raw() / 5.0);
-	    tMin = (tMax * (1 - pDec)) / ((average - 1) * pDec);
+            tMax = (1 / (1 - factor)) * (global.raw() / 5.0);
+            tMin = (tMax * (1 - pDec)) / ((average - 1) * pDec);
 
-	    if (tMin > tMax) {
-		tMin = tMax;
-	    }
-	}
+            if (tMin > tMax) {
+                tMin = tMax;
+            }
+        }
 
-	// evaporates the pheromone values
+        // evaporates the pheromone values
 
-	double truncMax = precision(tMax);
-	double truncMin = precision(tMin);
+        double truncMax = precision(tMax);
+        double truncMin = precision(tMin);
 
-	for (int i = 0; i < graph.size(); i++) {
-	    Entry[] neighbours = graph.matrix()[i];
+        for (int i = 0; i < graph.size(); i++) {
+            Entry[] neighbours = graph.matrix()[i];
 
-	    for (int j = 0; j < neighbours.length; j++) {
-		if (neighbours[j] != null) {
-		    Entry entry = neighbours[j];
-		    int length = entry.size();
+            for (int j = 0; j < neighbours.length; j++) {
+                if (neighbours[j] != null) {
+                    Entry entry = neighbours[j];
+                    int length = entry.size();
 
-		    if (length < size) {
-			// grows the entry values array
-			entry.set(size - 1, entry.initial());
-		    }
+                    if (length < size) {
+                        // grows the entry values array
+                        entry.set(size - 1, entry.initial());
+                    }
 
-		    int dimension = Math.max(size, length);
+                    int dimension = Math.max(size, length);
 
-		    for (int k = 0; k < dimension; k++) {
-			double value = 0.0;
+                    for (int k = 0; k < dimension; k++) {
+                        double value = 0.0;
 
-			if (k < length) {
-			    value = entry.value(k) * factor;
-			} else {
-			    value = entry.initial() * factor;
-			}
+                        if (k < length) {
+                            value = entry.value(k) * factor;
+                        } else {
+                            value = entry.initial() * factor;
+                        }
 
-			double truncValue = precision(value);
+                        double truncValue = precision(value);
 
-			if (truncValue > truncMax) {
-			    entry.set(k, tMax);
-			} else if (truncValue < truncMin) {
-			    entry.set(k, tMin);
-			} else {
-			    entry.set(k, value);
-			}
-		    }
-		}
-	    }
-	}
+                        if (truncValue > truncMax) {
+                            entry.set(k, tMax);
+                        } else if (truncValue < truncMin) {
+                            entry.set(k, tMin);
+                        } else {
+                            entry.set(k, value);
+                        }
+                    }
+                }
+            }
+        }
 
-	// updates the pheromone of the edges
+        // updates the pheromone of the edges
 
-	double delta = list.getQuality().raw() / 5.0;
-	int level = 0;
+        double delta = list.getQuality().raw() / 5.0;
+        int level = 0;
 
-	for (int i = 0; i < size; i++) {
-	    Rule rule = list.rules()[i];
-	    int from = START_INDEX;
+        for (int i = 0; i < size; i++) {
+            Rule rule = list.rules()[i];
+            int from = START_INDEX;
 
-	    for (int j = 0; j < rule.size(); j++) {
-		Entry entry = graph.matrix()[from][rule.terms()[j].index()];
-		double value = entry.value(level) + delta;
+            for (int j = 0; j < rule.size(); j++) {
+                Entry entry = graph.matrix()[from][rule.terms()[j].index()];
+                double value = entry.value(level) + delta;
 
-		if (precision(value) > truncMax) {
-		    entry.set(level, tMax);
-		} else {
-		    entry.set(level, value);
-		}
+                if (precision(value) > truncMax) {
+                    entry.set(level, tMax);
+                } else {
+                    entry.set(level, value);
+                }
 
-		from = rule.terms()[j].index();
-	    }
+                from = rule.terms()[j].index();
+            }
 
-	    level++;
-	}
+            level++;
+        }
     }
 
     /**
@@ -221,45 +221,45 @@ public class LevelPheromonePolicy {
      *         <code>false</code> otherwise.
      */
     public boolean hasConverged(Graph graph, RuleList list) {
-	double truncMax = precision(tMax);
-	double truncMin = precision(tMin);
-	int level = 0;
+        double truncMax = precision(tMax);
+        double truncMin = precision(tMin);
+        int level = 0;
 
-	for (int i = 0; i < list.size(); i++) {
-	    Rule rule = list.rules()[i];
-	    int from = 0;
+        for (int i = 0; i < list.size(); i++) {
+            Rule rule = list.rules()[i];
+            int from = 0;
 
-	    for (int j = 0; j < rule.size(); j++) {
-		Entry[] neighbours = graph.matrix()[from];
-		int available = 0;
-		int maxCount = 0;
-		int minCount = 0;
+            for (int j = 0; j < rule.size(); j++) {
+                Entry[] neighbours = graph.matrix()[from];
+                int available = 0;
+                int maxCount = 0;
+                int minCount = 0;
 
-		for (int k = 0; k < neighbours.length; k++) {
-		    if (neighbours[k] != null) {
-			available++;
-			double truncValue =
-				precision(neighbours[k].value(level));
+                for (int k = 0; k < neighbours.length; k++) {
+                    if (neighbours[k] != null) {
+                        available++;
+                        double truncValue =
+                                precision(neighbours[k].value(level));
 
-			if (truncValue == truncMax) {
-			    maxCount++;
-			} else if (truncValue == truncMin) {
-			    minCount++;
-			}
-		    }
-		}
+                        if (truncValue == truncMax) {
+                            maxCount++;
+                        } else if (truncValue == truncMin) {
+                            minCount++;
+                        }
+                    }
+                }
 
-		if ((minCount != (available - 1)) || (maxCount != 1)) {
-		    return false;
-		}
+                if ((minCount != (available - 1)) || (maxCount != 1)) {
+                    return false;
+                }
 
-		from = rule.terms()[j].index();
-	    }
+                from = rule.terms()[j].index();
+            }
 
-	    level++;
-	}
+            level++;
+        }
 
-	return (list.size() > 0) ? true : false;
+        return (list.size() > 0) ? true : false;
     }
 
     /**
@@ -268,7 +268,7 @@ public class LevelPheromonePolicy {
      * @return the MAX-MIN upper pheromone limit.
      */
     public double max() {
-	return tMax;
+        return tMax;
     }
 
     /**
@@ -277,7 +277,7 @@ public class LevelPheromonePolicy {
      * @return the MAX-MIN lower pheromone limit.
      */
     public double min() {
-	return tMin;
+        return tMin;
     }
 
     /**
@@ -289,6 +289,6 @@ public class LevelPheromonePolicy {
      * @return the truncated value.
      */
     private double precision(double value) {
-	return ((int) (value * 100)) / 100.0;
+        return ((int) (value * 100)) / 100.0;
     }
 }

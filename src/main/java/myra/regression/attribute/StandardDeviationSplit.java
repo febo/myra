@@ -41,89 +41,89 @@ import myra.datamining.Dataset.Instance;
 public class StandardDeviationSplit extends IntervalBuilder {
     @Override
     public Condition[] multiple(Dataset dataset,
-				Instance[] instances,
-				int attribute) {
-	Pair[] candidates = new Pair[dataset.size()];
-	Condition[] distribution = new Condition[2];
+                                Instance[] instances,
+                                int attribute) {
+        Pair[] candidates = new Pair[dataset.size()];
+        Condition[] distribution = new Condition[2];
 
-	for (int i = 0; i < distribution.length; i++) {
-	    distribution[i] = new Condition();
-	    distribution[i].length = 0;
-	    // 0: mean
-	    // 1: variance
-	    distribution[i].frequency = new double[2];
-	}
+        for (int i = 0; i < distribution.length; i++) {
+            distribution[i] = new Condition();
+            distribution[i].length = 0;
+            // 0: mean
+            // 1: variance
+            distribution[i].frequency = new double[2];
+        }
 
-	int index = 0;
-	double size = 0;
+        int index = 0;
+        double size = 0;
 
-	for (int i = 0; i < dataset.size(); i++) {
-	    // the dynamc discretisation only considers the instances covered
-	    // by the current rule
-	    if (instances[i].flag == RULE_COVERED) {
-		double v = dataset.value(i, attribute);
+        for (int i = 0; i < dataset.size(); i++) {
+            // the dynamc discretisation only considers the instances covered
+            // by the current rule
+            if (instances[i].flag == RULE_COVERED) {
+                double v = dataset.value(i, attribute);
 
-		if (!Double.isNaN(v)) {
-		    Pair pair = new Pair();
-		    pair.value = v;
-		    pair.classValue = dataset.value(i, dataset.classIndex());
-		    pair.weight = instances[i].weight;
-		    candidates[index] = pair;
+                if (!Double.isNaN(v)) {
+                    Pair pair = new Pair();
+                    pair.value = v;
+                    pair.classValue = dataset.value(i, dataset.classIndex());
+                    pair.weight = instances[i].weight;
+                    candidates[index] = pair;
 
-		    distribution[1].frequency[0] += pair.value;
-		    distribution[1].frequency[1] += (pair.value * pair.value);
-		    distribution[1].length += pair.weight;
+                    distribution[1].frequency[0] += pair.value;
+                    distribution[1].frequency[1] += (pair.value * pair.value);
+                    distribution[1].length += pair.weight;
 
-		    index++;
-		}
-	    }
-	}
+                    index++;
+                }
+            }
+        }
 
-	if (index == 0) {
-	    // there are no candidate threshold values
-	    return null;
-	}
+        if (index == 0) {
+            // there are no candidate threshold values
+            return null;
+        }
 
-	candidates = Arrays.copyOf(candidates, index);
-	Arrays.sort(candidates);
+        candidates = Arrays.copyOf(candidates, index);
+        Arrays.sort(candidates);
 
-	Condition[] conditions = create(candidates,
-					0,
-					candidates.length,
-					distribution,
-					IntervalBuilder.minimumCases(dataset,
-								     size));
+        Condition[] conditions =
+                create(candidates,
+                       0,
+                       candidates.length,
+                       distribution,
+                       IntervalBuilder.minimumCases(dataset, size));
 
-	if (conditions == null) {
-	    // no interval was created
-	    return null;
-	} else {
-	    for (Condition c : conditions) {
-		c.attribute = attribute;
-	    }
+        if (conditions == null) {
+            // no interval was created
+            return null;
+        } else {
+            for (Condition c : conditions) {
+                c.attribute = attribute;
+            }
 
-	    return conditions;
-	}
+            return conditions;
+        }
     }
 
     @Override
     public Condition single(Dataset dataset,
-			    Instance[] instances,
-			    int attribute) {
-	Condition[] conditions = multiple(dataset, instances, attribute);
-	Condition best = null;
+                            Instance[] instances,
+                            int attribute) {
+        Condition[] conditions = multiple(dataset, instances, attribute);
+        Condition best = null;
 
-	if (conditions != null && conditions.length > 0) {
-	    for (Condition c : conditions) {
-		if ((best == null) || (c.entropy < best.entropy)
-			|| (c.entropy == best.entropy
-				&& c.length > best.length)) {
-		    best = c;
-		}
-	    }
-	}
+        if (conditions != null && conditions.length > 0) {
+            for (Condition c : conditions) {
+                if ((best == null) || (c.entropy < best.entropy)
+                        || (c.entropy == best.entropy
+                                && c.length > best.length)) {
+                    best = c;
+                }
+            }
+        }
 
-	return best;
+        return best;
     }
 
     /**
@@ -146,117 +146,117 @@ public class StandardDeviationSplit extends IntervalBuilder {
      *         specified attribute.
      */
     protected Condition[] create(Pair[] candidates,
-				 int start,
-				 int end,
-				 Condition[] distribution,
-				 double minimum) {
-	double mean = distribution[1].frequency[0] / distribution[1].length;
-	double variance = distribution[1].frequency[1] / distribution[1].length;
-	// calculates the standard deviation of the distribution
-	final double SD = variance - (mean * mean);
+                                 int start,
+                                 int end,
+                                 Condition[] distribution,
+                                 double minimum) {
+        double mean = distribution[1].frequency[0] / distribution[1].length;
+        double variance = distribution[1].frequency[1] / distribution[1].length;
+        // calculates the standard deviation of the distribution
+        final double SD = variance - (mean * mean);
 
-	// determines the best threshold value
-	double gain = 0.0;
-	int tries = 0;
+        // determines the best threshold value
+        double gain = 0.0;
+        int tries = 0;
 
-	// 0: lower interval condition
-	// 1: upper interval condition
-	Condition[] conditions = new Condition[2];
+        // 0: lower interval condition
+        // 1: upper interval condition
+        Condition[] conditions = new Condition[2];
 
-	for (int i = 0; i < conditions.length; i++) {
-	    conditions[i] = new Condition();
-	    conditions[i].relation = 0;
-	    conditions[i].frequency = new double[2];
-	}
+        for (int i = 0; i < conditions.length; i++) {
+            conditions[i] = new Condition();
+            conditions[i].relation = 0;
+            conditions[i].frequency = new double[2];
+        }
 
-	for (int i = (start + 1); i < end; i++) {
-	    double weight = candidates[i - 1].weight;
-	    double value = candidates[i - 1].value;
+        for (int i = (start + 1); i < end; i++) {
+            double weight = candidates[i - 1].weight;
+            double value = candidates[i - 1].value;
 
-	    distribution[0].length += weight;
-	    distribution[0].frequency[0] += value;
-	    distribution[0].frequency[1] += (value * value);
+            distribution[0].length += weight;
+            distribution[0].frequency[0] += value;
+            distribution[0].frequency[1] += (value * value);
 
-	    distribution[1].length -= weight;
-	    distribution[1].frequency[0] -= value;
-	    distribution[1].frequency[1] -= (value * value);
+            distribution[1].length -= weight;
+            distribution[1].frequency[0] -= value;
+            distribution[1].frequency[1] -= (value * value);
 
-	    if (candidates[i - 1].value < candidates[i].value) {
-		if ((distribution[0].length >= minimum)
-			&& (distribution[1].length >= minimum)) {
-		    tries++;
+            if (candidates[i - 1].value < candidates[i].value) {
+                if ((distribution[0].length >= minimum)
+                        && (distribution[1].length >= minimum)) {
+                    tries++;
 
-		    // compute the SD of the intervals
-		    double total = 0;
-		    double intervalSD = 0;
+                    // compute the SD of the intervals
+                    double total = 0;
+                    double intervalSD = 0;
 
-		    for (int j = 0; j < distribution.length; j++) {
-			mean = distribution[j].frequency[0]
-				/ distribution[j].length;
-			variance = distribution[j].frequency[1]
-				/ distribution[j].length;
-			// standard deviation of the sample
-			double sd = ((variance - (mean * mean))
-				/ distribution[j].length)
-				/ (distribution[j].length - 1);
-			distribution[j].entropy = sd;
+                    for (int j = 0; j < distribution.length; j++) {
+                        mean = distribution[j].frequency[0]
+                                / distribution[j].length;
+                        variance = distribution[j].frequency[1]
+                                / distribution[j].length;
+                        // standard deviation of the sample
+                        double sd = ((variance - (mean * mean))
+                                / distribution[j].length)
+                                / (distribution[j].length - 1);
+                        distribution[j].entropy = sd;
 
-			intervalSD += (distribution[j].length * sd);
-			total += distribution[j].length;
-		    }
+                        intervalSD += (distribution[j].length * sd);
+                        total += distribution[j].length;
+                    }
 
-		    // determines the gain of the split
-		    double intervalGain = SD - (intervalSD / total);
+                    // determines the gain of the split
+                    double intervalGain = SD - (intervalSD / total);
 
-		    if (intervalGain > gain) {
-			gain = intervalGain;
+                    if (intervalGain > gain) {
+                        gain = intervalGain;
 
-			conditions[0].length = distribution[0].length;
-			conditions[0].relation = LESS_THAN_OR_EQUAL_TO;
-			// standard deviation of the condition
-			conditions[0].entropy = (distribution[0].length / total)
-				* distribution[0].entropy;
-			conditions[0].index = i - 1;
-			conditions[0].threshold[0] = candidates[i - 1].value;
-			conditions[0].value[0] =
-				(candidates[i - 1].value + candidates[i].value)
-					/ 2.0;
-			// copies the distribution frequency
-			System.arraycopy(distribution[0].frequency,
-					 0,
-					 conditions[0].frequency,
-					 0,
-					 distribution[0].frequency.length);
+                        conditions[0].length = distribution[0].length;
+                        conditions[0].relation = LESS_THAN_OR_EQUAL_TO;
+                        // standard deviation of the condition
+                        conditions[0].entropy = (distribution[0].length / total)
+                                * distribution[0].entropy;
+                        conditions[0].index = i - 1;
+                        conditions[0].threshold[0] = candidates[i - 1].value;
+                        conditions[0].value[0] =
+                                (candidates[i - 1].value + candidates[i].value)
+                                        / 2.0;
+                        // copies the distribution frequency
+                        System.arraycopy(distribution[0].frequency,
+                                         0,
+                                         conditions[0].frequency,
+                                         0,
+                                         distribution[0].frequency.length);
 
-			conditions[1].length = distribution[1].length;
-			conditions[1].relation = GREATER_THAN;
-			// standard deviation of the condition
-			conditions[1].entropy = (distribution[1].length / total)
-				* distribution[1].entropy;
-			conditions[1].index = i - 1;
-			conditions[1].threshold[0] = candidates[i - 1].value;
-			conditions[1].value[0] =
-				(candidates[i - 1].value + candidates[i].value)
-					/ 2.0;
-			// copies the distribution frequency
-			System.arraycopy(distribution[1].frequency,
-					 0,
-					 conditions[1].frequency,
-					 0,
-					 distribution[1].frequency.length);
-		    }
-		}
-	    }
-	}
+                        conditions[1].length = distribution[1].length;
+                        conditions[1].relation = GREATER_THAN;
+                        // standard deviation of the condition
+                        conditions[1].entropy = (distribution[1].length / total)
+                                * distribution[1].entropy;
+                        conditions[1].index = i - 1;
+                        conditions[1].threshold[0] = candidates[i - 1].value;
+                        conditions[1].value[0] =
+                                (candidates[i - 1].value + candidates[i].value)
+                                        / 2.0;
+                        // copies the distribution frequency
+                        System.arraycopy(distribution[1].frequency,
+                                         0,
+                                         conditions[1].frequency,
+                                         0,
+                                         distribution[1].frequency.length);
+                    }
+                }
+            }
+        }
 
-	if (conditions[0].relation == 0) {
-	    // a condition could not be created
-	    return null;
-	}
+        if (conditions[0].relation == 0) {
+            // a condition could not be created
+            return null;
+        }
 
-	conditions[0].tries = tries;
-	conditions[1].tries = tries;
+        conditions[0].tries = tries;
+        conditions[1].tries = tries;
 
-	return conditions;
+        return conditions;
     }
 }

@@ -31,90 +31,90 @@ public class DefaultArchiveTest extends TestCase {
      * Tests the addition of elements to the archive.
      */
     public void testAdd() {
-	Archive<WInteger> archive = new Archive.DefaultArchive<>(5);
+        Archive<WInteger> archive = new Archive.DefaultArchive<>(5);
 
-	for (int i = 0; i < 5; i++) {
-	    archive.add(new WInteger(i));
-	}
+        for (int i = 0; i < 5; i++) {
+            archive.add(new WInteger(i));
+        }
 
-	assertEquals(5, archive.size());
-	assertEquals(0, archive.lowest().intValue());
-	assertEquals(4, archive.highest().intValue());
+        assertEquals(5, archive.size());
+        assertEquals(0, archive.lowest().intValue());
+        assertEquals(4, archive.highest().intValue());
 
-	archive.add(new WInteger(5));
-	assertEquals(1, archive.lowest().intValue());
+        archive.add(new WInteger(5));
+        assertEquals(1, archive.lowest().intValue());
 
-	assertFalse(archive.add(new WInteger(0)));
-	assertEquals(5, archive.size());
+        assertFalse(archive.add(new WInteger(0)));
+        assertEquals(5, archive.size());
 
-	for (int i = 6; i < 10; i++) {
-	    archive.add(new WInteger(i));
-	}
+        for (int i = 6; i < 10; i++) {
+            archive.add(new WInteger(i));
+        }
 
-	assertEquals(5, archive.size());
-	assertEquals(5, archive.lowest().intValue());
-	assertEquals(9, archive.highest().intValue());
+        assertEquals(5, archive.size());
+        assertEquals(5, archive.lowest().intValue());
+        assertEquals(9, archive.highest().intValue());
     }
 
     public static class WInteger extends Number implements Weighable<WInteger> {
-	/**
-	 * Serial Version UID.
-	 */
-	private static final long serialVersionUID = 1L;
+        /**
+         * Serial Version UID.
+         */
+        private static final long serialVersionUID = 1L;
 
-	/**
-	 * Wrapped <code>Integer</code> object.
-	 */
-	private Integer value;
+        /**
+         * Wrapped <code>Integer</code> object.
+         */
+        private Integer value;
 
-	/**
-	 * The solution weight.
-	 */
-	private double weight;
+        /**
+         * The solution weight.
+         */
+        private double weight;
 
-	/**
-	 * Default constructor.
-	 * 
-	 * @param value
-	 *            the integer value.
-	 */
-	public WInteger(int value) {
-	    this.value = Integer.valueOf(value);
-	}
+        /**
+         * Default constructor.
+         * 
+         * @param value
+         *            the integer value.
+         */
+        public WInteger(int value) {
+            this.value = Integer.valueOf(value);
+        }
 
-	@Override
-	public int compareTo(WInteger o) {
-	    return value.compareTo(o.value);
-	}
+        @Override
+        public int compareTo(WInteger o) {
+            return value.compareTo(o.value);
+        }
 
-	@Override
-	public double getWeight() {
-	    return weight;
-	}
+        @Override
+        public double getWeight() {
+            return weight;
+        }
 
-	@Override
-	public void setWeight(double weight) {
-	    this.weight = weight;
-	}
+        @Override
+        public void setWeight(double weight) {
+            this.weight = weight;
+        }
 
-	@Override
-	public int intValue() {
-	    return value.intValue();
-	}
+        @Override
+        public int intValue() {
+            return value.intValue();
+        }
 
-	@Override
-	public long longValue() {
-	    return value.longValue();
-	}
+        @Override
+        public long longValue() {
+            return value.longValue();
+        }
 
-	@Override
-	public float floatValue() {
-	    return value.floatValue();
-	}
+        @Override
+        public float floatValue() {
+            return value.floatValue();
+        }
 
-	@Override
-	public double doubleValue() {
-	    return value.doubleValue();
-	}
+        @Override
+        public double doubleValue() {
+            return value.doubleValue();
+        }
     }
 }

@@ -29,7 +29,7 @@ import myra.Config.ConfigKey;
  * @author Fernando Esteban Barril Otero
  */
 public abstract class IterativeActivity<T extends Weighable<T>>
-	extends AbstractActivity<T> {
+        extends AbstractActivity<T> {
     /**
      * The config key for the maximum number of iterations.
      */
@@ -42,7 +42,7 @@ public abstract class IterativeActivity<T extends Weighable<T>>
      * criteria, but it is available to subclasses.
      */
     public final static ConfigKey<Integer> STAGNATION =
-	    new ConfigKey<Integer>();
+            new ConfigKey<Integer>();
 
     /**
      * The iteration number;
@@ -65,9 +65,9 @@ public abstract class IterativeActivity<T extends Weighable<T>>
      */
     @Override
     public void initialise() {
-	iteration = 0;
-	stagnation = 0;
-	globalBest = null;
+        iteration = 0;
+        stagnation = 0;
+        globalBest = null;
     }
 
     /**
@@ -75,23 +75,23 @@ public abstract class IterativeActivity<T extends Weighable<T>>
      */
     @Override
     public boolean terminate() {
-	return iteration >= CONFIG.get(MAX_ITERATIONS);
+        return iteration >= CONFIG.get(MAX_ITERATIONS);
     }
 
     @Override
     public void update(Archive<T> archive) {
-	iteration++;
+        iteration++;
 
-	T candidate = archive.highest();
+        T candidate = archive.highest();
 
-	// updates the global best
+        // updates the global best
 
-	if (globalBest == null || candidate.compareTo(globalBest) > 0) {
-	    globalBest = candidate;
-	    stagnation = 0;
-	} else if (candidate.compareTo(globalBest) == 0) {
-	    stagnation++;
-	}
+        if (globalBest == null || candidate.compareTo(globalBest) > 0) {
+            globalBest = candidate;
+            stagnation = 0;
+        } else if (candidate.compareTo(globalBest) == 0) {
+            stagnation++;
+        }
     }
 
     /**
@@ -100,6 +100,6 @@ public abstract class IterativeActivity<T extends Weighable<T>>
      * @return the best solution found over all iterations.
      */
     public T getBest() {
-	return globalBest;
+        return globalBest;
     }
 }

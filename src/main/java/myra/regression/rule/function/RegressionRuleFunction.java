@@ -36,9 +36,9 @@ import myra.rule.RuleFunction;
 public abstract class RegressionRuleFunction extends RuleFunction {
     @Override
     public final Cost evaluate(Dataset dataset,
-			       Rule rule,
-			       Instance[] instances) {
-	return evaluate(dataset, (RegressionRule) rule, instances);
+                               Rule rule,
+                               Instance[] instances) {
+        return evaluate(dataset, (RegressionRule) rule, instances);
     }
 
     /**
@@ -54,6 +54,6 @@ public abstract class RegressionRuleFunction extends RuleFunction {
      * @return the cost of the rule.
      */
     public abstract Cost evaluate(Dataset dataset,
-				  RegressionRule rule,
-				  Instance[] instances);
+                                  RegressionRule rule,
+                                  Instance[] instances);
 }

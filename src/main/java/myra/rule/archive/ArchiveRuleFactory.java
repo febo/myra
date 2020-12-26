@@ -30,6 +30,7 @@ import myra.rule.Graph.Entry;
 import myra.rule.Rule;
 import myra.rule.Rule.Term;
 import myra.rule.archive.Graph.Vertex;
+import myra.rule.irl.RuleFactory;
 import myra.rule.pittsburgh.LevelRuleFactory;
 
 /**
@@ -39,20 +40,21 @@ import myra.rule.pittsburgh.LevelRuleFactory;
  * 
  * @author Fernando Esteban Barril Otero
  */
-public class ArchiveRuleFactory extends LevelRuleFactory {
+public class ArchiveRuleFactory extends LevelRuleFactory
+        implements RuleFactory {
     @Override
     public Rule create(int level,
-		       myra.rule.Graph graph,
-		       Entry[] heuristic,
-		       Dataset dataset,
-		       Instance[] instances) {
+                       myra.rule.Graph graph,
+                       Entry[] heuristic,
+                       Dataset dataset,
+                       Instance[] instances) {
 
-	if (!Graph.class.isInstance(graph)) {
-	    throw new IllegalArgumentException("Invalid graph class: "
-		    + graph.getClass());
-	}
+        if (!Graph.class.isInstance(graph)) {
+            throw new IllegalArgumentException("Invalid graph class: "
+                    + graph.getClass());
+        }
 
-	return this.create(level, (Graph) graph, heuristic, dataset, instances);
+        return this.create(level, (Graph) graph, heuristic, dataset, instances);
     }
 
     /**
@@ -73,86 +75,109 @@ public class ArchiveRuleFactory extends LevelRuleFactory {
      * @return a classification rule.
      */
     public Rule create(int level,
-		       Graph graph,
-		       Entry[] heuristic,
-		       Dataset dataset,
-		       Instance[] instances) {
-	// the rule being created (empty at the start)
-	Rule rule = Rule.newInstance(graph.size() / 2);
-	int previous = START_INDEX;
+                       Graph graph,
+                       Entry[] heuristic,
+                       Dataset dataset,
+                       Instance[] instances) {
+        // the rule being created (empty at the start)
+        Rule rule = Rule.newInstance(graph.size() / 2);
+        int previous = START_INDEX;
 
-	double[] pheromone = new double[graph.size()];
-	boolean[] incompatible = new boolean[graph.size()];
-	incompatible[START_INDEX] = true;
+        double[] pheromone = new double[graph.size()];
+        boolean[] incompatible = new boolean[graph.size()];
+        incompatible[START_INDEX] = true;
 
-	while (true) {
-	    double total = 0.0;
-	    Entry[] neighbours = graph.matrix()[previous];
+        while (true) {
+            double total = 0.0;
+            Entry[] neighbours = graph.matrix()[previous];
 
-	    // calculates the probability of visiting vertex i by
-	    // multiplying the pheromone and heuristic information (only
-	    // compatible vertices are considered)
-	    for (int i = 0; i < neighbours.length; i++) {
-		if (!incompatible[i] && neighbours[i] != null) {
-		    pheromone[i] =
-			    neighbours[i].value(level) * heuristic[i].value(0);
+            // calculates the probability of visiting vertex i by
+            // multiplying the pheromone and heuristic information (only
+            // compatible vertices are considered)
+            for (int i = 0; i < neighbours.length; i++) {
+                if (!incompatible[i] && neighbours[i] != null) {
+                    pheromone[i] =
+                            neighbours[i].value(level) * heuristic[i].value(0);
 
-		    total += pheromone[i];
-		} else {
-		    pheromone[i] = 0.0;
-		}
-	    }
+                    total += pheromone[i];
+                } else {
+                    pheromone[i] = 0.0;
+                }
+            }
 
-	    if (total == 0.0) {
-		// there are no compatible vertices, the creation process
-		// is stopped
-		break;
-	    }
+            if (total == 0.0) {
+                // there are no compatible vertices, the creation process
+                // is stopped
+                break;
+            }
 
-	    // prepares the roulette by accumulation the probabilities,
-	    // from 0 to 1
-	    double cumulative = 0.0;
+            // prepares the roulette by accumulation the probabilities,
+            // from 0 to 1
+            double cumulative = 0.0;
 
-	    for (int i = 0; i < pheromone.length; i++) {
-		if (pheromone[i] > 0) {
-		    pheromone[i] = cumulative + (pheromone[i] / total);
-		    cumulative = pheromone[i];
-		}
-	    }
+            for (int i = 0; i < pheromone.length; i++) {
+                if (pheromone[i] > 0) {
+                    pheromone[i] = cumulative + (pheromone[i] / total);
+                    cumulative = pheromone[i];
+                }
+            }
 
-	    for (int i = (pheromone.length - 1); i >= 0; i--) {
-		if (pheromone[i] > 0) {
-		    pheromone[i] = 1.0;
-		    break;
-		}
-	    }
+            for (int i = (pheromone.length - 1); i >= 0; i--) {
+                if (pheromone[i] > 0) {
+                    pheromone[i] = 1.0;
+                    break;
+                }
+            }
 
-	    // roulette selection
-	    double slot = CONFIG.get(RANDOM_GENERATOR).nextDouble();
-	    int selected = Graph.END_INDEX;
+            // roulette selection
+            double slot = CONFIG.get(RANDOM_GENERATOR).nextDouble();
+            int selected = Graph.END_INDEX;
 
-	    for (int i = 0; i < pheromone.length; i++) {
-		if (slot < pheromone[i]) {
-		    selected = i;
-		    break;
-		}
-	    }
+            for (int i = 0; i < pheromone.length; i++) {
+                if (slot < pheromone[i]) {
+                    selected = i;
+                    break;
+                }
+            }
 
-	    if (selected == Graph.END_INDEX) {
-		break;
-	    }
+            if (selected == Graph.END_INDEX) {
+                break;
+            }
 
-	    Vertex vertex = graph.vertices()[selected];
-	    Term term = new Term(selected, vertex.condition(level));
-	    rule.push(term);
+            Vertex vertex = graph.vertices()[selected];
+            Term term = new Term(selected, vertex.condition(level));
+            rule.push(term);
 
-	    previous = selected;
-	    // make the vertex unavailable
-	    incompatible[selected] = true;
-	}
+            previous = selected;
+            // make the vertex unavailable
+            incompatible[selected] = true;
+        }
 
-	rule.compact();
+        rule.compact();
 
-	return rule;
+        return rule;
+    }
+
+    /**
+     * Create a classification rules. Note that this method will use pheromone
+     * values from the level <code>0</code> only.
+     * 
+     * @param graph
+     *            the construction graph.
+     * @param heuristic
+     *            the heuristic values.
+     * @param dataset
+     *            the current dataset.
+     * @param instances
+     *            the covered instances flag.
+     * 
+     * @return a classification rule.
+     */
+    @Override
+    public Rule create(myra.rule.Graph graph,
+                       Entry[] heuristic,
+                       Dataset dataset,
+                       Instance[] instances) {
+        return this.create(0, graph, heuristic, dataset, instances);
     }
 }

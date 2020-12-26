@@ -33,23 +33,23 @@ import myra.datamining.Dataset.Instance;
  */
 public class MeanAssignatorTest extends TestCase {
     public void testAssign() {
-	try {
-	    ARFFReader reader = new ARFFReader();
+        try {
+            ARFFReader reader = new ARFFReader();
 
-	    Dataset dataset = reader.read(new InputStreamReader(getClass()
-		    .getResourceAsStream("/temperature.arff")));
+            Dataset dataset = reader.read(new InputStreamReader(getClass()
+                    .getResourceAsStream("/temperature.arff")));
 
-	    RegressionRule rule = new RegressionRule();
-	    Instance[] instances = Instance.newArray(dataset.size());
-	    rule.apply(dataset, instances);
-	    
-	    MeanAssignator assignator = new MeanAssignator();
-	    assignator.assign(dataset, rule, instances);
-	    
-	    assertEquals(73.5714, rule.getConsequent().value(), 0.00005);
-	    
-	} catch (Exception e) {
-	    fail(e.toString());
-	}
+            RegressionRule rule = new RegressionRule();
+            Instance[] instances = Instance.newArray(dataset.size());
+            rule.apply(dataset, instances);
+
+            MeanAssignator assignator = new MeanAssignator();
+            assignator.assign(dataset, rule, instances);
+
+            assertEquals(73.5714, rule.getConsequent().value(), 0.00005);
+
+        } catch (Exception e) {
+            fail(e.toString());
+        }
     }
 }

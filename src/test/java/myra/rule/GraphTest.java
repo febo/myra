@@ -39,39 +39,39 @@ public class GraphTest extends TestCase {
 
     @Override
     protected void setUp() throws Exception {
-	ARFFReader reader = new ARFFReader();
-	Dataset dataset = reader.read(new InputStreamReader(getClass()
-		.getResourceAsStream("/weather.arff")));
+        ARFFReader reader = new ARFFReader();
+        Dataset dataset = reader.read(new InputStreamReader(getClass()
+                .getResourceAsStream("/weather.arff")));
 
-	graph = new Graph(dataset);
+        graph = new Graph(dataset);
     }
 
     public void testMatrix() {
-	Entry[][] matrix = graph.matrix();
+        Entry[][] matrix = graph.matrix();
 
-	assertEquals(0, matrix[0][1].size());
-	
-	assertEquals(NaN, matrix[0][1].value(0));
-	assertEquals(NaN, matrix[0][1].value(1));
-	assertEquals(NaN, matrix[0][1].value(2));
-	assertEquals(NaN, matrix[0][1].value(3));
+        assertEquals(0, matrix[0][1].size());
 
-	matrix[0][1].setInitial(10.0);
-	assertEquals(10.0, matrix[0][1].value(0));
-	assertEquals(10.0, matrix[0][1].value(1));
-	assertEquals(10.0, matrix[0][1].value(2));
-	assertEquals(10.0, matrix[0][1].value(3));
+        assertEquals(NaN, matrix[0][1].value(0));
+        assertEquals(NaN, matrix[0][1].value(1));
+        assertEquals(NaN, matrix[0][1].value(2));
+        assertEquals(NaN, matrix[0][1].value(3));
 
-	matrix[0][1].set(2, 5.0);
-	assertEquals(10.0, matrix[0][1].value(0));
-	assertEquals(10.0, matrix[0][1].value(1));
-	assertEquals(5.0, matrix[0][1].value(2));
-	assertEquals(10.0, matrix[0][1].value(3));
-	
-	matrix[0][1].set(1, 1.0);
-	assertEquals(10.0, matrix[0][1].value(0));
-	assertEquals(1.0, matrix[0][1].value(1));
-	assertEquals(5.0, matrix[0][1].value(2));
-	assertEquals(10.0, matrix[0][1].value(3));
+        matrix[0][1].setInitial(10.0);
+        assertEquals(10.0, matrix[0][1].value(0));
+        assertEquals(10.0, matrix[0][1].value(1));
+        assertEquals(10.0, matrix[0][1].value(2));
+        assertEquals(10.0, matrix[0][1].value(3));
+
+        matrix[0][1].set(2, 5.0);
+        assertEquals(10.0, matrix[0][1].value(0));
+        assertEquals(10.0, matrix[0][1].value(1));
+        assertEquals(5.0, matrix[0][1].value(2));
+        assertEquals(10.0, matrix[0][1].value(3));
+
+        matrix[0][1].set(1, 1.0);
+        assertEquals(10.0, matrix[0][1].value(0));
+        assertEquals(1.0, matrix[0][1].value(1));
+        assertEquals(5.0, matrix[0][1].value(2));
+        assertEquals(10.0, matrix[0][1].value(3));
     }
 }

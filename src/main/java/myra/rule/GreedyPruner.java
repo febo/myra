@@ -36,45 +36,45 @@ import myra.rule.Rule.Term;
 public class GreedyPruner extends Pruner {
     @Override
     public int prune(Dataset dataset,
-		     Rule rule,
-		     Instance[] instances,
-		     RuleFunction function) {
-	Assignator assignator = CONFIG.get(ASSIGNATOR);
-	assignator.assign(dataset, rule, instances);
+                     Rule rule,
+                     Instance[] instances,
+                     RuleFunction function) {
+        Assignator assignator = CONFIG.get(ASSIGNATOR);
+        assignator.assign(dataset, rule, instances);
 
-	Cost best = function.evaluate(dataset, rule, instances);
+        Cost best = function.evaluate(dataset, rule, instances);
 
-	while (rule.size() > 1) {
-	    Term[] terms = rule.terms();
-	    int irrelevant = -1;
+        while (rule.size() > 1) {
+            Term[] terms = rule.terms();
+            int irrelevant = -1;
 
-	    for (int i = 0; i < terms.length; i++) {
-		terms[i].setEnabeld(false);
+            for (int i = 0; i < terms.length; i++) {
+                terms[i].setEnabeld(false);
 
-		rule.apply(dataset, instances);
-		assignator.assign(dataset, rule, instances);
+                rule.apply(dataset, instances);
+                assignator.assign(dataset, rule, instances);
 
-		Cost current = function.evaluate(dataset, rule, instances);
+                Cost current = function.evaluate(dataset, rule, instances);
 
-		if (current.compareTo(best) >= 0) {
-		    best = current;
-		    irrelevant = i;
-		}
+                if (current.compareTo(best) >= 0) {
+                    best = current;
+                    irrelevant = i;
+                }
 
-		terms[i].setEnabeld(true);
-	    }
+                terms[i].setEnabeld(true);
+            }
 
-	    if (irrelevant == -1) {
-		// we did not find any improvements
-		break;
-	    } else {
-		// permanently remove the term
-		terms[irrelevant].setEnabeld(false);
-		rule.compact();
-	    }
-	}
+            if (irrelevant == -1) {
+                // we did not find any improvements
+                break;
+            } else {
+                // permanently remove the term
+                terms[irrelevant].setEnabeld(false);
+                rule.compact();
+            }
+        }
 
-	rule.apply(dataset, instances);
-	return assignator.assign(dataset, rule, instances);
+        rule.apply(dataset, instances);
+        return assignator.assign(dataset, rule, instances);
     }
 }

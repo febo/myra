@@ -35,23 +35,23 @@ import myra.rule.shell.Memory;
 public class Reset implements Command {
     @Override
     public void execute(Memory memory, String... arguments) {
-	Instance[] instances = memory.get(INSTANCES);
+        Instance[] instances = memory.get(INSTANCES);
 
-	if (instances == null) {
-	    System.out.println("No dataset loaded.");
-	} else {
-	    Instance.markAll(instances, NOT_COVERED);
-	    System.out.println("Available instances: " + instances.length);
-	}
+        if (instances == null) {
+            System.out.println("No dataset loaded.");
+        } else {
+            Instance.markAll(instances, NOT_COVERED);
+            System.out.println("Available instances: " + instances.length);
+        }
     }
 
     @Override
     public String name() {
-	return "reset";
+        return "reset";
     }
-    
+
     @Override
     public int size() {
-	return 0;
+        return 0;
     }
 }

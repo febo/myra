@@ -37,23 +37,23 @@ import myra.rule.Rule;
 public class MeanAssignator implements Assignator {
     @Override
     public int assign(Dataset dataset, Rule rule, Instance[] instances) {
-	double total = 0;
-	int count = 0;
-	int available = 0;
+        double total = 0;
+        int count = 0;
+        int available = 0;
 
-	for (int i = 0; i < instances.length; i++) {
-	    if (instances[i].flag != COVERED) {
-		available++;
+        for (int i = 0; i < instances.length; i++) {
+            if (instances[i].flag != COVERED) {
+                available++;
 
-		if (instances[i].flag == RULE_COVERED) {
-		    total += dataset.value(i, dataset.classIndex());
-		    count++;
-		}
-	    }
-	}
+                if (instances[i].flag == RULE_COVERED) {
+                    total += dataset.value(i, dataset.classIndex());
+                    count++;
+                }
+            }
+        }
 
-	rule.setConsequent(new Real(total / count));
+        rule.setConsequent(new Real(total / count));
 
-	return available - count;
+        return available - count;
     }
 }

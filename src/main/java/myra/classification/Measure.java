@@ -31,7 +31,7 @@ import myra.datamining.Model;
 public abstract class Measure extends myra.datamining.Measure {
     @Override
     public Cost evaluate(Dataset dataset, Model model) {
-	return evaluate(dataset, (ClassificationModel) model);
+        return evaluate(dataset, (ClassificationModel) model);
     }
 
     /**
@@ -57,16 +57,16 @@ public abstract class Measure extends myra.datamining.Measure {
      * @return a multi-dimensional array representing the confusion matrix.
      */
     public static int[][] fill(Dataset dataset, ClassificationModel model) {
-	int[][] matrix = new int[dataset.classLength()][dataset.classLength()];
+        int[][] matrix = new int[dataset.classLength()][dataset.classLength()];
 
-	for (int i = 0; i < dataset.size(); i++) {
-	    int actual = (int) dataset.value(i, dataset.classIndex());
-	    Label predicted = model.predict(dataset, i);
+        for (int i = 0; i < dataset.size(); i++) {
+            int actual = (int) dataset.value(i, dataset.classIndex());
+            Label predicted = model.predict(dataset, i);
 
-	    matrix[actual][predicted.value()]++;
-	}
+            matrix[actual][predicted.value()]++;
+        }
 
-	return matrix;
+        return matrix;
     }
 
     /**
@@ -78,16 +78,16 @@ public abstract class Measure extends myra.datamining.Measure {
      * @return the total number of errors of the confusion matrix.
      */
     public static int errors(int[][] matrix) {
-	int errors = 0;
+        int errors = 0;
 
-	for (int i = 0; i < matrix.length; i++) {
-	    for (int j = 0; j < matrix.length; j++) {
-		if (i != j) {
-		    errors += matrix[i][j];
-		}
-	    }
-	}
+        for (int i = 0; i < matrix.length; i++) {
+            for (int j = 0; j < matrix.length; j++) {
+                if (i != j) {
+                    errors += matrix[i][j];
+                }
+            }
+        }
 
-	return errors;
+        return errors;
     }
 }

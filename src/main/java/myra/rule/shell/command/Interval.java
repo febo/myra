@@ -36,8 +36,8 @@ import myra.rule.shell.Command;
 import myra.rule.shell.Memory;
 
 /**
- * Executes the discretisation process on the specified continuous attributes.
- * A dataset must be loaded prior to the execution of this command.
+ * Executes the discretisation process on the specified continuous attributes. A
+ * dataset must be loaded prior to the execution of this command.
  * 
  * @author Fernando Esteban Barril Otero
  * 
@@ -47,42 +47,41 @@ import myra.rule.shell.Memory;
 public class Interval implements Command {
     @Override
     public void execute(Memory memory, String... arguments) {
-	CONFIG.set(IntervalBuilder.MINIMUM_CASES, 10);
-	CONFIG.set(IntervalBuilder.MAXIMUM_LIMIT, 25);
-	CONFIG.set(Rule.DEFAULT_RULE, ClassificationRule.class);
+        CONFIG.set(IntervalBuilder.MINIMUM_CASES, 10);
+        CONFIG.set(IntervalBuilder.MAXIMUM_LIMIT, 25);
+        CONFIG.set(Rule.DEFAULT_RULE, ClassificationRule.class);
 
-	Dataset dataset = memory.get(DATASET);
-	Instance[] instances = memory.get(INSTANCES);
-	Attribute attribute = dataset.findAttribute(arguments[0]);
+        Dataset dataset = memory.get(DATASET);
+        Instance[] instances = memory.get(INSTANCES);
+        Attribute attribute = dataset.findAttribute(arguments[0]);
 
-	Rule rule = Rule.newInstance();
+        Rule rule = Rule.newInstance();
 
-	if (arguments.length == 2) {
-	    rule = Parser.parse(dataset, "IF " + arguments[1] + " THEN 0");
-	}
+        if (arguments.length == 2) {
+            rule = Parser.parse(dataset, "IF " + arguments[1] + " THEN 0");
+        }
 
-	rule.apply(dataset, instances);
+        rule.apply(dataset, instances);
 
-	IntervalBuilder interval = new MDLSplit();
-	Condition[] conditions =
-		interval.multiple(dataset, instances, attribute.getIndex());
+        IntervalBuilder interval = new MDLSplit();
+        Condition[] conditions =
+                interval.multiple(dataset, instances, attribute.getIndex());
 
-	for (Condition c : conditions) {
-	    System.out.println(String.format("[%.6f] %s",
-					     c.entropy,
-					     c.toString(dataset)));
-	}
+        for (Condition c : conditions) {
+            System.out.println(String
+                    .format("[%.6f] %s", c.entropy, c.toString(dataset)));
+        }
 
-	Instance.mark(instances, Dataset.RULE_COVERED, Dataset.NOT_COVERED);
+        Instance.mark(instances, Dataset.RULE_COVERED, Dataset.NOT_COVERED);
     }
 
     @Override
     public String name() {
-	return "interval";
+        return "interval";
     }
-    
+
     @Override
     public int size() {
-	return 1;
+        return 1;
     }
 }

@@ -62,30 +62,30 @@ public class Shell {
      *            command-line arguments.
      */
     public static void main(String[] args) {
-	Shell shell = new Shell();
-	shell.add(new Echo());
-	shell.add(new Cover());
-	shell.add(new Domain());
-	shell.add(new Help());
-	shell.add(new Interval());
-	shell.add(new Load());
-	shell.add(new Quit());
-	shell.add(new Remove());
-	shell.add(new Reset());
-	shell.add(new Version());
+        Shell shell = new Shell();
+        shell.add(new Echo());
+        shell.add(new Cover());
+        shell.add(new Domain());
+        shell.add(new Help());
+        shell.add(new Interval());
+        shell.add(new Load());
+        shell.add(new Quit());
+        shell.add(new Remove());
+        shell.add(new Reset());
+        shell.add(new Version());
 
-	try {
-	    System.out.println("MYRA Interactive Shell");
-	    System.out.println("----------------------");
-	    System.out.println("Type 'help' for a list of commands.");
-	    System.out.println();
+        try {
+            System.out.println("MYRA Interactive Shell");
+            System.out.println("----------------------");
+            System.out.println("Type 'help' for a list of commands.");
+            System.out.println();
 
-	    shell.run();
-	} catch (IOException e) {
-	    System.out.println(String.format("An %s occurred. Aborting shell.",
-					     e.getClass().getName()));
-	    System.exit(1);
-	}
+            shell.run();
+        } catch (IOException e) {
+            System.out.println(String.format("An %s occurred. Aborting shell.",
+                                             e.getClass().getName()));
+            System.exit(1);
+        }
     }
 
     /**
@@ -95,12 +95,12 @@ public class Shell {
      *            the command to add.
      */
     public void add(Command command) {
-	if (commands.containsKey(command.name())) {
-	    throw new IllegalArgumentException("Duplicated command: "
-		    + command.name());
-	}
+        if (commands.containsKey(command.name())) {
+            throw new IllegalArgumentException("Duplicated command: "
+                    + command.name());
+        }
 
-	commands.put(command.name(), command);
+        commands.put(command.name(), command);
     }
 
     /**
@@ -113,7 +113,7 @@ public class Shell {
      *         found.
      */
     public Command get(String name) {
-	return commands.get(name);
+        return commands.get(name);
     }
 
     /**
@@ -122,7 +122,7 @@ public class Shell {
      * @return the list of commands of the shell.
      */
     public Collection<String> list() {
-	return commands.keySet();
+        return commands.keySet();
     }
 
     /**
@@ -132,38 +132,38 @@ public class Shell {
      *             in case of an I/O error.
      */
     public void run() throws IOException {
-	BufferedReader reader =
-		new BufferedReader(new InputStreamReader(System.in));
-	System.out.print("> ");
+        BufferedReader reader =
+                new BufferedReader(new InputStreamReader(System.in));
+        System.out.print("> ");
 
-	Memory memory = new Memory();
-	memory.put(SHELL, this);
-	String line = null;
+        Memory memory = new Memory();
+        memory.put(SHELL, this);
+        String line = null;
 
-	while ((line = reader.readLine()) != null) {
-	    String[] input = parse(line);
-	    // process the command
-	    Command command = commands.get(input[0]);
+        while ((line = reader.readLine()) != null) {
+            String[] input = parse(line);
+            // process the command
+            Command command = commands.get(input[0]);
 
-	    if (command == null) {
-		System.out.println("Command not found: " + input[0]);
-	    } else {
-		String[] arguments = new String[input.length - 1];
+            if (command == null) {
+                System.out.println("Command not found: " + input[0]);
+            } else {
+                String[] arguments = new String[input.length - 1];
 
-		if (arguments.length > 0) {
-		    System.arraycopy(input, 1, arguments, 0, arguments.length);
-		}
+                if (arguments.length > 0) {
+                    System.arraycopy(input, 1, arguments, 0, arguments.length);
+                }
 
-		if (command.size() <= arguments.length) {
-		    command.execute(memory, arguments);
-		} else {
-		    System.out.println("Missing command arguments: expected "
-			    + command.size() + ", found " + arguments.length);
-		}
-	    }
+                if (command.size() <= arguments.length) {
+                    command.execute(memory, arguments);
+                } else {
+                    System.out.println("Missing command arguments: expected "
+                            + command.size() + ", found " + arguments.length);
+                }
+            }
 
-	    System.out.print("> ");
-	}
+            System.out.print("> ");
+        }
     }
 
     /**
@@ -175,61 +175,61 @@ public class Shell {
      * @return an array of String representing the tokens.
      */
     private String[] parse(String line) {
-	String[] words = new String[0];
-	int index = 0;
+        String[] words = new String[0];
+        int index = 0;
 
-	while (index < line.length()) {
-	    StringBuffer word = new StringBuffer();
+        while (index < line.length()) {
+            StringBuffer word = new StringBuffer();
 
-	    boolean copying = false;
-	    boolean quotes = false;
+            boolean copying = false;
+            boolean quotes = false;
 
-	    int i = index;
+            int i = index;
 
-	    for (; i < line.length(); i++) {
-		char c = line.charAt(i);
+            for (; i < line.length(); i++) {
+                char c = line.charAt(i);
 
-		if (!copying && !Character.isWhitespace(c)) {
-		    copying = true;
-		}
+                if (!copying && !Character.isWhitespace(c)) {
+                    copying = true;
+                }
 
-		if (c == '"' || c == '\'') {
-		    quotes ^= true;
-		}
+                if (c == '"' || c == '\'') {
+                    quotes ^= true;
+                }
 
-		if (copying) {
-		    if (Character.isWhitespace(c) && !quotes) {
-			index = i + 1;
-			break;
-		    }
+                if (copying) {
+                    if (Character.isWhitespace(c) && !quotes) {
+                        index = i + 1;
+                        break;
+                    }
 
-		    word.append(c);
-		}
-	    }
+                    word.append(c);
+                }
+            }
 
-	    if (i >= line.length()) {
-		// we reached the end of the line, need to stop the while loop
-		index = i;
-	    }
+            if (i >= line.length()) {
+                // we reached the end of the line, need to stop the while loop
+                index = i;
+            }
 
-	    if (word.length() > 0) {
-		words = Arrays.copyOf(words, words.length + 1);
+            if (word.length() > 0) {
+                words = Arrays.copyOf(words, words.length + 1);
 
-		if (word.charAt(0) == '"' || word.charAt(0) == '\'') {
-		    word.deleteCharAt(0);
-		}
+                if (word.charAt(0) == '"' || word.charAt(0) == '\'') {
+                    word.deleteCharAt(0);
+                }
 
-		int length = word.length();
+                int length = word.length();
 
-		if (word.charAt(length - 1) == '"'
-			|| word.charAt(length - 1) == '\'') {
-		    word.deleteCharAt(length - 1);
-		}
+                if (word.charAt(length - 1) == '"'
+                        || word.charAt(length - 1) == '\'') {
+                    word.deleteCharAt(length - 1);
+                }
 
-		words[words.length - 1] = word.toString();
-	    }
-	}
+                words[words.length - 1] = word.toString();
+            }
+        }
 
-	return words;
+        return words;
     }
 }

@@ -1,0 +1,23 @@
+@relation weather-h
+
+@attribute outlook {sunny, overcast, rain}
+@attribute temperature numeric
+@attribute humidity numeric
+@attribute windy {true, false}
+@attribute class hierarchical 01,01/01,01/02,01/01/01,01/02/01
+
+@data
+sunny,75,70,true,01/01/01
+sunny,80,90,true,01/02/01
+sunny,85,85,false,01/02/01
+sunny,72,95,false,01/02/01
+sunny,69,70,false,01/01/01
+overcast,72,90,true,01/01/01
+overcast,83,78,false,01/01/01
+overcast,64,65,true,01/01/01
+overcast,81,75,false,01/01/01
+rain,71,80,true,01/02/01
+rain,65,70,true,01/02/01
+rain,75,80,false,01/01/01
+rain,68,80,false,01/01/01
+rain,70,96,false,01/01/01

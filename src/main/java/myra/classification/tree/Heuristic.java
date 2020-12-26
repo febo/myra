@@ -25,13 +25,16 @@ import myra.Config.ConfigKey;
 import myra.datamining.Dataset;
 import myra.datamining.Dataset.Instance;
 
+/**
+ * Interface to define heuristic information.
+ */
 public interface Heuristic {
     /**
      *
      * Config key for the default <code>Heuristic</code> instance.
      */
     public static final ConfigKey<Heuristic> DEFAULT_HEURISTIC =
-	    new ConfigKey<>();
+            new ConfigKey<>();
 
     /**
      * Computes the heuristic value of each attribute.
@@ -47,8 +50,8 @@ public interface Heuristic {
      * @return the heuristic value of each attribute of the dataset.
      */
     public double[] compute(Dataset dataset,
-			    Instance[] instances,
-			    boolean[] used);
+                            Instance[] instances,
+                            boolean[] used);
 
     /**
      * No heuristic information implementation - e.g., heuristic value is set to
@@ -57,20 +60,20 @@ public interface Heuristic {
      * @author Fernando Esteban Barril Otero
      */
     public static class None implements Heuristic {
-	@Override
-	public double[] compute(Dataset dataset,
-				Instance[] instances,
-				boolean[] used) {
-	    double[] heuristic = new double[dataset.attributes().length - 1];
-	    Arrays.fill(heuristic, 1.0);
+        @Override
+        public double[] compute(Dataset dataset,
+                                Instance[] instances,
+                                boolean[] used) {
+            double[] heuristic = new double[dataset.attributes().length - 1];
+            Arrays.fill(heuristic, 1.0);
 
-	    for (int i = 0; i < heuristic.length; i++) {
-		if (used[i]) {
-		    heuristic[i] = 0.0;
-		}
-	    }
+            for (int i = 0; i < heuristic.length; i++) {
+                if (used[i]) {
+                    heuristic[i] = 0.0;
+                }
+            }
 
-	    return heuristic;
-	}
+            return heuristic;
+        }
     }
 }

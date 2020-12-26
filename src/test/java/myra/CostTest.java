@@ -33,25 +33,25 @@ public class CostTest extends TestCase {
      * Tests the <code>Error</code> class.
      */
     public void testError() {
-	Minimise c1 = new Minimise(0.1);
-	Minimise c2 = new Minimise(0.2);
-	assertTrue(c1.compareTo(c2) > 0);
-	assertTrue(c2.compareTo(c1) < 0);
-	
-	Minimise c3 = new Minimise(0.2);
-	assertTrue(c2.compareTo(c3) == 0);
+        Minimise c1 = new Minimise(0.1);
+        Minimise c2 = new Minimise(0.2);
+        assertTrue(c1.compareTo(c2) > 0);
+        assertTrue(c2.compareTo(c1) < 0);
+
+        Minimise c3 = new Minimise(0.2);
+        assertTrue(c2.compareTo(c3) == 0);
     }
-    
+
     /**
      * Tests the <code>Success</code> class.
      */
     public void testSuccess() {
-	Maximise c1 = new Maximise(0.1);
-	Maximise c2 = new Maximise(0.2);
-	assertTrue(c1.compareTo(c2) < 0);
-	assertTrue(c2.compareTo(c1) > 0);
-	
-	Maximise c3 = new Maximise(0.2);
-	assertTrue(c2.compareTo(c3) == 0);
-    }  
+        Maximise c1 = new Maximise(0.1);
+        Maximise c2 = new Maximise(0.2);
+        assertTrue(c1.compareTo(c2) < 0);
+        assertTrue(c2.compareTo(c1) > 0);
+
+        Maximise c3 = new Maximise(0.2);
+        assertTrue(c2.compareTo(c3) == 0);
+    }
 }

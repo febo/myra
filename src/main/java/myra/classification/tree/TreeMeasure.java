@@ -28,27 +28,34 @@ import myra.datamining.Dataset;
  * @author Fernando Esteban Barril Otero
  */
 public enum TreeMeasure {
+    /**
+     * Accuracy tree measure.
+     */
     ACCURACY {
-	@Override
-	public Cost evaluate(Dataset dataset, Tree tree) {
-	    int[][] matrix = fill(dataset, tree);
-	    int hits = 0;
+        @Override
+        public Cost evaluate(Dataset dataset, Tree tree) {
+            int[][] matrix = fill(dataset, tree);
+            int hits = 0;
 
-	    for (int i = 0; i < matrix.length; i++) {
-		hits += matrix[i][i];
-	    }
+            for (int i = 0; i < matrix.length; i++) {
+                hits += matrix[i][i];
+            }
 
-	    return new Cost.Maximise(hits / (double) dataset.size());
-	}
+            return new Cost.Maximise(hits / (double) dataset.size());
+        }
     },
+    /**
+     * A pessimistic accuracy measure. It estimates the number of errors given
+     * the error rate.
+     */
     PESSIMISTIC {
-	@Override
-	public Cost evaluate(Dataset dataset, Tree tree) {
-	    double error = TreeStats.estimated(tree.getRoot());
-	    int total = dataset.size();
+        @Override
+        public Cost evaluate(Dataset dataset, Tree tree) {
+            double error = TreeStats.estimated(tree.getRoot());
+            int total = dataset.size();
 
-	    return new Cost.Maximise((total - error) / total);
-	}
+            return new Cost.Maximise((total - error) / total);
+        }
     };
 
     /**
@@ -74,15 +81,15 @@ public enum TreeMeasure {
      * @return a multi-class confusion matrix for the specified tree.
      */
     public static int[][] fill(Dataset dataset, Tree tree) {
-	int[][] matrix = new int[dataset.classLength()][dataset.classLength()];
+        int[][] matrix = new int[dataset.classLength()][dataset.classLength()];
 
-	for (int i = 0; i < dataset.size(); i++) {
-	    int actual = (int) dataset.value(i, dataset.classIndex());
-	    int predicted = tree.predict(dataset, i).value();
+        for (int i = 0; i < dataset.size(); i++) {
+            int actual = (int) dataset.value(i, dataset.classIndex());
+            int predicted = tree.predict(dataset, i).value();
 
-	    matrix[actual][predicted]++;
-	}
+            matrix[actual][predicted]++;
+        }
 
-	return matrix;
+        return matrix;
     }
 }

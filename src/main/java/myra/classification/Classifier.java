@@ -33,33 +33,33 @@ import myra.util.Logger;
 public abstract class Classifier extends Algorithm {
     @Override
     protected void evaluate(Dataset dataset, Model model) {
-	Accuracy measure = new Accuracy();
-	double accuracy = measure.evaluate(dataset, model).raw();
-	Logger.log("Classification accuracy on training set: %f (%3.2f%%)\n",
-		   accuracy,
-		   accuracy * 100);
+        Accuracy measure = new Accuracy();
+        double accuracy = measure.evaluate(dataset, model).raw();
+        Logger.log("Classification accuracy on training set: %f (%3.2f%%)\n",
+                   accuracy,
+                   accuracy * 100);
     }
 
     @Override
     protected void test(Dataset dataset, Model model) {
-	Accuracy measure = new Accuracy();
-	double accuracy = measure.evaluate(dataset, model).raw();
-	Logger.log("Classification accuracy on test set: %f (%3.2f%%)%n",
-		   accuracy,
-		   accuracy * 100);
+        Accuracy measure = new Accuracy();
+        double accuracy = measure.evaluate(dataset, model).raw();
+        Logger.log("Classification accuracy on test set: %f (%3.2f%%)%n",
+                   accuracy,
+                   accuracy * 100);
 
-	int[][] matrix = Measure.fill(dataset, (ClassificationModel) model);
+        int[][] matrix = Measure.fill(dataset, (ClassificationModel) model);
 
-	Logger.log("Correctly classified instances: %d (%3.2f%%)%n",
-		   dataset.size() - Measure.errors(matrix),
-		   ((dataset.size() - Measure.errors(matrix))
-			   / (double) dataset.size()) * 100);
+        Logger.log("Correctly classified instances: %d (%3.2f%%)%n",
+                   dataset.size() - Measure.errors(matrix),
+                   ((dataset.size() - Measure.errors(matrix))
+                           / (double) dataset.size()) * 100);
 
-	Logger.log("Incorrectly classified instances: %d (%3.2f%%)\n",
-		   Measure.errors(matrix),
-		   (Measure.errors(matrix) / (double) dataset.size()) * 100);
+        Logger.log("Incorrectly classified instances: %d (%3.2f%%)\n",
+                   Measure.errors(matrix),
+                   (Measure.errors(matrix) / (double) dataset.size()) * 100);
 
-	logConfusionMatrix(dataset, matrix);
+        logConfusionMatrix(dataset, matrix);
     }
 
     /**
@@ -71,31 +71,31 @@ public abstract class Classifier extends Algorithm {
      *            the confusion matrix.
      */
     protected void logConfusionMatrix(Dataset dataset, int[][] matrix) {
-	Logger.log("%n>>> Confusion matrix:%n%n");
+        Logger.log("%n>>> Confusion matrix:%n%n");
 
-	int minimum = Integer.toString(dataset.size()).length();
-	int[] width = new int[matrix.length];
-	Attribute[] attributes = dataset.attributes();
+        int minimum = Integer.toString(dataset.size()).length();
+        int[] width = new int[matrix.length];
+        Attribute[] attributes = dataset.attributes();
 
-	for (int i = 0; i < attributes[dataset.classIndex()].size(); i++) {
-	    width[i] = attributes[dataset.classIndex()].value(i).length();
+        for (int i = 0; i < attributes[dataset.classIndex()].size(); i++) {
+            width[i] = attributes[dataset.classIndex()].value(i).length();
 
-	    if (width[i] < minimum) {
-		width[i] = minimum;
-	    }
+            if (width[i] < minimum) {
+                width[i] = minimum;
+            }
 
-	    Logger.log("%" + width[i] + "s ",
-		       attributes[dataset.classIndex()].value(i));
-	}
+            Logger.log("%" + width[i] + "s ",
+                       attributes[dataset.classIndex()].value(i));
+        }
 
-	Logger.log("  <-- classified as %n");
+        Logger.log("  <-- classified as %n");
 
-	for (int i = 0; i < matrix.length; i++) {
-	    for (int j = 0; j < matrix.length; j++) {
-		Logger.log("%" + width[j] + "d ", matrix[i][j]);
-	    }
+        for (int i = 0; i < matrix.length; i++) {
+            for (int j = 0; j < matrix.length; j++) {
+                Logger.log("%" + width[j] + "d ", matrix[i][j]);
+            }
 
-	    Logger.log("  %s%n", attributes[dataset.classIndex()].value(i));
-	}
+            Logger.log("  %s%n", attributes[dataset.classIndex()].value(i));
+        }
     }
 }

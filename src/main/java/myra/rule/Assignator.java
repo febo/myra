@@ -34,7 +34,7 @@ public interface Assignator {
      * The config key for the default assignator instance.
      */
     public final static ConfigKey<Assignator> ASSIGNATOR =
-	    new ConfigKey<Assignator>();
+            new ConfigKey<Assignator>();
 
     /**
      * Assignes the consequent of the rule.

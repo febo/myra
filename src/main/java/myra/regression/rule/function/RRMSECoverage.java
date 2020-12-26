@@ -54,55 +54,57 @@ public class RRMSECoverage extends RegressionRuleFunction {
     public static final ConfigKey<Double> ALPHA = new ConfigKey<Double>();
 
     static {
-	// default alpha value
-	// see F. Janssen and J. Furnkranz, "On the quest for optimal rule
-	// learning heuristics", Machine Learning 78, pp. 343-379, 2010.
-	CONFIG.set(ALPHA, 0.59);
+        // default alpha value
+        // see F. Janssen and J. Furnkranz, "On the quest for optimal rule
+        // learning heuristics", Machine Learning 78, pp. 343-379, 2010.
+        CONFIG.set(ALPHA, 0.59);
     }
 
     @Override
     public Cost evaluate(Dataset dataset,
-			 RegressionRule rule,
-			 Instance[] instances) {
-	double predicted = rule.getConsequent().value();
+                         RegressionRule rule,
+                         Instance[] instances) {
+        double predicted = rule.getConsequent().value();
 
-	// (1) calculates the mean over all uncovered instances
+        // (1) calculates the mean over all uncovered instances
 
-	int available = 0;
-	double mean = 0;
+        int available = 0;
+        double mean = 0;
 
-	for (int i = 0; i < dataset.size(); i++) {
-	    if (instances[i].flag != COVERED) {
-		available += instances[i].weight;
-		mean += dataset.value(i, dataset.classIndex());
-	    }
-	}
+        for (int i = 0; i < dataset.size(); i++) {
+            if (instances[i].flag != COVERED) {
+                available += instances[i].weight;
+                mean += dataset.value(i, dataset.classIndex());
+            }
+        }
 
-	mean /= available;
+        mean /= available;
 
-	// (2) calculates the error measures over the covered instances
+        // (2) calculates the error measures over the covered instances
 
-	double lSE = 0;
-	double lDefault = 0;
-	double coverage = 0;
+        double lSE = 0;
+        double lDefault = 0;
+        double coverage = 0;
 
-	for (int i = 0; i < dataset.size(); i++) {
-	    if (instances[i].flag == RULE_COVERED) {
-		double actual = dataset.value(i, dataset.classIndex());
-		
-		lSE += Math.pow(actual - predicted, 2);
-		lDefault += Math.pow(actual - mean, 2);
+        for (int i = 0; i < dataset.size(); i++) {
+            if (instances[i].flag == RULE_COVERED) {
+                double actual = dataset.value(i, dataset.classIndex());
 
-		coverage += instances[i].weight;
-	    }
-	}
-	
-	// (3) calculates the relative squared error (in a way equivalent to relative
-	// root mean squared error considering a simplified version of the equation)
+                lSE += Math.pow(actual - predicted, 2);
+                lDefault += Math.pow(actual - mean, 2);
 
-	double error = CONFIG.get(ALPHA) * (1 - (lSE / lDefault));
-	double relCoverage = (1 - CONFIG.get(ALPHA)) * (coverage / available);
+                coverage += instances[i].weight;
+            }
+        }
 
-	return new Maximise(error + relCoverage);
+        // (3) calculates the relative squared error (in a way equivalent to
+        // relative
+        // root mean squared error considering a simplified version of the
+        // equation)
+
+        double error = CONFIG.get(ALPHA) * (1 - (lSE / lDefault));
+        double relCoverage = (1 - CONFIG.get(ALPHA)) * (coverage / available);
+
+        return new Maximise(error + relCoverage);
     }
 }

@@ -53,111 +53,111 @@ public abstract class Variable implements Cloneable {
 
     @Override
     public Variable clone() {
-	try {
-	    return (Variable) super.clone();
-	} catch (CloneNotSupportedException e) {
-	    throw new InternalError(e.getMessage());
-	}
+        try {
+            return (Variable) super.clone();
+        } catch (CloneNotSupportedException e) {
+            throw new InternalError(e.getMessage());
+        }
     }
 
     /**
      * This class represents a continuous attribute term.
      */
     public static class Continuous extends Variable {
-	/**
-	 * Operator archive with 2 possible values (0=less than or equal to,
-	 * 1=grater than).
-	 */
-	private VariableArchive.Categorical operator;
+        /**
+         * Operator archive with 2 possible values (0=less than or equal to,
+         * 1=grater than).
+         */
+        private VariableArchive.Categorical operator;
 
-	/**
-	 * Value archive.
-	 */
-	private VariableArchive.Continuous value;
+        /**
+         * Value archive.
+         */
+        private VariableArchive.Continuous value;
 
-	/**
-	 * Default constructor.
-	 * 
-	 * @param lower
-	 *            lower bound for the sampling procedure.
-	 * @param upper
-	 *            upper bound for the sampling procedure.
-	 */
-	public Continuous(double lower, double upper) {
-	    operator = new VariableArchive.Categorical(2);
-	    value = new VariableArchive.Continuous(lower, upper);
-	}
+        /**
+         * Default constructor.
+         * 
+         * @param lower
+         *            lower bound for the sampling procedure.
+         * @param upper
+         *            upper bound for the sampling procedure.
+         */
+        public Continuous(double lower, double upper) {
+            operator = new VariableArchive.Categorical(2);
+            value = new VariableArchive.Continuous(lower, upper);
+        }
 
-	@Override
-	public Condition sample() {
-	    Condition condition = new Condition();
+        @Override
+        public Condition sample() {
+            Condition condition = new Condition();
 
-	    condition.relation =
-		    (operator.sample() == 0) ? LESS_THAN_OR_EQUAL_TO
-			    : GREATER_THAN;
-	    condition.value[0] = value.sample();
+            condition.relation =
+                    (operator.sample() == 0) ? LESS_THAN_OR_EQUAL_TO
+                            : GREATER_THAN;
+            condition.value[0] = value.sample();
 
-	    return condition;
-	}
+            return condition;
+        }
 
-	@Override
-	public void add(Condition condition, double quality) {
-	    // operator archive
-	    operator.add(Integer.valueOf(condition.relation), quality);
-	    operator.update();
-	    // value archive
-	    value.add(condition.value[0], quality);
-	    value.update();
-	}
+        @Override
+        public void add(Condition condition, double quality) {
+            // operator archive
+            operator.add(Integer.valueOf(condition.relation), quality);
+            operator.update();
+            // value archive
+            value.add(condition.value[0], quality);
+            value.update();
+        }
 
-	@Override
-	public Continuous clone() {
-	    Continuous clone = (Continuous) super.clone();
-	    clone.operator = operator.clone();
-	    clone.value = value.clone();
-	    return clone;
-	}
+        @Override
+        public Continuous clone() {
+            Continuous clone = (Continuous) super.clone();
+            clone.operator = operator.clone();
+            clone.value = value.clone();
+            return clone;
+        }
     }
 
     /**
      * This class represents a nominal attribute term.
      */
     public static class Nominal extends Variable {
-	/**
-	 * Value archive.
-	 */
-	private VariableArchive.Categorical value;
+        /**
+         * Value archive.
+         */
+        private VariableArchive.Categorical value;
 
-	/**
-	 * Default constructor.
-	 * 
-	 * @param length
-	 *            the number of different nominal values.
-	 */
-	public Nominal(int length) {
-	    value = new VariableArchive.Categorical(length);
-	}
+        /**
+         * Default constructor.
+         * 
+         * @param length
+         *            the number of different nominal values.
+         */
+        public Nominal(int length) {
+            value = new VariableArchive.Categorical(length);
+        }
 
-	@Override
-	public Condition sample() {
-	    Condition condition = new Condition();
-	    condition.relation = EQUAL_TO;
-	    condition.value[0] = value.sample();
+        @Override
+        public Condition sample() {
+            Condition condition = new Condition();
+            condition.relation = EQUAL_TO;
+            condition.value[0] = value.sample();
 
-	    return condition;
-	}
+            return condition;
+        }
 
-	@Override
-	public void add(Condition condition, double quality) {
-	    value.add(Integer.valueOf((int) condition.value[0]), quality);
-	    value.update();
-	}
+        @Override
+        public void add(Condition condition, double quality) {
+            value.add(Integer.valueOf((int) condition.value[0]), quality);
+            value.update();
+        }
 
-	@Override
-	public Nominal clone() {
-	    Nominal clone = (Nominal) super.clone();
-	    clone.value = value.clone();
-	    return clone;
-	}
+        @Override
+        public Nominal clone() {
+            Nominal clone = (Nominal) super.clone();
+            clone.value = value.clone();
+            return clone;
+        }
     }
 }

@@ -27,5 +27,13 @@ package myra.datamining;
  * @author Fernando Esteban Barril Otero
  */
 public interface Prediction {
+    /**
+     * Returns a string representation of this prediction.
+     * 
+     * @param target
+     *            the target attribute metadata.
+     * 
+     * @return a string representation of this prediction.
+     */
     public String toString(Attribute target);
 }

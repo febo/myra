@@ -39,7 +39,7 @@ public interface PheromonePolicy {
      * The config key for the default pheromone policy instance.
      */
     public static final ConfigKey<PheromonePolicy> DEFAULT_POLICY =
-	    new ConfigKey<PheromonePolicy>();
+            new ConfigKey<PheromonePolicy>();
 
     /**
      * Initialises the pheromone values of the specified graph.

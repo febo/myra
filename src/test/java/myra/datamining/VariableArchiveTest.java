@@ -40,51 +40,53 @@ public class VariableArchiveTest extends TestCase {
 
     @Override
     protected void setUp() throws Exception {
-	super.setUp();
+        super.setUp();
 
-	CONFIG.set(ARCHIVE_SIZE, 5);
-	CONFIG.set(Q, DEFAULT_Q);
-	CONFIG.set(CONVERGENCE_SPEED, DEFAULT_CONVERGENCE_SPEED);
-	CONFIG.set(PRECISION, DEFAULT_PRECISION);
-	CONFIG.set(RANDOM_GENERATOR, new Random());
+        CONFIG.set(ARCHIVE_SIZE, 5);
+        CONFIG.set(Q, DEFAULT_Q);
+        CONFIG.set(CONVERGENCE_SPEED, DEFAULT_CONVERGENCE_SPEED);
+        CONFIG.set(PRECISION, DEFAULT_PRECISION);
+        CONFIG.set(RANDOM_GENERATOR, new Random());
     }
 
     public void testCategoricalSampling() {
-	VariableArchive.Categorical archive = new VariableArchive.Categorical(3);
+        VariableArchive.Categorical archive =
+                new VariableArchive.Categorical(3);
 
-	for (int i = 0; i < CONFIG.get(ARCHIVE_SIZE); i++) {
-	    Integer value = archive.sample();
-	    assertNotNull(value);
-	    double quality = CONFIG.get(RANDOM_GENERATOR).nextDouble();
+        for (int i = 0; i < CONFIG.get(ARCHIVE_SIZE); i++) {
+            Integer value = archive.sample();
+            assertNotNull(value);
+            double quality = CONFIG.get(RANDOM_GENERATOR).nextDouble();
 
-	    archive.add(value, quality);
-	}
+            archive.add(value, quality);
+        }
 
-	archive.update();
+        archive.update();
 
-	// archive is complete now
+        // archive is complete now
 
-	Integer value = archive.sample();
-	assertNotNull(value);
+        Integer value = archive.sample();
+        assertNotNull(value);
     }
 
     public void testContinuousSampling() {
-	VariableArchive.Continuous archive = new VariableArchive.Continuous(0, 10);
+        VariableArchive.Continuous archive =
+                new VariableArchive.Continuous(0, 10);
 
-	for (int i = 0; i < CONFIG.get(ARCHIVE_SIZE); i++) {
-	    Double value = archive.sample();
-	    assertTrue(value < 10.0);
-	    double quality = CONFIG.get(RANDOM_GENERATOR).nextDouble();
+        for (int i = 0; i < CONFIG.get(ARCHIVE_SIZE); i++) {
+            Double value = archive.sample();
+            assertTrue(value < 10.0);
+            double quality = CONFIG.get(RANDOM_GENERATOR).nextDouble();
 
-	    archive.add(value, quality);
-	}
+            archive.add(value, quality);
+        }
 
-	archive.update();
+        archive.update();
 
-	// archive is complete now
+        // archive is complete now
 
-	for (int i = 0; i < CONFIG.get(ARCHIVE_SIZE); i++) {
-	    archive.sample();
-	}
+        for (int i = 0; i < CONFIG.get(ARCHIVE_SIZE); i++) {
+            archive.sample();
+        }
     }
 }

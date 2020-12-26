@@ -63,7 +63,7 @@ public class C45Split extends AbstractEntropySplit {
      * to the distribution of values.
      * 
      * @param candidates
-     *            the array os candidate values.
+     *            the array of candidate values.
      * @param start
      *            the start index on the candidates array.
      * @param end
@@ -80,129 +80,129 @@ public class C45Split extends AbstractEntropySplit {
      */
     @Override
     protected Condition[] create(Pair[] candidates,
-				 int start,
-				 int end,
-				 double[] frequency,
-				 double size,
-				 double minimum) {
-	// calculates the entropy of the distribution
+                                 int start,
+                                 int end,
+                                 double[] frequency,
+                                 double size,
+                                 double minimum) {
+        // calculates the entropy of the distribution
 
-	double entropy = 0.0;
+        double entropy = 0.0;
 
-	for (int i = 0; i < frequency.length; i++) {
-	    if (frequency[i] > 0) {
-		double p = frequency[i] / size;
-		entropy -= (p * (Math.log(p) / Math.log(2.0)));
-	    }
-	}
+        for (int i = 0; i < frequency.length; i++) {
+            if (frequency[i] > 0) {
+                double p = frequency[i] / size;
+                entropy -= (p * (Math.log(p) / Math.log(2.0)));
+            }
+        }
 
-	// determines the best threshold value
+        // determines the best threshold value
 
-	double gain = 0.0;
+        double gain = 0.0;
 
-	// 0: lower interval condition
-	// 1: upper interval condition
-	Condition[] conditions = new Condition[2];
+        // 0: lower interval condition
+        // 1: upper interval condition
+        Condition[] conditions = new Condition[2];
 
-	for (int i = 0; i < conditions.length; i++) {
-	    conditions[i] = new Condition();
-	    conditions[i].relation = 0;
-	    conditions[i].frequency = new double[frequency.length];
-	}
+        for (int i = 0; i < conditions.length; i++) {
+            conditions[i] = new Condition();
+            conditions[i].relation = 0;
+            conditions[i].frequency = new double[frequency.length];
+        }
 
-	double[] intervalFrequency = new double[frequency.length];
-	double intervalSize = 0;
-	double total = size;
-	int tries = 0;
+        double[] intervalFrequency = new double[frequency.length];
+        double intervalSize = 0;
+        double total = size;
+        int tries = 0;
 
-	for (int i = (start + 1); i < end; i++) {
-	    double weight = candidates[i - 1].weight;
+        for (int i = (start + 1); i < end; i++) {
+            double weight = candidates[i - 1].weight;
 
-	    intervalSize += weight;
-	    intervalFrequency[(int) candidates[i - 1].classValue] += weight;
+            intervalSize += weight;
+            intervalFrequency[(int) candidates[i - 1].classValue] += weight;
 
-	    size -= weight;
-	    frequency[(int) candidates[i - 1].classValue] -= weight;
+            size -= weight;
+            frequency[(int) candidates[i - 1].classValue] -= weight;
 
-	    if (candidates[i - 1].value + DELTA < candidates[i].value) {
-		if ((intervalSize + PRECISION_10 >= minimum)
-			&& (size + PRECISION_10 >= minimum)) {
-		    tries++;
+            if (candidates[i - 1].value + DELTA < candidates[i].value) {
+                if ((intervalSize + PRECISION_10 >= minimum)
+                        && (size + PRECISION_10 >= minimum)) {
+                    tries++;
 
-		    // compute the entropy of the intervals
+                    // compute the entropy of the intervals
 
-		    double lowerEntropy = 0.0;
-		    double upperEntropy = 0.0;
-		    int lowerDiversity = 0;
-		    int upperDiversity = 0;
+                    double lowerEntropy = 0.0;
+                    double upperEntropy = 0.0;
+                    int lowerDiversity = 0;
+                    int upperDiversity = 0;
 
-		    for (int j = 0; j < frequency.length; j++) {
-			if (frequency[j] > 0) {
-			    double p = frequency[j] / size;
-			    upperEntropy -= (p * log2(p));
-			    upperDiversity++;
-			}
+                    for (int j = 0; j < frequency.length; j++) {
+                        if (frequency[j] > 0) {
+                            double p = frequency[j] / size;
+                            upperEntropy -= (p * log2(p));
+                            upperDiversity++;
+                        }
 
-			if (intervalFrequency[j] > 0) {
-			    double p = intervalFrequency[j] / intervalSize;
-			    lowerEntropy -= (p * log2(p));
-			    lowerDiversity++;
-			}
-		    }
+                        if (intervalFrequency[j] > 0) {
+                            double p = intervalFrequency[j] / intervalSize;
+                            lowerEntropy -= (p * log2(p));
+                            lowerDiversity++;
+                        }
+                    }
 
-		    // determines the gain of the split
+                    // determines the gain of the split
 
-		    double intervalGain =
-			    entropy - ((intervalSize / total) * lowerEntropy)
-				    - ((size / total) * upperEntropy);
+                    double intervalGain =
+                            entropy - ((intervalSize / total) * lowerEntropy)
+                                    - ((size / total) * upperEntropy);
 
-		    if ((intervalGain - gain) > PRECISION_15) {
-			gain = intervalGain;
+                    if ((intervalGain - gain) > PRECISION_15) {
+                        gain = intervalGain;
 
-			conditions[0].length = intervalSize;
-			conditions[0].relation = LESS_THAN_OR_EQUAL_TO;
-			conditions[0].entropy = lowerEntropy;
-			conditions[0].diversity = lowerDiversity;
-			conditions[0].index = i - 1;
-			conditions[0].threshold[0] = candidates[i - 1].value;
-			conditions[0].value[0] =
-				(candidates[i - 1].value + candidates[i].value)
-					/ 2.0;
-			// copies the distribution frequency
-			System.arraycopy(intervalFrequency,
-					 0,
-					 conditions[0].frequency,
-					 0,
-					 intervalFrequency.length);
+                        conditions[0].length = intervalSize;
+                        conditions[0].relation = LESS_THAN_OR_EQUAL_TO;
+                        conditions[0].entropy = lowerEntropy;
+                        conditions[0].diversity = lowerDiversity;
+                        conditions[0].index = i - 1;
+                        conditions[0].threshold[0] = candidates[i - 1].value;
+                        conditions[0].value[0] =
+                                (candidates[i - 1].value + candidates[i].value)
+                                        / 2.0;
+                        // copies the distribution frequency
+                        System.arraycopy(intervalFrequency,
+                                         0,
+                                         conditions[0].frequency,
+                                         0,
+                                         intervalFrequency.length);
 
-			conditions[1].length = size;
-			conditions[1].relation = GREATER_THAN;
-			conditions[1].entropy = upperEntropy;
-			conditions[1].diversity = upperDiversity;
-			conditions[1].index = i - 1;
-			conditions[1].threshold[0] = candidates[i - 1].value;
-			conditions[1].value[0] =
-				(candidates[i - 1].value + candidates[i].value)
-					/ 2.0;
-			// copies the distribution frequency
-			System.arraycopy(frequency,
-					 0,
-					 conditions[1].frequency,
-					 0,
-					 frequency.length);
-		    }
-		}
-	    }
-	}
+                        conditions[1].length = size;
+                        conditions[1].relation = GREATER_THAN;
+                        conditions[1].entropy = upperEntropy;
+                        conditions[1].diversity = upperDiversity;
+                        conditions[1].index = i - 1;
+                        conditions[1].threshold[0] = candidates[i - 1].value;
+                        conditions[1].value[0] =
+                                (candidates[i - 1].value + candidates[i].value)
+                                        / 2.0;
+                        // copies the distribution frequency
+                        System.arraycopy(frequency,
+                                         0,
+                                         conditions[1].frequency,
+                                         0,
+                                         frequency.length);
+                    }
+                }
+            }
+        }
 
-	if (conditions[0].relation == 0) {
-	    // a condition could not be created
-	    return null;
-	}
+        if (conditions[0].relation == 0) {
+            // a condition could not be created
+            return null;
+        }
 
-	conditions[0].tries = tries;
-	conditions[1].tries = tries;
+        conditions[0].tries = tries;
+        conditions[1].tries = tries;
 
-	return conditions;
+        return conditions;
     }
 }

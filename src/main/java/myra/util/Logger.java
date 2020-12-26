@@ -39,18 +39,32 @@ public class Logger {
      *            the destination stream to set.
      */
     public static void setDestination(PrintStream destination) {
-	Logger.destination = destination;
+        Logger.destination = destination;
     }
 
+    /**
+     * Logs a message.
+     * 
+     * @param message
+     *            the message format string.
+     * @param args
+     *            the message arguments.
+     */
     public static void log(String message, Object... args) {
-	destination.print(String.format(message, args));
+        destination.print(String.format(message, args));
     }
 
+    /**
+     * Flushes the log streams.
+     */
     public static void flush() {
-	destination.flush();
+        destination.flush();
     }
 
+    /**
+     * Closes the log streams.
+     */
     public static void close() {
-	destination.close();
+        destination.close();
     }
 }

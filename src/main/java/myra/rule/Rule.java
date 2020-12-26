@@ -43,7 +43,7 @@ public abstract class Rule implements Weighable<Rule> {
      * The config key for the default rule implementation class.
      */
     public static final ConfigKey<Class<? extends Rule>> DEFAULT_RULE =
-	    new ConfigKey<>();
+            new ConfigKey<>();
 
     /**
      * The quality (cost) of the rule during training.
@@ -79,7 +79,7 @@ public abstract class Rule implements Weighable<Rule> {
      * Default constructor.
      */
     public Rule() {
-	this(0);
+        this(0);
     }
 
     /**
@@ -89,10 +89,10 @@ public abstract class Rule implements Weighable<Rule> {
      *            the allocated size of the rule.
      */
     public Rule(int capacity) {
-	terms = new Term[capacity];
-	size = 0;
-	function = -1;
-	enabled = true;
+        terms = new Term[capacity];
+        size = 0;
+        function = -1;
+        enabled = true;
     }
 
     /**
@@ -104,7 +104,7 @@ public abstract class Rule implements Weighable<Rule> {
      * @see #DEFAULT_RULE
      */
     public static Rule newInstance() {
-	return ObjectFactory.create(CONFIG.get(DEFAULT_RULE));
+        return ObjectFactory.create(CONFIG.get(DEFAULT_RULE));
     }
 
     /**
@@ -119,9 +119,9 @@ public abstract class Rule implements Weighable<Rule> {
      * @see #DEFAULT_RULE
      */
     public static Rule newInstance(int capacity) {
-	return ObjectFactory.create(CONFIG.get(DEFAULT_RULE),
-				    new Class<?>[] { int.class },
-				    new Object[] { capacity });
+        return ObjectFactory.create(CONFIG.get(DEFAULT_RULE),
+                                    new Class<?>[] { int.class },
+                                    new Object[] { capacity });
     }
 
     /**
@@ -134,7 +134,7 @@ public abstract class Rule implements Weighable<Rule> {
      *            attributes.
      */
     public void add(int vertex, Condition condition) {
-	add(new Term(vertex, condition));
+        add(new Term(vertex, condition));
     }
 
     /**
@@ -144,12 +144,12 @@ public abstract class Rule implements Weighable<Rule> {
      *            the term to be added.
      */
     public void add(Term term) {
-	if (terms.length == size) {
-	    terms = Arrays.copyOf(terms, size + 1);
-	}
+        if (terms.length == size) {
+            terms = Arrays.copyOf(terms, size + 1);
+        }
 
-	terms[size] = term;
-	size++;
+        terms[size] = term;
+        size++;
     }
 
     /**
@@ -164,11 +164,11 @@ public abstract class Rule implements Weighable<Rule> {
      *            attributes.
      */
     public void set(int index, int vertex, Condition condition) {
-	if (index < size) {
-	    terms[index] = new Term(vertex, condition);
-	} else {
-	    throw new IllegalArgumentException("Invalid term index: " + index);
-	}
+        if (index < size) {
+            terms[index] = new Term(vertex, condition);
+        } else {
+            throw new IllegalArgumentException("Invalid term index: " + index);
+        }
     }
 
     /**
@@ -177,7 +177,7 @@ public abstract class Rule implements Weighable<Rule> {
      * @return <code>true</code> if the rule is enabled.
      */
     public boolean isEnabled() {
-	return enabled;
+        return enabled;
     }
 
     /**
@@ -187,7 +187,7 @@ public abstract class Rule implements Weighable<Rule> {
      *            the flag to set.
      */
     public void setEnabled(boolean enabled) {
-	this.enabled = enabled;
+        this.enabled = enabled;
     }
 
     /**
@@ -196,8 +196,8 @@ public abstract class Rule implements Weighable<Rule> {
      * @return the last term of the antecedent of the rule.
      */
     public Term pop() {
-	size--;
-	return terms[size];
+        size--;
+        return terms[size];
     }
 
     /**
@@ -207,12 +207,12 @@ public abstract class Rule implements Weighable<Rule> {
      *            the term to add.
      */
     public void push(Term term) {
-	if (size < terms.length) {
-	    terms[size] = term;
-	    size++;
-	} else {
-	    add(term);
-	}
+        if (size < terms.length) {
+            terms[size] = term;
+            size++;
+        } else {
+            add(term);
+        }
     }
 
     /**
@@ -222,26 +222,26 @@ public abstract class Rule implements Weighable<Rule> {
      * @see Term#setEnabeld(boolean)
      */
     public void compact() {
-	if (terms.length != size) {
-	    terms = Arrays.copyOf(terms, size);
-	}
+        if (terms.length != size) {
+            terms = Arrays.copyOf(terms, size);
+        }
 
-	int index = 0;
+        int index = 0;
 
-	for (int i = 0; i < terms.length; i++) {
-	    if (terms[i].enabeld) {
-		if (index != i) {
-		    terms[index] = terms[i];
-		}
+        for (int i = 0; i < terms.length; i++) {
+            if (terms[i].enabeld) {
+                if (index != i) {
+                    terms[index] = terms[i];
+                }
 
-		index++;
-	    }
-	}
+                index++;
+            }
+        }
 
-	if (index != size) {
-	    size = index;
-	    terms = Arrays.copyOf(terms, size);
-	}
+        if (index != size) {
+            size = index;
+            terms = Arrays.copyOf(terms, size);
+        }
     }
 
     /**
@@ -256,21 +256,21 @@ public abstract class Rule implements Weighable<Rule> {
      *         <code>false</code>.
      */
     public boolean covers(Dataset dataset, int instance) {
-	boolean covered = true;
+        boolean covered = true;
 
-	for (int i = 0; i < size; i++) {
-	    if (terms[i].isEnabeld()) {
-		Condition condition = terms[i].condition();
-		double v = dataset.value(instance, condition.attribute);
+        for (int i = 0; i < size; i++) {
+            if (terms[i].isEnabeld()) {
+                Condition condition = terms[i].condition();
+                double v = dataset.value(instance, condition.attribute);
 
-		if (!condition.satisfies(v)) {
-		    covered = false;
-		    break;
-		}
-	    }
-	}
+                if (!condition.satisfies(v)) {
+                    covered = false;
+                    break;
+                }
+            }
+        }
 
-	return covered;
+        return covered;
     }
 
     /**
@@ -279,7 +279,7 @@ public abstract class Rule implements Weighable<Rule> {
      * @return the number of terms in the antecedent of the rule.
      */
     public int size() {
-	return size;
+        return size;
     }
 
     /**
@@ -289,7 +289,7 @@ public abstract class Rule implements Weighable<Rule> {
      *         <code>false</code> otherwise.
      */
     public boolean isEmpty() {
-	return size() == 0;
+        return size() == 0;
     }
 
     /**
@@ -298,7 +298,7 @@ public abstract class Rule implements Weighable<Rule> {
      * @return the array of terms of this rule.
      */
     public Term[] terms() {
-	return terms;
+        return terms;
     }
 
     /**
@@ -335,7 +335,7 @@ public abstract class Rule implements Weighable<Rule> {
      * @return the function that evaluated the rule.
      */
     public int getFunction() {
-	return function;
+        return function;
     }
 
     /**
@@ -344,7 +344,7 @@ public abstract class Rule implements Weighable<Rule> {
      * @return the quality of the rule.
      */
     public Cost getQuality() {
-	return quality;
+        return quality;
     }
 
     /**
@@ -354,7 +354,7 @@ public abstract class Rule implements Weighable<Rule> {
      *            the function index to set.
      */
     public void setFunction(int function) {
-	this.function = function;
+        this.function = function;
     }
 
     /**
@@ -364,7 +364,7 @@ public abstract class Rule implements Weighable<Rule> {
      *            the quality to set.
      */
     public void setQuality(Cost quality) {
-	this.quality = quality;
+        this.quality = quality;
     }
 
     /**
@@ -377,21 +377,21 @@ public abstract class Rule implements Weighable<Rule> {
      */
     @Override
     public int compareTo(Rule o) {
-	// (1) if the quality of this rule is null
-	int c = (quality == null && o.quality != null) ? -1
-		// (2) if the quality of the other rule is null
-		: (quality != null && o.quality == null) ? 1
-			// (3) if both rules have null quality
-			: (quality == null && o.quality == null) ? 0
-				// (4) both rules have quality associated
-				: quality.compareTo(o.quality);
+        // (1) if the quality of this rule is null
+        int c = (quality == null && o.quality != null) ? -1
+                // (2) if the quality of the other rule is null
+                : (quality != null && o.quality == null) ? 1
+                        // (3) if both rules have null quality
+                        : (quality == null && o.quality == null) ? 0
+                                // (4) both rules have quality associated
+                                : quality.compareTo(o.quality);
 
-	if (c == 0) {
-	    // smaller the better (occam's razor criteria)
-	    c = Double.compare(o.size(), size());
-	}
+        if (c == 0) {
+            // smaller the better (occam's razor criteria)
+            c = Double.compare(o.size(), size());
+        }
 
-	return c;
+        return c;
     }
 
     /**
@@ -410,32 +410,32 @@ public abstract class Rule implements Weighable<Rule> {
      *            the current dataset.
      */
     public void fixThresholds(Dataset dataset) {
-	for (int i = 0; i < size; i++) {
-	    Condition c = terms[i].condition();
+        for (int i = 0; i < size; i++) {
+            Condition c = terms[i].condition();
 
-	    if (c != null) {
-		// if a condition was created, we substitute the threshold
-		// values with values that occur in the dataset (this is to
-		// avoid having threshold values that don't represent values
-		// from the dataset)
+            if (c != null) {
+                // if a condition was created, we substitute the threshold
+                // values with values that occur in the dataset (this is to
+                // avoid having threshold values that don't represent values
+                // from the dataset)
 
-		for (int j = 0; j < dataset.size(); j++) {
-		    double v = dataset.value(j, c.attribute);
+                for (int j = 0; j < dataset.size(); j++) {
+                    double v = dataset.value(j, c.attribute);
 
-		    for (int k = 0; k < c.value.length; k++) {
-			if (v <= c.value[k] && v > c.threshold[k]) {
-			    c.threshold[k] = v;
-			}
-		    }
-		}
+                    for (int k = 0; k < c.value.length; k++) {
+                        if (v <= c.value[k] && v > c.threshold[k]) {
+                            c.threshold[k] = v;
+                        }
+                    }
+                }
 
-		// at the end of this procedure, the threshold ad value
-		// should be the same
-		for (int k = 0; k < c.value.length; k++) {
-		    c.value[k] = c.threshold[k];
-		}
-	    }
-	}
+                // at the end of this procedure, the threshold ad value
+                // should be the same
+                for (int k = 0; k < c.value.length; k++) {
+                    c.value[k] = c.threshold[k];
+                }
+            }
+        }
     }
 
     /**
@@ -447,132 +447,132 @@ public abstract class Rule implements Weighable<Rule> {
      * @return the string representation of the rule.
      */
     public String toString(Dataset dataset) {
-	StringBuffer buffer = new StringBuffer();
-	buffer.append("IF ");
+        StringBuffer buffer = new StringBuffer();
+        buffer.append("IF ");
 
-	if (size == 0) {
-	    buffer.append("<empty>");
-	} else {
-	    for (int i = 0; i < size; i++) {
-		if (!terms[i].isEnabeld()) {
-		    throw new IllegalStateException("A rule should not contain disabled terms.");
-		}
+        if (size == 0) {
+            buffer.append("<empty>");
+        } else {
+            for (int i = 0; i < size; i++) {
+                if (!terms[i].isEnabeld()) {
+                    throw new IllegalStateException("A rule should not contain disabled terms.");
+                }
 
-		if (i > 0) {
-		    buffer.append(" AND ");
-		}
+                if (i > 0) {
+                    buffer.append(" AND ");
+                }
 
-		Condition condition = terms[i].condition();
-		buffer.append(condition.toString(dataset));
-	    }
-	}
+                Condition condition = terms[i].condition();
+                buffer.append(condition.toString(dataset));
+            }
+        }
 
-	buffer.append(" THEN ");
+        buffer.append(" THEN ");
 
-	if (getConsequent() == null) {
-	    buffer.append("<undefined>");
-	} else {
-	    Attribute target = dataset.attributes()[dataset.classIndex()];
-	    buffer.append(getConsequent().toString(target));
-	}
+        if (getConsequent() == null) {
+            buffer.append("<undefined>");
+        } else {
+            Attribute target = dataset.attributes()[dataset.classIndex()];
+            buffer.append(getConsequent().toString(target));
+        }
 
-	return buffer.toString();
+        return buffer.toString();
     }
 
     @Override
     public double getWeight() {
-	return weight;
+        return weight;
     }
 
     @Override
     public void setWeight(double weight) {
-	this.weight = weight;
+        this.weight = weight;
     }
 
     /**
      * This (struct-like) class represents a rule term.
      */
     public static class Term {
-	/**
-	 * The vertex index.
-	 */
-	private int index;
+        /**
+         * The vertex index.
+         */
+        private int index;
 
-	/**
-	 * The attribute condition.
-	 */
-	private Condition condition;
+        /**
+         * The attribute condition.
+         */
+        private Condition condition;
 
-	/**
-	 * Flag to indicate if the term is active or not.
-	 */
-	private boolean enabeld;
+        /**
+         * Flag to indicate if the term is active or not.
+         */
+        private boolean enabeld;
 
-	/**
-	 * Creates a <code>Term</code>.
-	 * 
-	 * @param index
-	 *            the vertex index.
-	 */
-	public Term(int index) {
-	    this(index, null);
-	}
+        /**
+         * Creates a <code>Term</code>.
+         * 
+         * @param index
+         *            the vertex index.
+         */
+        public Term(int index) {
+            this(index, null);
+        }
 
-	/**
-	 * Creates a <code>Term</code>.
-	 * 
-	 * @param index
-	 *            the vertex index.
-	 * @param condition
-	 *            the attribute condition.
-	 */
-	public Term(int index, Condition condition) {
-	    this.index = index;
-	    this.condition = condition;
-	    this.enabeld = true;
-	}
+        /**
+         * Creates a <code>Term</code>.
+         * 
+         * @param index
+         *            the vertex index.
+         * @param condition
+         *            the attribute condition.
+         */
+        public Term(int index, Condition condition) {
+            this.index = index;
+            this.condition = condition;
+            this.enabeld = true;
+        }
 
-	/**
-	 * Returns the vertex index.
-	 * 
-	 * @return the vertex index.
-	 */
-	public int index() {
-	    return index;
-	}
+        /**
+         * Returns the vertex index.
+         * 
+         * @return the vertex index.
+         */
+        public int index() {
+            return index;
+        }
 
-	/**
-	 * Returns the attribute condition.
-	 * 
-	 * @return the attribute condition.
-	 */
-	public Condition condition() {
-	    return condition;
-	}
+        /**
+         * Returns the attribute condition.
+         * 
+         * @return the attribute condition.
+         */
+        public Condition condition() {
+            return condition;
+        }
 
-	/**
-	 * Returns <code>true</code> if the term is enabled.
-	 * 
-	 * @return <code>true</code> if the term is enabled; <code>false</code>
-	 *         otherwise.
-	 */
-	public boolean isEnabeld() {
-	    return enabeld;
-	}
+        /**
+         * Returns <code>true</code> if the term is enabled.
+         * 
+         * @return <code>true</code> if the term is enabled; <code>false</code>
+         *         otherwise.
+         */
+        public boolean isEnabeld() {
+            return enabeld;
+        }
 
-	/**
-	 * Sets the <code>enabled</code> flag. Note that setting the flag to
-	 * <code>false</code> does not remove the term from the antecedent, only
-	 * prevents its evaluation in
-	 * {@link Rule#apply(Dataset, Dataset.Instance[])}. When the method
-	 * {@link Rule#compact()} is called, any term that has the flag set to
-	 * <code>false</code> will be removed from the antecedent.
-	 * 
-	 * @param enabeld
-	 *            the flag to set.
-	 */
-	public void setEnabeld(boolean enabeld) {
-	    this.enabeld = enabeld;
-	}
+        /**
+         * Sets the <code>enabled</code> flag. Note that setting the flag to
+         * <code>false</code> does not remove the term from the antecedent, only
+         * prevents its evaluation in
+         * {@link Rule#apply(Dataset, Dataset.Instance[])}. When the method
+         * {@link Rule#compact()} is called, any term that has the flag set to
+         * <code>false</code> will be removed from the antecedent.
+         * 
+         * @param enabeld
+         *            the flag to set.
+         */
+        public void setEnabeld(boolean enabeld) {
+            this.enabeld = enabeld;
+        }
     }
 }

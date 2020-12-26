@@ -40,26 +40,26 @@ import myra.rule.shell.Memory;
 public class Cover implements Command {
     @Override
     public void execute(Memory memory, String... arguments) {
-	Dataset dataset = memory.get(DATASET);
-	Instance[] instances = memory.get(INSTANCES);
+        Dataset dataset = memory.get(DATASET);
+        Instance[] instances = memory.get(INSTANCES);
 
-	if (dataset == null || instances == null) {
-	    System.out.println("No dataset loaded.");
-	} else {
-	    Rule rule = Parser.parse(dataset, arguments[0]);
-	    rule.apply(dataset, instances);
-	    int available = Dataset.markCovered(instances);
+        if (dataset == null || instances == null) {
+            System.out.println("No dataset loaded.");
+        } else {
+            Rule rule = Parser.parse(dataset, arguments[0]);
+            rule.apply(dataset, instances);
+            int available = Dataset.markCovered(instances);
 
-	    System.out.println(rule.toString(dataset));
-	    System.out.println("Available instances: " + available);
-	}
+            System.out.println(rule.toString(dataset));
+            System.out.println("Available instances: " + available);
+        }
     }
 
     @Override
     public String name() {
-	return "cover";
+        return "cover";
     }
-    
+
     @Override
     public int size() {
         return 1;

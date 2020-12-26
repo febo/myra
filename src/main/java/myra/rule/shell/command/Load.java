@@ -45,32 +45,32 @@ public class Load implements Command {
      * Memory location for the instances array.
      */
     public static final Location<Instance[]> INSTANCES =
-	    new Location<Instance[]>();
+            new Location<Instance[]>();
 
     @Override
     public void execute(Memory memory, String... arguments) {
-	try {
-	    ARFFReader reader = new ARFFReader();
-	    Dataset dataset = reader.read(arguments[0]);
-	    memory.put(DATASET, dataset);
+        try {
+            ARFFReader reader = new ARFFReader();
+            Dataset dataset = reader.read(arguments[0]);
+            memory.put(DATASET, dataset);
 
-	    Instance[] instances = Instance.newArray(dataset.size());
-	    Instance.markAll(instances, NOT_COVERED);
-	    memory.put(INSTANCES, instances);
+            Instance[] instances = Instance.newArray(dataset.size());
+            Instance.markAll(instances, NOT_COVERED);
+            memory.put(INSTANCES, instances);
 
-	    System.out.println("Available instances: " + dataset.size());
-	} catch (IOException e) {
-	    System.out.println("Could not load file: " + arguments[0]);
-	}
+            System.out.println("Available instances: " + dataset.size());
+        } catch (IOException e) {
+            System.out.println("Could not load file: " + arguments[0]);
+        }
     }
 
     @Override
     public String name() {
-	return "load";
+        return "load";
     }
-    
+
     @Override
     public int size() {
-	return 1;
+        return 1;
     }
 }

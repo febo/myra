@@ -57,59 +57,59 @@ public class Graph extends myra.rule.Graph {
      *            the current dataset.
      */
     public Graph(Dataset dataset) {
-	Attribute[] attributes = dataset.attributes();
-	vertices = new Vertex[attributes.length + 1];
-	// start and end virtual vertices
-	vertices[START_INDEX] = new Vertex(null);
-	vertices[END_INDEX] = new Vertex(null);
+        Attribute[] attributes = dataset.attributes();
+        vertices = new Vertex[attributes.length + 1];
+        // start and end virtual vertices
+        vertices[START_INDEX] = new Vertex(null);
+        vertices[END_INDEX] = new Vertex(null);
 
-	int index = 2;
+        int index = 2;
 
-	for (int i = 0; i < (attributes.length - 1); i++) {
-	    switch (attributes[i].getType()) {
-	    case NOMINAL: {
-		Vertex v =
-			new Vertex(new Variable.Nominal(attributes[i].size()));
-		v.attribute = i;
+        for (int i = 0; i < (attributes.length - 1); i++) {
+            switch (attributes[i].getType()) {
+            case NOMINAL: {
+                Vertex v =
+                        new Vertex(new Variable.Nominal(attributes[i].size()));
+                v.attribute = i;
 
-		vertices[index] = v;
-		index++;
+                vertices[index] = v;
+                index++;
 
-		break;
-	    }
+                break;
+            }
 
-	    case CONTINUOUS: {
-		Vertex v = new Vertex(new Variable.Continuous(attributes[i]
-			.lower(), attributes[i].upper()));
-		v.attribute = i;
+            case CONTINUOUS: {
+                Vertex v = new Vertex(new Variable.Continuous(attributes[i]
+                        .lower(), attributes[i].upper()));
+                v.attribute = i;
 
-		vertices[index] = v;
-		index++;
+                vertices[index] = v;
+                index++;
 
-		break;
-	    }
-	    }
-	}
+                break;
+            }
+            }
+        }
 
-	// creates the pheromone matrix
+        // creates the pheromone matrix
 
-	matrix = new Entry[vertices.length][vertices.length];
+        matrix = new Entry[vertices.length][vertices.length];
 
-	for (int i = 0; i < matrix.length; i++) {
-	    for (int j = 0; j < matrix[i].length; j++) {
-		if (i == END_INDEX) {
-		    matrix[i][j] = null;
-		} else if (i == START_INDEX && j == END_INDEX) {
-		    matrix[i][j] = null;
-		} else if (i != j && j > 0) {
-		    matrix[i][j] = new Entry();
-		} else {
-		    matrix[i][j] = null;
-		}
-	    }
-	}
+        for (int i = 0; i < matrix.length; i++) {
+            for (int j = 0; j < matrix[i].length; j++) {
+                if (i == END_INDEX) {
+                    matrix[i][j] = null;
+                } else if (i == START_INDEX && j == END_INDEX) {
+                    matrix[i][j] = null;
+                } else if (i != j && j > 0) {
+                    matrix[i][j] = new Entry();
+                } else {
+                    matrix[i][j] = null;
+                }
+            }
+        }
 
-	matrix[START_INDEX][END_INDEX] = null;
+        matrix[START_INDEX][END_INDEX] = null;
     }
 
     /**
@@ -118,7 +118,7 @@ public class Graph extends myra.rule.Graph {
      * @return the vertices of the graph.
      */
     public Vertex[] vertices() {
-	return (Vertex[]) vertices;
+        return (Vertex[]) vertices;
     }
 
     /**
@@ -127,73 +127,73 @@ public class Graph extends myra.rule.Graph {
      * @author Fernando Esteban Barril Otero
      */
     public static class Vertex extends myra.rule.Graph.Vertex {
-	/**
-	 * The attribute-value solution archive array to support multiple
-	 * pheromone levels.
-	 */
-	Variable[] archive;
+        /**
+         * The attribute-value solution archive array to support multiple
+         * pheromone levels.
+         */
+        Variable[] archive;
 
-	/**
-	 * The variable to initialise each pheromone level. This is not updated
-	 * throughout the run of the algorithm.
-	 */
-	Variable initial;
+        /**
+         * The variable to initialise each pheromone level. This is not updated
+         * throughout the run of the algorithm.
+         */
+        Variable initial;
 
-	/**
-	 * Default constructor.
-	 * 
-	 * @param initial
-	 *            the variable to initialise each pheromone level.
-	 */
-	public Vertex(Variable initial) {
-	    super();
-	    archive = new Variable[0];
-	    this.initial = initial;
-	}
+        /**
+         * Default constructor.
+         * 
+         * @param initial
+         *            the variable to initialise each pheromone level.
+         */
+        public Vertex(Variable initial) {
+            super();
+            archive = new Variable[0];
+            this.initial = initial;
+        }
 
-	/**
-	 * Samples a new condition using the archive.
-	 * 
-	 * @param level
-	 *            the current archive level.
-	 * 
-	 * @return a new condition.
-	 */
-	public Condition condition(int level) {
-	    Condition condition = null;
+        /**
+         * Samples a new condition using the archive.
+         * 
+         * @param level
+         *            the current archive level.
+         * 
+         * @return a new condition.
+         */
+        public Condition condition(int level) {
+            Condition condition = null;
 
-	    if (level < archive.length) {
-		condition = archive[level].sample();
-	    } else {
-		condition = initial.sample();
-	    }
+            if (level < archive.length) {
+                condition = archive[level].sample();
+            } else {
+                condition = initial.sample();
+            }
 
-	    condition.attribute = attribute;
-	    return condition;
-	}
+            condition.attribute = attribute;
+            return condition;
+        }
 
-	/**
-	 * Updates the archive.
-	 * 
-	 * @param level
-	 *            the current archive level.
-	 * @param condition
-	 *            the condition.
-	 * @param quality
-	 *            the quality of the condition.
-	 */
-	public void update(int level, Condition condition, double quality) {
-	    if (archive.length <= level) {
-		int last = archive.length;
-		archive = Arrays.copyOf(archive, level + 1);
-		// make sure to set values for all previous levels
-		for (int i = last; i < level; i++) {
-		    archive[i] = initial.clone();
-		}
-		archive[level] = initial.clone();
-	    }
+        /**
+         * Updates the archive.
+         * 
+         * @param level
+         *            the current archive level.
+         * @param condition
+         *            the condition.
+         * @param quality
+         *            the quality of the condition.
+         */
+        public void update(int level, Condition condition, double quality) {
+            if (archive.length <= level) {
+                int last = archive.length;
+                archive = Arrays.copyOf(archive, level + 1);
+                // make sure to set values for all previous levels
+                for (int i = last; i < level; i++) {
+                    archive[i] = initial.clone();
+                }
+                archive[level] = initial.clone();
+            }
 
-	    archive[level].add(condition, quality);
-	}
+            archive[level].add(condition, quality);
+        }
     }
 }

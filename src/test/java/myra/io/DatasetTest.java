@@ -47,60 +47,60 @@ public class DatasetTest extends TestCase {
      */
     @Override
     protected void setUp() throws Exception {
-	ARFFReader reader = new ARFFReader();
+        ARFFReader reader = new ARFFReader();
 
-	cDataset = reader.read(new InputStreamReader(getClass()
-		.getResourceAsStream("/weather.arff")));
+        cDataset = reader.read(new InputStreamReader(getClass()
+                .getResourceAsStream("/weather.arff")));
 
-	rDataset = reader.read(new InputStreamReader(getClass()
-		.getResourceAsStream("/temperature.arff")));
+        rDataset = reader.read(new InputStreamReader(getClass()
+                .getResourceAsStream("/temperature.arff")));
     }
 
     /**
      * Tests the size of the dataset.
      */
     public void testSize() {
-	assertEquals(14, cDataset.size());
-	assertEquals(14, rDataset.size());
+        assertEquals(14, cDataset.size());
+        assertEquals(14, rDataset.size());
     }
 
     /**
      * Tests the class distribution of the dataset.
      */
     public void testDistribution() {
-	assertEquals(9, cDataset.distribution(0));
-	assertEquals(5, cDataset.distribution(1));
+        assertEquals(9, cDataset.distribution(0));
+        assertEquals(5, cDataset.distribution(1));
 
-	cDataset.remove(0);
+        cDataset.remove(0);
 
-	assertEquals(8, cDataset.distribution(0));
-	assertEquals(5, cDataset.distribution(1));
+        assertEquals(8, cDataset.distribution(0));
+        assertEquals(5, cDataset.distribution(1));
     }
-    
+
     /**
      * Tests the number of classes.
      */
     public void testClassLength() {
-	assertEquals(2,  cDataset.classLength());
-	
-	try {
-	    rDataset.classLength();
-	    fail("Non-nominal class attribute");
-	} catch (UnsupportedOperationException e) {
-	    // we are expecting an exception
-	}
+        assertEquals(2, cDataset.classLength());
+
+        try {
+            rDataset.classLength();
+            fail("Non-nominal class attribute");
+        } catch (UnsupportedOperationException e) {
+            // we are expecting an exception
+        }
     }
-    
+
     /**
      * Tests the attributes of the dataset.
      */
     public void testAttribute() {
-	Attribute a = cDataset.getAttribute(1);
-	assertEquals(64.0, a.lower());
-	assertEquals(85.0, a.upper());
-	
-	a = rDataset.getAttribute(1);
-	assertEquals(65.0, a.lower());
-	assertEquals(96.0, a.upper());
+        Attribute a = cDataset.getAttribute(1);
+        assertEquals(64.0, a.lower());
+        assertEquals(85.0, a.upper());
+
+        a = rDataset.getAttribute(1);
+        assertEquals(65.0, a.lower());
+        assertEquals(96.0, a.upper());
     }
 }

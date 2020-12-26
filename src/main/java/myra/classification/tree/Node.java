@@ -60,8 +60,8 @@ public abstract class Node {
      *            the level of the node.
      */
     public Node(String name, int level) {
-	this.name = name;
-	this.level = level;
+        this.name = name;
+        this.level = level;
     }
 
     /**
@@ -70,7 +70,7 @@ public abstract class Node {
      * @return the level of this node.
      */
     public int getLevel() {
-	return level;
+        return level;
     }
 
     /**
@@ -80,7 +80,7 @@ public abstract class Node {
      *            the level to set.
      */
     public void setLevel(int level) {
-	this.level = level;
+        this.level = level;
     }
 
     /**
@@ -89,7 +89,7 @@ public abstract class Node {
      * @return the name of this node.
      */
     public String getName() {
-	return name;
+        return name;
     }
 
     /**
@@ -99,7 +99,7 @@ public abstract class Node {
      *            the name to set.
      */
     public void setName(String name) {
-	this.name = name;
+        this.name = name;
     }
 
     /**
@@ -108,7 +108,7 @@ public abstract class Node {
      * @return the class distribution of the instances reaching this node.
      */
     public double[] getDistribution() {
-	return distribution;
+        return distribution;
     }
 
     /**
@@ -118,12 +118,12 @@ public abstract class Node {
      *            the class distribution to set.
      */
     public void setDistribution(double[] distribution) {
-	this.distribution = distribution;
-	total = 0;
+        this.distribution = distribution;
+        total = 0;
 
-	for (int i = 0; i < distribution.length; i++) {
-	    total += distribution[i];
-	}
+        for (int i = 0; i < distribution.length; i++) {
+            total += distribution[i];
+        }
     }
 
     /**
@@ -132,7 +132,7 @@ public abstract class Node {
      * @return the total number of instances reaching this node.
      */
     public double getTotal() {
-	return total;
+        return total;
     }
 
     /**
@@ -151,7 +151,7 @@ public abstract class Node {
 
     @Override
     public String toString() {
-	return getName();
+        return getName();
     }
 
     /**

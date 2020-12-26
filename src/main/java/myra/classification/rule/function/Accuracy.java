@@ -33,11 +33,11 @@ import myra.datamining.Dataset.Instance;
 public class Accuracy extends ClassificationRuleFunction {
     @Override
     public Maximise evaluate(Dataset dataset,
-			     ClassificationRule rule,
-			     Instance[] instances) {
-	BinaryConfusionMatrix m = fill(rule);
-	double value = (m.TP + m.TN) / (m.TP + m.TN + m.FP + m.FN);
+                             ClassificationRule rule,
+                             Instance[] instances) {
+        BinaryConfusionMatrix m = fill(rule);
+        double value = (m.TP + m.TN) / (m.TP + m.TN + m.FP + m.FN);
 
-	return new Maximise(Double.isNaN(value) ? 0.0 : value);
+        return new Maximise(Double.isNaN(value) ? 0.0 : value);
     }
 }

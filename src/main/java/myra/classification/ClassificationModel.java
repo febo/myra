@@ -46,7 +46,7 @@ public final class ClassificationModel implements Model {
      *            <code>Label</code> object.
      */
     public ClassificationModel(Model model) {
-	this.model = model;
+        this.model = model;
     }
 
     /**
@@ -56,25 +56,25 @@ public final class ClassificationModel implements Model {
      */
     @Override
     public Label predict(Dataset dataset, int instance) {
-	return (Label) model.predict(dataset, instance);
+        return (Label) model.predict(dataset, instance);
     }
 
     @Override
     public String toString(Dataset dataset) {
-	return model.toString(dataset);
+        return model.toString(dataset);
     }
-    
+
     @Override
     public String export(Dataset dataset) {
         return model.export(dataset);
     }
-    
+
     /**
      * Returns the inner model.
      * 
      * @return the inner model.
      */
     public Model raw() {
-	return model;
+        return model;
     }
 }

@@ -40,24 +40,24 @@ public class RelativeCostMeasure extends ClassificationRuleFunction {
     public static final ConfigKey<Double> CR = new ConfigKey<Double>();
 
     static {
-	// default cr value
-	// see F. Janssen and J. Furnkranz, "On the quest for optimal rule
-	// learning heuristics", Machine Learning 78, pp. 343-379, 2010.
-	CONFIG.set(CR, 0.342);
+        // default cr value
+        // see F. Janssen and J. Furnkranz, "On the quest for optimal rule
+        // learning heuristics", Machine Learning 78, pp. 343-379, 2010.
+        CONFIG.set(CR, 0.342);
     }
 
     @Override
     public Maximise evaluate(Dataset dataset,
-			     ClassificationRule rule,
-			     Instance[] instances) {
-	BinaryConfusionMatrix m = fill(rule);
-	final double cr = CONFIG.get(CR);
+                             ClassificationRule rule,
+                             Instance[] instances) {
+        BinaryConfusionMatrix m = fill(rule);
+        final double cr = CONFIG.get(CR);
 
-	// true positive rate (recall)
-	double tpr = m.TP / (m.TP + m.FN);
-	// false positive rate
-	double fpr = m.FP / (m.TN + m.FP);
+        // true positive rate (recall)
+        double tpr = m.TP / (m.TP + m.FN);
+        // false positive rate
+        double fpr = m.FP / (m.TN + m.FP);
 
-	return new Maximise((cr * tpr) - ((1 - cr) * fpr));
+        return new Maximise((cr * tpr) - ((1 - cr) * fpr));
     }
 }

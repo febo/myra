@@ -52,9 +52,9 @@ public interface ClassAwareSplit {
      *         specified attribute
      */
     public Condition[] multiple(Dataset dataset,
-				Instance[] instances,
-				int attribute,
-				int target);
+                                Instance[] instances,
+                                int attribute,
+                                int target);
 
     /**
      * Returns an attribute condition representing a single discrete interval
@@ -73,7 +73,7 @@ public interface ClassAwareSplit {
      *         specified attribute
      */
     public Condition single(Dataset dataset,
-			    Instance[] instances,
-			    int attribute,
-			    int target);
+                            Instance[] instances,
+                            int attribute,
+                            int target);
 }

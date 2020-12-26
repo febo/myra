@@ -40,13 +40,13 @@ public class NoClassAssignator implements Assignator {
      */
     @Override
     public int assign(Dataset dataset, Rule rule, Instance[] instances) {
-	if (!(rule instanceof ClassificationRule)) {
-	    throw new IllegalArgumentException("Expecting a classification rule: "
-		    + rule.getClass().getName());
-	}
+        if (!(rule instanceof ClassificationRule)) {
+            throw new IllegalArgumentException("Expecting a classification rule: "
+                    + rule.getClass().getName());
+        }
 
-	ClassificationRule cRule = (ClassificationRule) rule;
+        ClassificationRule cRule = (ClassificationRule) rule;
 
-	return cRule.uncovered()[cRule.getConsequent().value()];
+        return cRule.uncovered()[cRule.getConsequent().value()];
     }
 }

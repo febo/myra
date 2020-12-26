@@ -33,7 +33,7 @@ public interface ListPruner {
      * The config key for the default pruning instance.
      */
     public final static ConfigKey<ListPruner> DEFAULT_LIST_PRUNER =
-	    new ConfigKey<ListPruner>();
+            new ConfigKey<ListPruner>();
 
     /**
      * Removes irrelevant terms from the antecedent of rules and even entires
@@ -46,11 +46,14 @@ public interface ListPruner {
      */
     public abstract void prune(Dataset dataset, RuleList list);
 
+    /**
+     * An empty pruning procedure.
+     */
     public static class None implements ListPruner {
-	/**
-	 * This implementation leaves the list of rules unchanged.
-	 */
-	public void prune(Dataset dataset, RuleList list) {
-	};
+        /**
+         * This implementation leaves the list of rules unchanged.
+         */
+        public void prune(Dataset dataset, RuleList list) {
+        }
     }
 }

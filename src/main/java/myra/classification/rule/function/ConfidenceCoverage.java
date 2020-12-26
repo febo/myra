@@ -34,23 +34,23 @@ import myra.datamining.Dataset.Instance;
 public class ConfidenceCoverage extends ClassificationRuleFunction {
     @Override
     public Maximise evaluate(Dataset dataset,
-			     ClassificationRule rule,
-			     Instance[] instances) {
-	int[] cFrequency = rule.covered();
-	int[] uFrequency = rule.uncovered();
+                             ClassificationRule rule,
+                             Instance[] instances) {
+        int[] cFrequency = rule.covered();
+        int[] uFrequency = rule.uncovered();
 
-	int covered = 0;
-	int total = 0;
+        int covered = 0;
+        int total = 0;
 
-	for (int i = 0; i < cFrequency.length; i++) {
-	    covered += cFrequency[i];
-	    total += (cFrequency[i] + uFrequency[i]);
-	}
+        for (int i = 0; i < cFrequency.length; i++) {
+            covered += cFrequency[i];
+            total += (cFrequency[i] + uFrequency[i]);
+        }
 
-	int predicted = rule.getConsequent().value();
-	double confidence = cFrequency[predicted] / (double) covered;
-	double coverage = cFrequency[predicted] / (double) total;
+        int predicted = rule.getConsequent().value();
+        double confidence = cFrequency[predicted] / (double) covered;
+        double coverage = cFrequency[predicted] / (double) total;
 
-	return new Maximise(confidence + coverage);
+        return new Maximise(confidence + coverage);
     }
 }

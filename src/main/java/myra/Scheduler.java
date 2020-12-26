@@ -81,7 +81,7 @@ public class Scheduler<T extends Weighable<T>> {
      * Creates a new <code>Scheduler</code>.
      */
     public Scheduler() {
-	this(null, CONFIG.get(COLONY_SIZE));
+        this(null, CONFIG.get(COLONY_SIZE));
     }
 
     /**
@@ -91,7 +91,7 @@ public class Scheduler<T extends Weighable<T>> {
      *            number of candidate solutions stored at each iteration.
      */
     public Scheduler(int capacity) {
-	this(null, capacity);
+        this(null, capacity);
     }
 
     /**
@@ -101,7 +101,7 @@ public class Scheduler<T extends Weighable<T>> {
      *            the (wrapped) activity.
      */
     public Scheduler(Activity<T> activity) {
-	this(activity, CONFIG.get(COLONY_SIZE));
+        this(activity, CONFIG.get(COLONY_SIZE));
     }
 
     /**
@@ -113,8 +113,8 @@ public class Scheduler<T extends Weighable<T>> {
      *            number of candidate solutions stored at each iteration.
      */
     public Scheduler(Activity<T> activity, int capacity) {
-	this.activity = activity;
-	archive = new DefaultArchive<>(capacity);
+        this.activity = activity;
+        archive = new DefaultArchive<>(capacity);
     }
 
     /**
@@ -123,7 +123,7 @@ public class Scheduler<T extends Weighable<T>> {
      * @return the activity of the scheduler.
      */
     public Activity<T> getActivity() {
-	return activity;
+        return activity;
     }
 
     /**
@@ -133,7 +133,7 @@ public class Scheduler<T extends Weighable<T>> {
      *            the activity to set.
      */
     public void setActivity(Activity<T> activity) {
-	this.activity = activity;
+        this.activity = activity;
     }
 
     /**
@@ -144,30 +144,30 @@ public class Scheduler<T extends Weighable<T>> {
      *            the archive capacity.
      */
     public void setCapacity(int capacity) {
-	archive = new DefaultArchive<>(capacity);
+        archive = new DefaultArchive<>(capacity);
     }
 
     /**
      * Runs the scheduler.
      */
     public void run() {
-	initialise();
+        initialise();
 
-	while (!terminate()) {
-	    create();
+        while (!terminate()) {
+            create();
 
-	    search();
+            search();
 
-	    update();
-	}
+            update();
+        }
     }
 
     /**
      * Performs the initialisation of the activity.
      */
     protected void initialise() {
-	activity.initialise();
-	archive.clear();
+        activity.initialise();
+        archive.clear();
     }
 
     /**
@@ -176,9 +176,9 @@ public class Scheduler<T extends Weighable<T>> {
      * ants is controlled by the configuration {@link #COLONY_SIZE}.
      */
     protected void create() {
-	for (int i = 0; i < CONFIG.get(COLONY_SIZE); i++) {
-	    archive.add(activity.create());
-	}
+        for (int i = 0; i < CONFIG.get(COLONY_SIZE); i++) {
+            archive.add(activity.create());
+        }
     }
 
     /**
@@ -188,16 +188,16 @@ public class Scheduler<T extends Weighable<T>> {
      *         otherwise.
      */
     protected boolean terminate() {
-	return activity.terminate();
+        return activity.terminate();
     }
 
     /**
      * Performs the update of the activity.
      */
     protected void update() {
-	activity.update(archive);
-	// clears the archive
-	archive.clear();
+        activity.update(archive);
+        // clears the archive
+        archive.clear();
     }
 
     /**
@@ -205,9 +205,9 @@ public class Scheduler<T extends Weighable<T>> {
      * candidates solutions are updated, a new solution archive is created.
      */
     protected void search() {
-	if (activity.search(archive)) {
-	    archive.sort();
-	}
+        if (activity.search(archive)) {
+            archive.sort();
+        }
     }
 
     /**
@@ -222,11 +222,11 @@ public class Scheduler<T extends Weighable<T>> {
      *         <code>Scheduler</code> instance.
      */
     public static <V extends Weighable<V>> Scheduler<V> newInstance() {
-	if (CONFIG.isPresent(PARALLEL)) {
-	    return new ParallelScheduler<V>();
-	}
+        if (CONFIG.isPresent(PARALLEL)) {
+            return new ParallelScheduler<V>();
+        }
 
-	return new Scheduler<V>();
+        return new Scheduler<V>();
     }
 
     /**
@@ -243,8 +243,8 @@ public class Scheduler<T extends Weighable<T>> {
      *         <code>Scheduler</code> instance.
      */
     public static <V extends Weighable<V>> Scheduler<V> newInstance(int capacity) {
-	Scheduler<V> scheduler = newInstance();
-	scheduler.setCapacity(capacity);
-	return scheduler;
+        Scheduler<V> scheduler = newInstance();
+        scheduler.setCapacity(capacity);
+        return scheduler;
     }
 }

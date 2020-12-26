@@ -51,7 +51,7 @@ public class PheromonePolicy {
      * The config key for the evaporation factor.
      */
     public final static ConfigKey<Double> EVAPORATION_FACTOR =
-	    new ConfigKey<>();
+            new ConfigKey<>();
 
     /**
      * The config key for the MAX-MIN p_best value.
@@ -87,8 +87,8 @@ public class PheromonePolicy {
      * Default constructor.
      */
     public PheromonePolicy() {
-	tMax = 0.0;
-	tMin = 0.0;
+        tMax = 0.0;
+        tMin = 0.0;
     }
 
     /**
@@ -98,11 +98,11 @@ public class PheromonePolicy {
      *            the construction graph to be initialised.
      */
     public void initialise(Graph graph) {
-	graph.matrix = new HashMap<Integer, double[]>();
+        graph.matrix = new HashMap<Integer, double[]>();
 
-	for (int i = 0; i < graph.template.length; i++) {
-	    graph.template[i] = INITIAL_PHEROMONE;
-	}
+        for (int i = 0; i < graph.template.length; i++) {
+            graph.template[i] = INITIAL_PHEROMONE;
+        }
     }
 
     /**
@@ -116,66 +116,66 @@ public class PheromonePolicy {
      *            the decision tree.
      */
     public void update(Graph graph, Tree tree) {
-	final double factor = CONFIG.get(EVAPORATION_FACTOR);
+        final double factor = CONFIG.get(EVAPORATION_FACTOR);
 
-	// updates the pheromone limits if we have a new best solution
+        // updates the pheromone limits if we have a new best solution
 
-	if (global == null || (tree.getQuality().compareTo(global) > 0)) {
-	    global = tree.getQuality();
-	    double n = graph.size();
+        if (global == null || (tree.getQuality().compareTo(global) > 0)) {
+            global = tree.getQuality();
+            double n = graph.size();
 
-	    double average = (n / 2.0) * tree.size();
-	    double pDec = Math.pow(CONFIG.get(P_BEST), 1.0 / n);
+            double average = (n / 2.0) * tree.size();
+            double pDec = Math.pow(CONFIG.get(P_BEST), 1.0 / n);
 
-	    tMax = (1 / (1 - factor)) * (global.adjusted() / FRACTION);
-	    tMin = (tMax * (1 - pDec)) / ((average - 1) * pDec);
+            tMax = (1 / (1 - factor)) * (global.adjusted() / FRACTION);
+            tMin = (tMax * (1 - pDec)) / ((average - 1) * pDec);
 
-	    if (tMin > tMax) {
-		tMin = tMax;
-	    }
-	}
+            if (tMin > tMax) {
+                tMin = tMax;
+            }
+        }
 
-	// updates the pheromone of the edges
+        // updates the pheromone of the edges
 
-	double delta = tree.getQuality().adjusted() / FRACTION;
-	HashSet<Integer> updated = new HashSet<Integer>();
+        double delta = tree.getQuality().adjusted() / FRACTION;
+        HashSet<Integer> updated = new HashSet<Integer>();
 
-	Node root = tree.getRoot();
+        Node root = tree.getRoot();
 
-	if (!root.isLeaf()) {
-	    updated.add(START_INDEX);
+        if (!root.isLeaf()) {
+            updated.add(START_INDEX);
 
-	    int index = graph.index(root.getName());
-	    update(graph.entry(START_INDEX, tMax), index, delta, factor);
+            int index = graph.index(root.getName());
+            update(graph.entry(START_INDEX, tMax), index, delta, factor);
 
-	    LinkedList<InternalNode> nodes = new LinkedList<InternalNode>();
-	    nodes.add((InternalNode) root);
+            LinkedList<InternalNode> nodes = new LinkedList<InternalNode>();
+            nodes.add((InternalNode) root);
 
-	    while (!nodes.isEmpty()) {
-		InternalNode internal = nodes.removeFirst();
+            while (!nodes.isEmpty()) {
+                InternalNode internal = nodes.removeFirst();
 
-		for (int i = 0; i < internal.children.length; i++) {
-		    if (!internal.children[i].isLeaf()) {
-			final int code = InternalNode
-				.encode(internal, internal.conditions[i]);
-			updated.add(code);
+                for (int i = 0; i < internal.children.length; i++) {
+                    if (!internal.children[i].isLeaf()) {
+                        final int code = InternalNode
+                                .encode(internal, internal.conditions[i]);
+                        updated.add(code);
 
-			index = graph.index(internal.children[i].getName());
-			update(graph.entry(code, tMax), index, delta, factor);
+                        index = graph.index(internal.children[i].getName());
+                        update(graph.entry(code, tMax), index, delta, factor);
 
-			nodes.add((InternalNode) internal.children[i]);
-		    }
-		}
-	    }
-	}
+                        nodes.add((InternalNode) internal.children[i]);
+                    }
+                }
+            }
+        }
 
-	// evaporates the pheromone of the unused branches
+        // evaporates the pheromone of the unused branches
 
-	for (Integer entry : graph.entries()) {
-	    if (!updated.contains(entry)) {
-		update(graph.pheromone(entry), -1, 0.0, factor);
-	    }
-	}
+        for (Integer entry : graph.entries()) {
+            if (!updated.contains(entry)) {
+                update(graph.pheromone(entry), -1, 0.0, factor);
+            }
+        }
     }
 
     /**
@@ -192,42 +192,42 @@ public class PheromonePolicy {
      *         <code>false</code> otherwise.
      */
     public boolean hasConverged(Graph graph, Tree tree) {
-	double truncMax = precision(tMax);
-	double truncMin = precision(tMin);
+        double truncMax = precision(tMax);
+        double truncMin = precision(tMin);
 
-	Node root = tree.getRoot();
+        Node root = tree.getRoot();
 
-	if (root.isLeaf()) {
-	    return true;
-	} else {
-	    double[] values = graph.pheromone(START_INDEX);
+        if (root.isLeaf()) {
+            return true;
+        } else {
+            double[] values = graph.pheromone(START_INDEX);
 
-	    if (!check(values, truncMin, truncMax)) {
-		return false;
-	    }
-	}
+            if (!check(values, truncMin, truncMax)) {
+                return false;
+            }
+        }
 
-	LinkedList<InternalNode> nodes = new LinkedList<InternalNode>();
-	nodes.add((InternalNode) root);
+        LinkedList<InternalNode> nodes = new LinkedList<InternalNode>();
+        nodes.add((InternalNode) root);
 
-	while (!nodes.isEmpty()) {
-	    InternalNode internal = nodes.removeFirst();
+        while (!nodes.isEmpty()) {
+            InternalNode internal = nodes.removeFirst();
 
-	    for (int i = 0; i < internal.children.length; i++) {
-		if (!internal.children[i].isLeaf()) {
-		    double[] values = graph.pheromone(InternalNode
-			    .encode(internal, internal.conditions[i]));
+            for (int i = 0; i < internal.children.length; i++) {
+                if (!internal.children[i].isLeaf()) {
+                    double[] values = graph.pheromone(InternalNode
+                            .encode(internal, internal.conditions[i]));
 
-		    if (!check(values, truncMin, truncMax)) {
-			return false;
-		    }
+                    if (!check(values, truncMin, truncMax)) {
+                        return false;
+                    }
 
-		    nodes.add((InternalNode) internal.children[i]);
-		}
-	    }
-	}
+                    nodes.add((InternalNode) internal.children[i]);
+                }
+            }
+        }
 
-	return true;
+        return true;
     }
 
     /**
@@ -246,24 +246,24 @@ public class PheromonePolicy {
      *         converged.
      */
     private boolean check(double[] values, double tMin, double tMax) {
-	int maxCount = 0;
-	int minCount = 0;
+        int maxCount = 0;
+        int minCount = 0;
 
-	for (int j = 0; j < values.length; j++) {
-	    double truncValue = precision(values[j]);
+        for (int j = 0; j < values.length; j++) {
+            double truncValue = precision(values[j]);
 
-	    if (truncValue == tMax) {
-		maxCount++;
-	    } else if (truncValue == tMin) {
-		minCount++;
-	    }
-	}
+            if (truncValue == tMax) {
+                maxCount++;
+            } else if (truncValue == tMin) {
+                minCount++;
+            }
+        }
 
-	if ((minCount != (values.length - 1)) || (maxCount != 1)) {
-	    return false;
-	}
+        if ((minCount != (values.length - 1)) || (maxCount != 1)) {
+            return false;
+        }
 
-	return true;
+        return true;
     }
 
     /**
@@ -279,18 +279,18 @@ public class PheromonePolicy {
      *            the increment factor.
      */
     private void update(double[] slots,
-			int index,
-			double delta,
-			double factor) {
-	for (int i = 0; i < slots.length; i++) {
-	    slots[i] = (factor * slots[i]) + (i == index ? delta : 0.0);
+                        int index,
+                        double delta,
+                        double factor) {
+        for (int i = 0; i < slots.length; i++) {
+            slots[i] = (factor * slots[i]) + (i == index ? delta : 0.0);
 
-	    if (slots[i] > precision(tMax)) {
-		slots[i] = tMax;
-	    } else if (slots[i] < precision(tMin)) {
-		slots[i] = tMin;
-	    }
-	}
+            if (slots[i] > precision(tMax)) {
+                slots[i] = tMax;
+            } else if (slots[i] < precision(tMin)) {
+                slots[i] = tMin;
+            }
+        }
     }
 
     /**
@@ -302,6 +302,6 @@ public class PheromonePolicy {
      * @return the truncated value.
      */
     private final double precision(double value) {
-	return ((int) (value * 100)) / 100.0;
+        return ((int) (value * 100)) / 100.0;
     }
 }

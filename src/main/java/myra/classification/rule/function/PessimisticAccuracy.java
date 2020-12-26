@@ -34,13 +34,13 @@ import myra.util.Stats;
 public class PessimisticAccuracy extends ClassificationRuleFunction {
     @Override
     public Maximise evaluate(Dataset dataset,
-			     ClassificationRule rule,
-			     Instance[] instances) {
-	BinaryConfusionMatrix m = fill(rule);
+                             ClassificationRule rule,
+                             Instance[] instances) {
+        BinaryConfusionMatrix m = fill(rule);
 
-	double total = m.TP + m.FP;
-	double error = (m.FP + Stats.errors(total, m.FP)) / total;
+        double total = m.TP + m.FP;
+        double error = (m.FP + Stats.errors(total, m.FP)) / total;
 
-	return new Maximise(1.0 - error);
+        return new Maximise(1.0 - error);
     }
 }

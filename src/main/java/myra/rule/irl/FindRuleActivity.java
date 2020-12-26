@@ -80,57 +80,56 @@ public class FindRuleActivity extends IterativeActivity<Rule> {
      *            the current dataset.
      */
     public FindRuleActivity(Graph graph,
-			    Instance[] instances,
-			    Dataset training) {
-	this.graph = graph;
-	this.instances = instances;
-	this.dataset = training;
+                            Instance[] instances,
+                            Dataset training) {
+        this.graph = graph;
+        this.instances = instances;
+        this.dataset = training;
     }
 
     @Override
     public Rule create() {
-	// the instances array will be modified by the create and prune,
-	// so we need to work on a copy to avoid concurrency problems
-	Instance[] clone = Instance.copyOf(instances);
+        // the instances array will be modified by the create and prune,
+        // so we need to work on a copy to avoid concurrency problems
+        Instance[] clone = Instance.copyOf(instances);
 
-	Rule rule = CONFIG.get(DEFAULT_FACTORY)
-		.create(graph, heuristic, dataset, clone);
+        Rule rule = CONFIG.get(DEFAULT_FACTORY)
+                .create(graph, heuristic, dataset, clone);
 
-	CONFIG.get(DEFAULT_PRUNER).prune(dataset, rule, clone);
-	rule.setQuality(CONFIG.get(DEFAULT_FUNCTION).evaluate(dataset,
-							      rule,
-							      clone));
+        CONFIG.get(DEFAULT_PRUNER).prune(dataset, rule, clone);
+        rule.setQuality(CONFIG.get(DEFAULT_FUNCTION)
+                .evaluate(dataset, rule, clone));
 
-	return rule;
+        return rule;
     }
 
     @Override
     public void initialise() {
-	super.initialise();
+        super.initialise();
 
-	policy = CONFIG.get(DEFAULT_POLICY);
-	policy.initialise(graph);
+        policy = CONFIG.get(DEFAULT_POLICY);
+        policy.initialise(graph);
 
-	// the heuristic procedure only takes into account
-	// the instances covered by a rule, so we prepare an
-	// instance array where each NOT_COVERED value is
-	// replaced by a RULE_COVERED value
+        // the heuristic procedure only takes into account
+        // the instances covered by a rule, so we prepare an
+        // instance array where each NOT_COVERED value is
+        // replaced by a RULE_COVERED value
 
-	Instance[] clone = Instance.copyOf(instances);
-	Instance.mark(clone, NOT_COVERED, RULE_COVERED);
+        Instance[] clone = Instance.copyOf(instances);
+        Instance.mark(clone, NOT_COVERED, RULE_COVERED);
 
-	heuristic =
-		CONFIG.get(DEFAULT_HEURISTIC).compute(graph, dataset, clone);
+        heuristic =
+                CONFIG.get(DEFAULT_HEURISTIC).compute(graph, dataset, clone);
     }
 
     @Override
     public boolean terminate() {
-	return super.terminate() || stagnation > CONFIG.get(STAGNATION);
+        return super.terminate() || stagnation > CONFIG.get(STAGNATION);
     }
 
     @Override
     public void update(Archive<Rule> archive) {
-	super.update(archive);
-	policy.update(graph, archive.highest());
+        super.update(archive);
+        policy.update(graph, archive.highest());
     }
 }

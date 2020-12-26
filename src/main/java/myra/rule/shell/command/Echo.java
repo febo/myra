@@ -30,20 +30,20 @@ import myra.rule.shell.Memory;
 public class Echo implements Command {
     @Override
     public void execute(Memory memory, String... arguments) {
-	for (String s : arguments) {
-	    System.out.print(s + " ");
-	}
+        for (String s : arguments) {
+            System.out.print(s + " ");
+        }
 
-	System.out.println();
+        System.out.println();
     }
 
     @Override
     public String name() {
-	return "echo";
+        return "echo";
     }
 
     @Override
     public int size() {
-	return 0;
+        return 0;
     }
 }

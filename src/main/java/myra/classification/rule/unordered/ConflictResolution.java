@@ -38,72 +38,73 @@ public enum ConflictResolution {
      * majority class of this sum.
      */
     FREQUENT_CLASS() {
-	@Override
-	public Label resolve(Dataset dataset,
-			     ClassificationRule[] rules,
-			     boolean[] active) {
-	    int[] frequency = new int[dataset.classLength()];
+        @Override
+        public Label resolve(Dataset dataset,
+                             ClassificationRule[] rules,
+                             boolean[] active) {
+            int[] frequency = new int[dataset.classLength()];
 
-	    for (int i = 0; i < active.length; i++) {
-		if (active[i]) {
-		    for (int j = 0; j < frequency.length; j++) {
-			frequency[j] += rules[i].covered()[j];
-		    }
-		}
-	    }
+            for (int i = 0; i < active.length; i++) {
+                if (active[i]) {
+                    for (int j = 0; j < frequency.length; j++) {
+                        frequency[j] += rules[i].covered()[j];
+                    }
+                }
+            }
 
-	    // finds the majority class
+            // finds the majority class
 
-	    int majority = -1;
+            int majority = -1;
 
-	    for (int i = 0; i < frequency.length; i++) {
-		if (frequency[i] > 0 && (majority == -1
-			|| frequency[i] > frequency[majority])) {
-		    majority = i;
-		}
-	    }
+            for (int i = 0; i < frequency.length; i++) {
+                if (frequency[i] > 0 && (majority == -1
+                        || frequency[i] > frequency[majority])) {
+                    majority = i;
+                }
+            }
 
-	    return new Label(majority);
-	}
+            return new Label(dataset.getTarget(), majority);
+        }
     },
     /**
      * The confidence resolution strategy. It consist in using the most accurate
      * rule that covers the instance.
      */
     CONFIDENCE() {
-	@Override
-	public Label resolve(Dataset dataset,
-			     ClassificationRule[] rules,
-			     boolean[] active) {
-	    int predicted = -1;
-	    double best = 0.0;
+        @Override
+        public Label resolve(Dataset dataset,
+                             ClassificationRule[] rules,
+                             boolean[] active) {
+            int predicted = -1;
+            double best = 0.0;
 
-	    for (int i = 0; i < active.length; i++) {
-		if (active[i]) {
-		    int[] frequency = rules[i].covered();
-		    int total = 0;
+            for (int i = 0; i < active.length; i++) {
+                if (active[i]) {
+                    int[] frequency = rules[i].covered();
+                    int total = 0;
 
-		    for (int j = 0; j < frequency.length; j++) {
-			total += frequency[j];
-		    }
+                    for (int j = 0; j < frequency.length; j++) {
+                        total += frequency[j];
+                    }
 
-		    double laplace =
-			    (frequency[rules[i].getConsequent().value()] + 1)
-				    / (double) (total + dataset.classLength());
+                    double laplace =
+                            (frequency[rules[i].getConsequent().value()] + 1)
+                                    / (double) (total + dataset.classLength());
 
-		    if (laplace > best) {
-			predicted = rules[i].getConsequent().value();
-			best = laplace;
-		    }
-		}
-	    }
+                    if (laplace > best) {
+                        predicted = rules[i].getConsequent().value();
+                        best = laplace;
+                    }
+                }
+            }
 
-	    // when no rules are active, or in the unlikely event that no
-	    // rule has a laplace value greater than 0, null value is returned
-	    // (there is no better value to return, since we need to flag that
-	    // no prediction could be made)
-	    return (predicted == -1) ? null : new Label(predicted);
-	}
+            // when no rules are active, or in the unlikely event that no
+            // rule has a laplace value greater than 0, null value is returned
+            // (there is no better value to return, since we need to flag that
+            // no prediction could be made)
+            return (predicted == -1) ? null
+                    : new Label(dataset.getTarget(), predicted);
+        }
     },
     /**
      * The weighted frequent-class resolution strategy. It consist in adding up
@@ -112,66 +113,67 @@ public enum ConflictResolution {
      * this sum.
      */
     WEIGHTED_FREQUENCY() {
-	@Override
-	public Label resolve(Dataset dataset,
-			     ClassificationRule[] rules,
-			     boolean[] active) {
-	    double[] frequency = new double[dataset.classLength()];
+        @Override
+        public Label resolve(Dataset dataset,
+                             ClassificationRule[] rules,
+                             boolean[] active) {
+            double[] frequency = new double[dataset.classLength()];
 
-	    for (int i = 0; i < active.length; i++) {
-		if (active[i]) {
-		    int[] covered = rules[i].covered();
-		    int total = 0;
+            for (int i = 0; i < active.length; i++) {
+                if (active[i]) {
+                    int[] covered = rules[i].covered();
+                    int total = 0;
 
-		    for (int j = 0; j < covered.length; j++) {
-			total += covered[j];
-		    }
+                    for (int j = 0; j < covered.length; j++) {
+                        total += covered[j];
+                    }
 
-		    double laplace =
-			    (covered[rules[i].getConsequent().value()] + 1)
-				    / (double) (total + dataset.classLength());
+                    double laplace =
+                            (covered[rules[i].getConsequent().value()] + 1)
+                                    / (double) (total + dataset.classLength());
 
-		    for (int j = 0; j < covered.length; j++) {
-			frequency[j] += (laplace * covered[j]);
-		    }
-		}
-	    }
+                    for (int j = 0; j < covered.length; j++) {
+                        frequency[j] += (laplace * covered[j]);
+                    }
+                }
+            }
 
-	    int majority = -1;
+            int majority = -1;
 
-	    for (int i = 0; i < frequency.length; i++) {
-		if (frequency[i] > 0 && (majority == -1
-			|| frequency[i] > frequency[majority])) {
-		    majority = i;
-		}
-	    }
+            for (int i = 0; i < frequency.length; i++) {
+                if (frequency[i] > 0 && (majority == -1
+                        || frequency[i] > frequency[majority])) {
+                    majority = i;
+                }
+            }
 
-	    return new Label(majority);
-	}
+            return new Label(dataset.getTarget(), majority);
+        }
     },
     /**
      * The quality resolution strategy. It consist in using the most accurate
      * rule that covers the instance.
      */
     QUALITY() {
-	@Override
-	public Label resolve(Dataset dataset,
-			     ClassificationRule[] rules,
-			     boolean[] active) {
-	    int best = -1;
+        @Override
+        public Label resolve(Dataset dataset,
+                             ClassificationRule[] rules,
+                             boolean[] active) {
+            int best = -1;
 
-	    for (int i = 0; i < rules.length; i++) {
-		if (active[i]) {
-		    if (best == -1 || rules[best].getQuality()
-			    .compareTo(rules[i].getQuality()) < 0) {
-			best = i;
-		    }
-		}
-	    }
+            for (int i = 0; i < rules.length; i++) {
+                if (active[i]) {
+                    if (best == -1 || rules[best].getQuality()
+                            .compareTo(rules[i].getQuality()) < 0) {
+                        best = i;
+                    }
+                }
+            }
 
-	    return (best == -1) ? null
-		    : new Label(rules[best].getConsequent().value());
-	}
+            return (best == -1) ? null
+                    : new Label(dataset.getTarget(),
+                                rules[best].getConsequent().value());
+        }
     };
 
     /**
@@ -190,6 +192,6 @@ public enum ConflictResolution {
      *         instance.
      */
     public abstract Label resolve(Dataset dataset,
-				  ClassificationRule[] rules,
-				  boolean[] active);
+                                  ClassificationRule[] rules,
+                                  boolean[] active);
 }
