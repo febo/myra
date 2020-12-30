@@ -1,5 +1,7 @@
 # MYRA
 
+![MYRA License](https://img.shields.io/github/license/febo/myra?style=flat-square)
+
 MYRA is a collection of Ant Colony Optimization (ACO) algorithms for the data mining classification and regression tasks. It includes popular rule induction and decision tree induction algorithms. The algorithms are ready to be used from the command line or can be easily called from your own Java code. They are implemented using a modular architecture, so they can be easily extended to incorporate different procedures and/or use different parameter values.
 
 This repository contains a complete rewrite of the code (by the same author) from the MYRA project hosted at [sourceforge](http://sourceforge.net/projects/myra/). The computational time has been significantly improved &mdash; tasks that used to take minutes, now are done in seconds &mdash; although it was not possible to maintain backward compatibility. You will find that the overall architecture is very similar, but most of the data structures have changed.
@@ -44,21 +46,21 @@ An extension to the *c*Ant-Miner<sub>PB</sub> in order to discover unordered rul
 
 ##### Ant-Tree-Miner
 ```
-Main class: myra.classification.tree.AntTreeMiner
+Main class: myra.algorithm.AntTreeMiner
 ```
 
 A decision tree induction algorithm that uses an ACO procedure to creates decision trees. Trees are created in a top-down fashion, similar to C4.5 strategy, but instead of using a greedy procedure based on the information gain, it selects decision nodes using an ACO procedure.
 
 ##### Ant-Miner-Reg
 ```
-Main class: myra.regression.rule.impl.AntMinerReg
+Main class: myra.algorithm.AntMinerReg
 ```
 
 The first rule induction ACO regression algorithm. Ant-Miner-Reg uses a sequentical covering strategy combined with an ACO search to create a list of regression rules.
 
 ##### Hierarchical Multi-Label Ant-Miner (*hm*Ant-Miner)
 ```
-Main class: myra.regression.rule.impl.AntMinerReg
+Main class: myra.algorithm.HierarchicalMultiLabelAntMiner
 ```
 
 *hm*Ant-Miner is the first Ant-Miner variation for hierarchical multi-label classification problems. *hm*Ant-Miner uses a sequentical covering strategy combined with an ACO search to create a list of hierarchical classification rules that predict multiple class labels from a hierarchy.
