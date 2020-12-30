@@ -1,6 +1,6 @@
 # MYRA
 
-![MYRA License](https://img.shields.io/github/license/febo/myra?style=flat-square)
+![MYRA License](https://img.shields.io/github/license/febo/myra?style=flat-square) [![javadoc](https://javadoc.io/badge2/com.github.febo/myra/javadoc.svg?style=flat-square)](https://javadoc.io/doc/com.github.febo/myra)
 
 MYRA is a collection of Ant Colony Optimization (ACO) algorithms for the data mining classification and regression tasks. It includes popular rule induction and decision tree induction algorithms. The algorithms are ready to be used from the command line or can be easily called from your own Java code. They are implemented using a modular architecture, so they can be easily extended to incorporate different procedures and/or use different parameter values.
 
