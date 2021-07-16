@@ -25,6 +25,7 @@ import static myra.IterativeActivity.STAGNATION;
 import static myra.Scheduler.COLONY_SIZE;
 import static myra.Scheduler.PARALLEL;
 import static myra.classification.hierarchical.WeightedAUPRC.Type.FREQUENCY;
+import static myra.datamining.Hierarchy.IGNORE_LIST;
 import static myra.datamining.IntervalBuilder.DEFAULT_BUILDER;
 import static myra.rule.Assignator.ASSIGNATOR;
 import static myra.rule.Heuristic.DEFAULT_HEURISTIC;
@@ -236,7 +237,7 @@ public class PittsburghHierarchicalMultiLabelAntMiner extends RuleClassifier {
 
         // remove exclusive class labels
         Option<String> ignore =
-                new Option<String>(AUPRC.IGNORE_LIST,
+                new Option<String>(IGNORE_LIST,
                                    "-ignore-root",
                                    "ignore root %s from the AUPRC calculation",
                                    false,

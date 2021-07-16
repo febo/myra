@@ -20,17 +20,14 @@
 package myra.classification.hierarchical;
 
 import static myra.Config.CONFIG;
+import static myra.datamining.Hierarchy.IGNORE;
 
 import java.util.Arrays;
-import java.util.Collections;
-import java.util.HashSet;
-import java.util.Set;
 
 import myra.Cost;
 import myra.Cost.Maximise;
 import myra.classification.ClassificationModel;
 import myra.datamining.Dataset;
-import myra.datamining.Hierarchy;
 
 /**
  * This class represents a weighted precision-recall evaluation measure,
@@ -69,21 +66,7 @@ public class WeightedAUPRC extends AUPRC {
 
     @Override
     public Cost evaluate(Dataset dataset, ClassificationModel model) {
-        // finds the indexes of the labels to ignore
-        Set<String> ignore = Collections.emptySet();
-
-        if (CONFIG.isPresent(IGNORE_LIST)) {
-            String list = CONFIG.get(IGNORE_LIST);
-
-            if (list == null) {
-                ignore = new HashSet<>();
-            } else {
-                ignore = new HashSet<>(Arrays
-                        .asList(list.split(Hierarchy.SEPARATOR)));
-            }
-            // the root label is always ignore
-            ignore.add(dataset.getHierarchy().root().getLabel());
-        }
+        boolean[] ignore = CONFIG.get(IGNORE);
 
         final int size = dataset.size();
         final double[] frequency = dataset.getHierarchy().distribution();
@@ -93,7 +76,7 @@ public class WeightedAUPRC extends AUPRC {
         int labelSize = 0;
 
         for (int i = 0; i < frequency.length; i++) {
-            if (!ignore.contains(labels[i]) && frequency[i] > 0) {
+            if (!ignore[i] && frequency[i] > 0) {
                 total += frequency[i];
                 labelSize++;
             }
@@ -104,7 +87,7 @@ public class WeightedAUPRC extends AUPRC {
         Arrays.fill(weight, 0.0);
 
         for (int i = 0; i < labels.length; i++) {
-            if (!ignore.contains(labels[i]) && frequency[i] > 0) {
+            if (!ignore[i] && frequency[i] > 0) {
                 weight[i] = (Type.CLASS == type) ? 1.0 / labelSize
                         : frequency[i] / total;
             }

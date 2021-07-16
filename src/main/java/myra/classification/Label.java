@@ -172,6 +172,31 @@ public final class Label implements Prediction, Cloneable {
     }
 
     /**
+     * Returns the number of labels present in both <code>Label</code> objects.
+     * 
+     * @param other the <code>Label</code> object for comparison.
+     * 
+     * @return the number of labels present in both <code>Label</code> objects.
+     */
+    public int intersect(Label other) {
+        if (active.length != other.active.length) {
+            throw new IllegalArgumentException("Label size do not match: "
+                    + active.length + " expected, " + other.active.length
+                    + " found");
+        }
+
+        int count = 0;
+
+        for (int i = 0; i < active.length; i++) {
+            if (active[i] && other.active[i]) {
+                count++;
+            }
+        }
+
+        return count;
+    }
+
+    /**
      * Removes the specified label values from all instances lavels.
      * 
      * @param indexes
@@ -290,6 +315,30 @@ public final class Label implements Prediction, Cloneable {
 
         for (int i = 0; i < values.length; i++) {
             active[i] = labels.contains(values[i]);
+        }
+
+        Label label = new Label(target);
+        label.active = active;
+        return label;
+    }
+
+    /**
+     * Returns a new <code>Label</code> instance representing the specified list
+     * of labels.
+     * 
+     * @param target
+     *            the target attribute.
+     * @param active
+     *            the information of active values.
+     * 
+     * @return a new <code>Label</code> instance representing the specified list
+     *         of labels.
+     */
+    public static Label toLabel(Attribute target, boolean[] active) {
+        if (target.length() < active.length) {
+            throw new IllegalArgumentException("Invalid number of labels: <"
+                    + target.length() + "> expected, <" + active.length
+                    + "> found");
         }
 
         Label label = new Label(target);

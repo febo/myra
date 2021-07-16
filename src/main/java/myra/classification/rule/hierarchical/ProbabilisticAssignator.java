@@ -30,7 +30,11 @@ import myra.rule.Assignator;
 import myra.rule.Rule;
 
 /**
+ * 
+ * 
  * @author Fernando Esteban Barril Otero
+ * 
+ * @since 5.0
  */
 public class ProbabilisticAssignator implements Assignator {
     @Override

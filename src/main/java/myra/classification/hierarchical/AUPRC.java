@@ -20,20 +20,17 @@
 package myra.classification.hierarchical;
 
 import static myra.Config.CONFIG;
+import static myra.datamining.Hierarchy.IGNORE;
 
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.Collections;
-import java.util.HashSet;
-import java.util.Set;
 
-import myra.Config.ConfigKey;
 import myra.Cost;
 import myra.Cost.Maximise;
 import myra.classification.ClassificationModel;
-import myra.classification.Measure;
 import myra.datamining.Dataset;
-import myra.datamining.Hierarchy;
+import myra.rule.ListMeasure;
+import myra.rule.RuleList;
 
 /**
  * This class represents a precision-recall evaluation measure, consisting on
@@ -43,40 +40,12 @@ import myra.datamining.Hierarchy;
  * 
  * @since 5.0
  */
-public class AUPRC extends Measure {
-    /**
-     * The config key for parallel execution.
-     */
-    public final static ConfigKey<String> IGNORE_LIST = new ConfigKey<>();
-
+public class AUPRC extends HierarchicalMeasure implements ListMeasure {
     @Override
     public Cost evaluate(Dataset dataset, ClassificationModel model) {
-        // finds the indexes of the labels to ignore
-        boolean[] active = new boolean[dataset.getTarget().size()];
-        Arrays.fill(active, true);
-        Set<String> ignore = Collections.emptySet();
-
-        if (CONFIG.isPresent(IGNORE_LIST)) {
-            String list = CONFIG.get(IGNORE_LIST);
-
-            if (list == null) {
-                ignore = new HashSet<>();
-            } else {
-                ignore = new HashSet<>(Arrays
-                        .asList(list.split(Hierarchy.SEPARATOR)));
-            }
-            // the root label is always ignore
-            ignore.add(dataset.getHierarchy().root().getLabel());
-
-            String[] labels = dataset.getTarget().values();
-
-            for (int i = 0; i < labels.length; i++) {
-                active[i] = !ignore.contains(labels[i]);
-            }
-        }
-
+        boolean[] ignore = CONFIG.get(IGNORE);
         final int size = dataset.size();
-        final int labelSize = dataset.getHierarchy().size() - ignore.size();
+        final int labelSize = dataset.getHierarchy().size() - cardinality(ignore);
 
         // array with each individual class label (prediction, actual) pair
         double[][] values = new double[size * labelSize][2];
@@ -87,7 +56,7 @@ public class AUPRC extends Measure {
             int index = 0;
 
             for (int j = 0; j < actual.length; j++) {
-                if (active[j]) {
+                if (!ignore[j]) {
                     int offset = (i * labelSize) + index;
                     values[offset][0] = predicted[j];
                     values[offset][1] = (actual[j] ? 1 : 0);
@@ -97,6 +66,11 @@ public class AUPRC extends Measure {
         }
 
         return new Maximise(area(values));
+    }
+
+    @Override
+    public Cost evaluate(Dataset dataset, RuleList list) {
+        return evaluate(dataset, new ClassificationModel(list));
     }
 
     /**
@@ -154,6 +128,25 @@ public class AUPRC extends Measure {
         curve.interpolate();
 
         return curve.area();
+    }
+
+    /**
+     * Returns the number of <code>true</code> values in the given array.
+     * 
+     * @param array a boolean array.
+     * 
+     * @return the number of <code>true</code> values in the given array.
+     */
+    protected int cardinality(boolean[] array) {
+        int count = 0;
+
+        for (boolean value : array) {
+            if (value) {
+                count++;
+            }
+        }
+
+        return count;
     }
 
     /**

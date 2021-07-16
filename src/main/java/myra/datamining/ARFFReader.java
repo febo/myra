@@ -19,7 +19,10 @@
 
 package myra.datamining;
 
+import static myra.Config.CONFIG;
 import static myra.datamining.Hierarchy.DELIMITER;
+import static myra.datamining.Hierarchy.IGNORE;
+import static myra.datamining.Hierarchy.IGNORE_LIST;
 
 import java.io.BufferedReader;
 import java.io.File;
@@ -31,6 +34,8 @@ import java.io.Reader;
 import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.util.Arrays;
+import java.util.Collections;
+import java.util.HashSet;
 import java.util.LinkedHashSet;
 import java.util.Set;
 import java.util.StringTokenizer;
@@ -397,6 +402,33 @@ public class ARFFReader {
 
         dataset.add(attribute);
         dataset.setHierarchy(hierarchy);
+
+        // (4) determines the labels from the hierarchy to ignore (usually the root label)
+
+        boolean[] flags = new boolean[dataset.getTarget().size()];
+        Arrays.fill(flags, false);
+
+        if (CONFIG.isPresent(IGNORE_LIST)) {
+            Set<String> ignore = Collections.emptySet();
+            String list = CONFIG.get(IGNORE_LIST);
+
+            if (list == null) {
+                ignore = new HashSet<>();
+            } else {
+                ignore = new HashSet<>(Arrays
+                        .asList(list.split(Hierarchy.SEPARATOR)));
+            }
+            // the root label is always ignore
+            ignore.add(dataset.getHierarchy().root().getLabel());
+
+            String[] classLabels = dataset.getTarget().values();
+
+            for (int i = 0; i < classLabels.length; i++) {
+                flags[i] = ignore.contains(classLabels[i]);
+            }
+        }
+
+        CONFIG.set(IGNORE, flags);
     }
 
     /**

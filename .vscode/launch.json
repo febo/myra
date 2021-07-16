@@ -30,14 +30,15 @@
             "request": "launch",
             "mainClass": "myra.algorithm.AntTreeMiner",
             "projectName": "myra",
-            "args": "-f /Users/febo/Documents/repository/myra/src/test/resources/weather.arff -m 2"
+            "args": "-f /Users/febo/Documents/jupyter/GLP/datasets/ARFF/folds/TR00_GLP3-4c.arff -t /Users/febo/Documents/jupyter/GLP/datasets/ARFF/folds/TS00_GLP3-4c.arff -m 10"
         },
         {
             "type": "java",
             "name": "Continuous Ant-Miner",
             "request": "launch",
             "mainClass": "myra.algorithm.ContinuousAntMiner",
-            "projectName": "myra"
+            "projectName": "myra",
+            "args": "-f /Users/febo/df-normalised_glp_3.arff"
         },
         {
             "type": "java",
@@ -45,13 +46,20 @@
             "request": "launch",
             "mainClass": "myra.algorithm.PittsburghContinuousAntMiner",
             "projectName": "myra",
-            "args": "-f /Users/febo/Documents/uok/uci/datasets/breast-w/wdbc.arff"
+            "args": "-f /Users/febo/Documents/jupyter/GLP/datasets/ARFF/folds/TR00_GLP3-4c.arff -t /Users/febo/Documents/jupyter/GLP/datasets/ARFF/folds/TS00_GLP3-4c.arff -unordered"
         },
         {
             "type": "java",
             "name": "Unordered Pittsburgh Continuous Ant-Miner",
             "request": "launch",
             "mainClass": "myra.algorithm.UnorderedPittsburghContinuousAntMiner",
+            "projectName": "myra"
+        },
+        {
+            "type": "java",
+            "name": "Hierarchical Ant-Miner",
+            "request": "launch",
+            "mainClass": "myra.algorithm.HierarchicalAntMiner",
             "projectName": "myra"
         },
         {

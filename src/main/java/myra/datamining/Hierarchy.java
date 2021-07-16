@@ -36,8 +36,20 @@ import myra.Config.ConfigKey;
  * problems.
  * 
  * @author Fernando Esteban Barril Otero
+ * 
+ * @since 5.0
  */
 public class Hierarchy {
+    /**
+     * The config key for the class labels to be ignored.
+     */
+    public final static ConfigKey<String> IGNORE_LIST = new ConfigKey<>();
+
+    /**
+     * The config key for the array of class labels to be ignored.
+     */
+    public final static ConfigKey<boolean[]> IGNORE = new ConfigKey<>();
+
     /**
      * Relationship separator between nodes of the hierarchy.
      */
