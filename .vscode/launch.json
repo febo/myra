@@ -29,24 +29,21 @@
             "name": "Ant-Tree-Miner",
             "request": "launch",
             "mainClass": "myra.algorithm.AntTreeMiner",
-            "projectName": "myra",
-            "args": "-f /Users/febo/Documents/jupyter/GLP/datasets/ARFF/folds/TR00_GLP3-4c.arff -t /Users/febo/Documents/jupyter/GLP/datasets/ARFF/folds/TS00_GLP3-4c.arff -m 10"
+            "projectName": "myra"
         },
         {
             "type": "java",
             "name": "Continuous Ant-Miner",
             "request": "launch",
             "mainClass": "myra.algorithm.ContinuousAntMiner",
-            "projectName": "myra",
-            "args": "-f /Users/febo/df-normalised_glp_3.arff"
+            "projectName": "myra"
         },
         {
             "type": "java",
             "name": "Pittsburgh Continuous Ant-Miner",
             "request": "launch",
             "mainClass": "myra.algorithm.PittsburghContinuousAntMiner",
-            "projectName": "myra",
-            "args": "-f /Users/febo/Documents/jupyter/GLP/datasets/ARFF/folds/TR00_GLP3-4c.arff -t /Users/febo/Documents/jupyter/GLP/datasets/ARFF/folds/TS00_GLP3-4c.arff -unordered"
+            "projectName": "myra"
         },
         {
             "type": "java",
@@ -60,32 +57,28 @@
             "name": "Hierarchical Multi-Label Ant-Miner",
             "request": "launch",
             "mainClass": "myra.algorithm.HierarchicalMultiLabelAntMiner",
-            "projectName": "myra",
-            "args": "-f /Users/febo/Documents/uok/experiments/hierarchical/single-label/ds1/aa/TR00_ion-channel.arff -t /Users/febo/Documents/uok/experiments/hierarchical/single-label/ds1/aa/TS00_ion-channel.arff -r hFmeasure -w 1.0 --single-label"
+            "projectName": "myra"
         },
         {
             "type": "java",
             "name": "Pittsburgh Hierarchical Multi-Label Ant-Miner",
             "request": "launch",
             "mainClass": "myra.algorithm.PittsburghHierarchicalMultiLabelAntMiner",
-            "projectName": "myra",
-            "args": "-f /Users/febo/Documents/uok/experiments/hierarchical/single-label/ds1/aa/TR00_ion-channel.arff -t /Users/febo/Documents/uok/experiments/hierarchical/single-label/ds1/aa/TS00_ion-channel.arff -r hFmeasure -l hFmeasure -w 1.0 --single-label"
+            "projectName": "myra"
         },
         {
             "type": "java",
             "name": "Mixed-Attribute Ant-Miner",
             "request": "launch",
             "mainClass": "myra.algorithm.MixedAttributeAntMiner",
-            "projectName": "myra",
-            "args": "-f /Users/febo/Documents/uok/uci/datasets/breast-w/wdbc.arff"
+            "projectName": "myra"
         },
         {
             "type": "java",
             "name": "Pittsburgh Mixed-Attribute Ant-Miner",
             "request": "launch",
             "mainClass": "myra.algorithm.PittsburghMixedAttributeAntMiner",
-            "projectName": "myra",
-            "args": "-f /Users/febo/Documents/uok/uci/datasets/breast-w/wdbc.arff"
+            "projectName": "myra"
         },
         {
             "type": "java",
