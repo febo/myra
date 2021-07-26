@@ -158,6 +158,8 @@ public class SinglePassPruner extends Pruner {
 
         if (selected != -1) {
             reset(dataset, instances, coverage[selected], rule);
+        } else if (rule.isEmpty()) {
+            rule.apply(dataset, instances);
         }
 
         return assignator.assign(dataset, rule, instances);
