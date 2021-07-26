@@ -37,7 +37,7 @@ import myra.rule.RuleList;
  * 
  * <p>
  * <b>Note:</b> this class will ignore the labels specified by
- * {@link Hierarchy.IGNORE} when calculating the hF measure.
+ * {@link Hierarchy#IGNORE} when calculating the hF measure.
  * </p>
  * 
  * @author Fernando Esteban Barril Otero

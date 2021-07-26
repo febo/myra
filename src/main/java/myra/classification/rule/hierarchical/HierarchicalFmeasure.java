@@ -38,7 +38,7 @@ import myra.datamining.Hierarchy;
  * 
  * <p>
  * <b>Note:</b> this class will ignore the labels specified by
- * {@link Hierarchy.IGNORE} when calculating the hierarchical F-measure.
+ * {@link Hierarchy#IGNORE} when calculating the hierarchical F-measure.
  * </p>
  * 
  * @author Fernando Esteban Barril Otero
