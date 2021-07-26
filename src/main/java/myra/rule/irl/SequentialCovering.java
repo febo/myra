@@ -116,6 +116,8 @@ public class SequentialCovering {
             discovered.add(rule);
         }
 
+        discovered.compact();
+
         return discovered;
     }
 }

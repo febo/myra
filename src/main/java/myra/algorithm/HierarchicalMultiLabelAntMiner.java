@@ -24,12 +24,18 @@ import static myra.IterativeActivity.MAX_ITERATIONS;
 import static myra.IterativeActivity.STAGNATION;
 import static myra.Scheduler.COLONY_SIZE;
 import static myra.classification.hierarchical.WeightedAUPRC.Type.FREQUENCY;
+import static myra.classification.hierarchical.HierarchicalFmeasure.BETA;
+import static myra.classification.hierarchical.HierarchicalFmeasure.DEFAULT_BETA;
+import static myra.datamining.Hierarchy.DEFAULT_WEIGHT;
 import static myra.datamining.Hierarchy.IGNORE_LIST;
+import static myra.datamining.Hierarchy.SEPARATOR;
+import static myra.datamining.Hierarchy.SINGLE_LABEL;
+import static myra.datamining.Hierarchy.WEIGHT;
 import static myra.datamining.IntervalBuilder.DEFAULT_BUILDER;
+import static myra.datamining.IntervalBuilder.MINIMUM_CASES;
 import static myra.rule.Assignator.ASSIGNATOR;
 import static myra.rule.Heuristic.DEFAULT_HEURISTIC;
 import static myra.rule.Heuristic.DYNAMIC_HEURISTIC;
-import static myra.rule.ListMeasure.DEFAULT_MEASURE;
 import static myra.rule.Pruner.DEFAULT_PRUNER;
 import static myra.rule.RuleFunction.DEFAULT_FUNCTION;
 import static myra.rule.pittsburgh.FindRuleListActivity.UNCOVERED;
@@ -42,21 +48,23 @@ import java.util.List;
 
 import myra.Option;
 import myra.Option.DoubleOption;
+import myra.classification.Measure;
 import myra.classification.hierarchical.AUPRC;
 import myra.classification.hierarchical.VarianceHeuristic;
 import myra.classification.hierarchical.VarianceSplit;
 import myra.classification.hierarchical.WeightedAUPRC;
-import myra.classification.rule.hierarchical.ListAUPRC;
+import myra.classification.rule.SinglePassPruner;
 import myra.classification.rule.hierarchical.ProbabilisticAssignator;
 import myra.classification.rule.hierarchical.ProbabilisticRule;
+import myra.classification.rule.hierarchical.SinglePathAssignator;
 import myra.classification.rule.hierarchical.VarianceGain;
+import myra.classification.rule.hierarchical.HierarchicalFmeasure;
 import myra.datamining.Dataset;
-import myra.datamining.Hierarchy;
 import myra.datamining.IntervalBuilder;
 import myra.datamining.Model;
-import myra.rule.BacktrackPruner;
 import myra.rule.Heuristic;
 import myra.rule.Rule;
+import myra.rule.RuleFunction;
 import myra.util.Logger;
 
 /**
@@ -72,56 +80,66 @@ public class HierarchicalMultiLabelAntMiner extends ContinuousAntMiner {
 
         // configuration not set via command line
 
-        CONFIG.set(ASSIGNATOR, new ProbabilisticAssignator());
         CONFIG.set(P_BEST, 0.05);
         CONFIG.set(IntervalBuilder.MAXIMUM_LIMIT, 25);
         CONFIG.set(Rule.DEFAULT_RULE, ProbabilisticRule.class);
-        CONFIG.set(Hierarchy.WEIGHT, Hierarchy.DEFAULT_WEIGHT);
-        CONFIG.set(DEFAULT_MEASURE, new ListAUPRC());
-        CONFIG.set(DEFAULT_PRUNER, new BacktrackPruner());
-        CONFIG.set(DEFAULT_FUNCTION, new VarianceGain());
+        CONFIG.set(DEFAULT_PRUNER, new SinglePassPruner());
         CONFIG.set(DEFAULT_BUILDER, new VarianceSplit());
+        CONFIG.set(BETA, DEFAULT_BETA);
 
         // default configuration values
 
         CONFIG.set(COLONY_SIZE, 5);
         CONFIG.set(MAX_ITERATIONS, 500);
-        CONFIG.set(IntervalBuilder.MINIMUM_CASES, 10);
+        CONFIG.set(MINIMUM_CASES, 10);
         CONFIG.set(EVAPORATION_FACTOR, 0.9);
         CONFIG.set(UNCOVERED, 0.01);
         CONFIG.set(STAGNATION, 40);
         CONFIG.set(DEFAULT_HEURISTIC, new VarianceHeuristic());
+        CONFIG.set(DEFAULT_FUNCTION, new VarianceGain());
         CONFIG.set(DYNAMIC_HEURISTIC, Boolean.FALSE);
+        CONFIG.set(WEIGHT, DEFAULT_WEIGHT);
+        CONFIG.set(ASSIGNATOR, new ProbabilisticAssignator());
     }
 
     @Override
     protected void evaluate(Dataset dataset, Model model) {
-        AUPRC measure = new AUPRC();
+        Measure measure = new AUPRC();
         double area1 = measure.evaluate(dataset, model).raw();
         measure = new WeightedAUPRC();
         double area2 = measure.evaluate(dataset, model).raw();
         measure = new WeightedAUPRC(FREQUENCY);
         double area3 = measure.evaluate(dataset, model).raw();
 
-        Logger.log("Evaluation on training set: Area Under the Precision-Recall Curve%n");
-        Logger.log("-> AU(PRC) = %.4f%n", area1);
-        Logger.log("-> AUPRC   = %.4f%n", area2);
-        Logger.log("-> AUPRCw  = %.4f%n", area3);
+        Logger.log("Evaluation on training set:%n%n");
+        Logger.log("-> Area Under the Precision-Recall Curve%n");
+        Logger.log("   |- AU(PRC) = %.4f%n", area1);
+        Logger.log("   |- AUPRC   = %.4f%n", area2);
+        Logger.log("   |- AUPRCw  = %.4f%n", area3);
+
+        measure = new myra.classification.hierarchical.HierarchicalFmeasure();
+        double hF = measure.evaluate(dataset, model).raw();
+        Logger.log("%n-> Hierarchical F-measure = %.4f\n", hF);
     }
 
     @Override
     protected void test(Dataset dataset, Model model) {
-        AUPRC measure = new AUPRC();
+        Measure measure = new AUPRC();
         double area1 = measure.evaluate(dataset, model).raw();
         measure = new WeightedAUPRC();
         double area2 = measure.evaluate(dataset, model).raw();
         measure = new WeightedAUPRC(FREQUENCY);
         double area3 = measure.evaluate(dataset, model).raw();
 
-        Logger.log("Hierarchical evaluation: Area Under the Precision-Recall Curve%n");
-        Logger.log("-> AU(PRC) = %.4f%n", area1);
-        Logger.log("-> AUPRC   = %.4f%n", area2);
-        Logger.log("-> AUPRCw  = %.4f%n", area3);
+        Logger.log("Evaluation on test set:%n%n");
+        Logger.log("-> Area Under the Precision-Recall Curve%n");
+        Logger.log("   |- AU(PRC) = %.4f%n", area1);
+        Logger.log("   |- AUPRC   = %.4f%n", area2);
+        Logger.log("   |- AUPRCw  = %.4f%n", area3);
+
+        measure = new myra.classification.hierarchical.HierarchicalFmeasure();
+        double hF = measure.evaluate(dataset, model).raw();
+        Logger.log("%n-> Hierarchical F-measure = %.4f\n", hF);
     }
 
     @Override
@@ -129,8 +147,10 @@ public class HierarchicalMultiLabelAntMiner extends ContinuousAntMiner {
         List<Option<?>> options = new ArrayList<Option<?>>();
         options.addAll(super.options());
 
-        removeOption(options, DEFAULT_FUNCTION);
         removeOption(options, DEFAULT_BUILDER);
+        removeOption(options, DEFAULT_FUNCTION);
+        removeOption(options, DEFAULT_HEURISTIC);
+        removeOption(options, DEFAULT_PRUNER);
 
         // evaporation factor
         options.add(new DoubleOption(EVAPORATION_FACTOR,
@@ -153,10 +173,44 @@ public class HierarchicalMultiLabelAntMiner extends ContinuousAntMiner {
         Option<String> ignore =
                 new Option<String>(IGNORE_LIST,
                                    "-ignore-root",
-                                   "ignore root %s from the AUPRC calculation",
-                                   false,
-                                   "nodes");
+                                   "ignore node(s) from the quality calculations;"
+                                           + " multiple nodes are separated by "
+                                           + SEPARATOR
+                                           + "; root node is always ignored even if"
+                                           + " no node is specified",
+                                   true,
+                                   "node(s)");
         options.add(ignore);
+
+        // enables single-label predictions
+        options.add(new Option.BooleanOption(SINGLE_LABEL,
+                                             "-single-label",
+                                             "indicates that the model should only"
+                                                     + " make single-label hierarchical"
+                                                     + " predictions") {
+            @Override
+            public void set(String value) {
+                super.set(value);
+                CONFIG.set(ASSIGNATOR, new SinglePathAssignator());
+            }
+        });
+
+        // rule quality function
+        Option<RuleFunction> function =
+                new Option<RuleFunction>(DEFAULT_FUNCTION,
+                                         "r",
+                                         "specify the rule quality %s",
+                                         true,
+                                         "function");
+        function.add("hFmeasure", new HierarchicalFmeasure());
+        function.add("variance", CONFIG.get(DEFAULT_FUNCTION));
+        options.add(function);
+
+        // class hierarchy weight
+        options.add(new DoubleOption(WEIGHT,
+                                     "w",
+                                     "set the class hierarchy %s",
+                                     "weight"));
 
         return options;
     }

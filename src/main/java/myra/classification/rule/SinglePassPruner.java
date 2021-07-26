@@ -2,7 +2,7 @@
  * SinglePassPruner.java
  * (this file is part of MYRA)
  * 
- * Copyright 2008-2018 Fernando Esteban Barril Otero
+ * Copyright 2008-2021 Fernando Esteban Barril Otero
  * 
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -21,8 +21,12 @@ package myra.classification.rule;
 
 import static myra.Config.CONFIG;
 import static myra.datamining.Dataset.COVERED;
+import static myra.datamining.Dataset.NOT_COVERED;
+import static myra.datamining.Dataset.RULE_COVERED;
 import static myra.datamining.IntervalBuilder.MINIMUM_CASES;
 import static myra.rule.Assignator.ASSIGNATOR;
+
+import java.util.ArrayList;
 
 import myra.Cost;
 import myra.datamining.Attribute.Condition;
@@ -36,14 +40,19 @@ import myra.rule.RuleFunction;
 
 /**
  * This class represents a pruning procedure that evaluates all terms at once
- * (single pass over the dataset) and removes terms, from the end to the start
- * of the rule, as long as the quality improves.
+ * (single pass over the dataset). The coverage of terms is following the order
+ * that they appear on the antecedent of the rule. A term only stays in the rule
+ * if it covers the minumum number of instances and its presence improves the
+ * quality of the rule. This pruner is suitable for hierarchical classification
+ * problems.
  * <p>
  * Note that the rule might be empty at the end of the pruning, meaning that no
  * term covered the minimum number of instances required.
  * </p>
  * 
  * @author Fernando Esteban Barril Otero
+ * 
+ * @since 5.0
  */
 public class SinglePassPruner extends Pruner {
     @Override
@@ -53,12 +62,16 @@ public class SinglePassPruner extends Pruner {
                      RuleFunction function) {
         Term[] terms = rule.terms();
         Coverage[] coverage = new Coverage[terms.length];
+        // number of class labels (only used for non-hierarchical problems
+        // to store each value class frequency)
+        final int length = dataset.isHierarchical() ? 0 : dataset.classLength();
 
         for (int j = 0; j < coverage.length; j++) {
-            coverage[j] = new Coverage(dataset.classLength());
+            coverage[j] = new Coverage(length);
         }
 
-        // (1) determines the coverage of each term
+        // (1) determines the coverage of each term. this includes the indexes
+        // of the covered instances and their class frequency
 
         int start = 0;
 
@@ -74,9 +87,15 @@ public class SinglePassPruner extends Pruner {
                             double v = dataset.value(i, condition.attribute);
 
                             if (condition.satisfies(v)) {
-                                coverage[j].covered[c]++;
+                                coverage[j].instances.add(i);
+
+                                if (!dataset.isHierarchical()) {
+                                    coverage[j].covered[c]++;
+                                }
                             } else {
-                                coverage[j].uncovered[c]++;
+                                if (!dataset.isHierarchical()) {
+                                    coverage[j].uncovered[c]++;
+                                }
                                 // stops checking the remaining terms
                                 break;
                             }
@@ -93,7 +112,7 @@ public class SinglePassPruner extends Pruner {
                 start++;
                 // reset coverage for all terms
                 for (int j = 0; j < coverage.length; j++) {
-                    coverage[j] = new Coverage(dataset.classLength());
+                    coverage[j] = new Coverage(length);
                 }
             } else {
                 // when the rule covers the minimum number of cases, stop the
@@ -105,8 +124,6 @@ public class SinglePassPruner extends Pruner {
         // (2) determines the quality of each term
 
         Assignator assignator = CONFIG.get(ASSIGNATOR);
-        ClassificationRule cRule = (ClassificationRule) rule;
-
         int selected = -1;
         Cost best = null;
 
@@ -114,8 +131,7 @@ public class SinglePassPruner extends Pruner {
             // the rule must cover a minimum number of cases, therefore
             // only terms that cover more than the limit are considered
             if (coverage[i].total() >= CONFIG.get(MINIMUM_CASES)) {
-                cRule.covered(coverage[i].covered);
-                cRule.uncovered(coverage[i].uncovered);
+                reset(dataset, instances, coverage[i], rule);
                 assignator.assign(dataset, rule, instances);
 
                 Cost current = function.evaluate(dataset, rule, instances);
@@ -139,9 +155,43 @@ public class SinglePassPruner extends Pruner {
 
         rule.setQuality(best);
         rule.compact();
-        rule.apply(dataset, instances);
+
+        if (selected != -1) {
+            reset(dataset, instances, coverage[selected], rule);
+        }
 
         return assignator.assign(dataset, rule, instances);
+    }
+
+    /**
+     * Resets the coverage of a rule using the <code>Coverage</code> object of
+     * the current term.
+     * 
+     * @param dataset
+     *            the current dataset.
+     * @param instances
+     *            the instaces flag array.
+     * @param coverage
+     *            the coverage of the term.
+     * @param rule
+     *            the rule being pruned.
+     */
+    private void reset(Dataset dataset,
+                       Instance[] instances,
+                       Coverage coverage,
+                       Rule rule) {
+        // reset the covered instances
+        Instance.mark(instances, RULE_COVERED, NOT_COVERED);
+
+        for (int index : coverage.instances) {
+            instances[index].flag = RULE_COVERED;
+        }
+
+        if (!dataset.isHierarchical()) {
+            ClassificationRule r = (ClassificationRule) rule;
+            r.covered(coverage.covered);
+            r.uncovered(coverage.uncovered);
+        }
     }
 
     /**
@@ -150,6 +200,11 @@ public class SinglePassPruner extends Pruner {
      * @author Fernando Esteban Barril Otero
      */
     private static class Coverage {
+        /**
+         * Covered instances information.
+         */
+        ArrayList<Integer> instances;
+
         /**
          * Covered instances information.
          */
@@ -169,6 +224,7 @@ public class SinglePassPruner extends Pruner {
         Coverage(int length) {
             covered = new int[length];
             uncovered = new int[length];
+            instances = new ArrayList<>();
         }
 
         /**
@@ -177,13 +233,7 @@ public class SinglePassPruner extends Pruner {
          * @return the total number of covered examples.
          */
         int total() {
-            int total = 0;
-
-            for (int i = 0; i < covered.length; i++) {
-                total += covered[i];
-            }
-
-            return total;
+            return instances.size();
         }
     }
 }

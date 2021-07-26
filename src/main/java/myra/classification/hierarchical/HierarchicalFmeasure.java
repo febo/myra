@@ -1,5 +1,5 @@
 /*
- * hFMeasure.java
+ * HierarchicalFmeasure.java
  * (this file is part of MYRA)
  * 
  * Copyright 2008-2021 Fernando Esteban Barril Otero
@@ -32,7 +32,7 @@ import myra.rule.ListMeasure;
 import myra.rule.RuleList;
 
 /**
- * This class calculates the Hierarchical hF-measure using the micro-average of
+ * This class calculates the Hierarchical F-measure using the micro-average of
  * the Hierarchical Precision and Recall.
  * 
  * <p>
@@ -44,7 +44,7 @@ import myra.rule.RuleList;
  * 
  * @since 5.0
  */
-public class hFmeasure extends HierarchicalMeasure implements ListMeasure {
+public class HierarchicalFmeasure extends HierarchicalMeasure implements ListMeasure {
     /**
      * The config key for the weighing factor between recall and precision.
      */

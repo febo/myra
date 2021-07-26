@@ -327,6 +327,10 @@ public class Graph {
          *            the value to set.
          */
         public void set(int level, double value) {
+            if (Double.isNaN(value)) {
+                throw new IllegalArgumentException("Invalid pheromone value: " + value);
+            }
+
             if (level < values.length) {
                 values[level] = value;
             } else {

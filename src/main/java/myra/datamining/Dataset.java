@@ -24,6 +24,7 @@ import static myra.datamining.Attribute.Type.CONTINUOUS;
 import static myra.datamining.Attribute.Type.NOMINAL;
 import static myra.datamining.Hierarchy.SEPARATOR;
 
+import java.security.InvalidParameterException;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashSet;
@@ -228,6 +229,39 @@ public final class Dataset {
     }
 
     /**
+     * Removes an attribute from the dataset. The attribute must be part of the
+     * dataset. This operation can only be performed if the dataset is empty.
+     * 
+     * @param attribute
+     *            the attribute to be removed.
+     */
+    public void remove(Attribute attribute) {
+        if (instances.length > 0) {
+            throw new IllegalStateException("Dataset metadata cannot"
+                    + " change after adding instances.");
+        }
+        // sanity check
+        if (attribute != attributes[attribute.getIndex()]) {
+            throw new InvalidParameterException("Attribute object does not match: "
+                    + "object must be part of the dataset metadata.");
+        }
+
+        Attribute[] copy = new Attribute[attributes.length - 1];
+
+        for (int i = 0, source = 0; i < copy.length; i++, source++) {
+            if (i == attribute.getIndex()) {
+                source++;
+            }
+
+            Attribute a = attributes[source];
+            a.setIndex(i);
+            copy[i] = a;
+        }
+
+        attributes = copy;
+    }
+
+    /**
      * Adds an instance to the dataset.
      * 
      * @param values
@@ -259,7 +293,7 @@ public final class Dataset {
                 if (i == classIndex() && hierarchy != null) {
                     HashSet<String> labels = new HashSet<String>();
 
-                    for (String label : values[i].split(SEPARATOR)) {
+                    for (String label : values[i].split(Hierarchy.SEPARATOR)) {
                         labels.add(hierarchy.get(label).getLabel());
 
                         for (Node ancestor : hierarchy.get(label)

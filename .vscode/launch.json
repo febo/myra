@@ -57,18 +57,11 @@
         },
         {
             "type": "java",
-            "name": "Hierarchical Ant-Miner",
-            "request": "launch",
-            "mainClass": "myra.algorithm.HierarchicalAntMiner",
-            "projectName": "myra"
-        },
-        {
-            "type": "java",
             "name": "Hierarchical Multi-Label Ant-Miner",
             "request": "launch",
             "mainClass": "myra.algorithm.HierarchicalMultiLabelAntMiner",
             "projectName": "myra",
-            "args": "-f /Users/febo/Documents/uok/experiments/hierarchical/funcat/cellcycle/cellcycle_FUN.trainvalid.arff.zip -t /Users/febo/Documents/uok/experiments/hierarchical/funcat/cellcycle/cellcycle_FUN.test.arff.zip -c 1 -i 1 --ignore-root"
+            "args": "-f /Users/febo/Documents/uok/experiments/hierarchical/single-label/ds1/aa/TR00_ion-channel.arff -t /Users/febo/Documents/uok/experiments/hierarchical/single-label/ds1/aa/TS00_ion-channel.arff -r hFmeasure -w 1.0 --single-label"
         },
         {
             "type": "java",
@@ -76,7 +69,7 @@
             "request": "launch",
             "mainClass": "myra.algorithm.PittsburghHierarchicalMultiLabelAntMiner",
             "projectName": "myra",
-            "args": "-f /Users/febo/Documents/uok/experiments/hierarchical/funcat/cellcycle/cellcycle_FUN.trainvalid.arff.zip -t /Users/febo/Documents/uok/experiments/hierarchical/funcat/cellcycle/cellcycle_FUN.test.arff.zip -c 1 -i 1 --ignore-root"
+            "args": "-f /Users/febo/Documents/uok/experiments/hierarchical/single-label/ds1/aa/TR00_ion-channel.arff -t /Users/febo/Documents/uok/experiments/hierarchical/single-label/ds1/aa/TS00_ion-channel.arff -r hFmeasure -l hFmeasure -w 1.0 --single-label"
         },
         {
             "type": "java",

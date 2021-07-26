@@ -1,5 +1,5 @@
 /*
- * hFmeasure.java
+ * HierarchicalFmeasure.java
  * (this file is part of MYRA)
  * 
  * Copyright 2008-2021 Fernando Esteban Barril Otero
@@ -17,16 +17,17 @@
  * limitations under the License.
  */
 
-package myra.classification.rule.function;
+package myra.classification.rule.hierarchical;
 
 import static myra.Config.CONFIG;
-import static myra.classification.hierarchical.hFmeasure.BETA;
+import static myra.classification.hierarchical.HierarchicalFmeasure.BETA;
 import static myra.datamining.Dataset.RULE_COVERED;
 import static myra.datamining.Hierarchy.IGNORE;
 
 import myra.Cost;
 import myra.Cost.Maximise;
 import myra.classification.rule.ClassificationRule;
+import myra.classification.rule.function.ClassificationRuleFunction;
 import myra.datamining.Dataset;
 import myra.datamining.Dataset.Instance;
 import myra.datamining.Hierarchy;
@@ -44,7 +45,7 @@ import myra.datamining.Hierarchy;
  * 
  * @since 5.0
  */
-public class hFmeasure extends ClassificationRuleFunction {
+public class HierarchicalFmeasure extends ClassificationRuleFunction {
     @Override
     public Cost evaluate(Dataset dataset,
                          ClassificationRule rule,

@@ -51,6 +51,11 @@ public class Hierarchy {
     public final static ConfigKey<boolean[]> IGNORE = new ConfigKey<>();
 
     /**
+     * The config key to indicate single-label hierarchical problems.
+     */
+    public final static ConfigKey<Boolean> SINGLE_LABEL = new ConfigKey<>();
+
+    /**
      * Relationship separator between nodes of the hierarchy.
      */
     public final static String DELIMITER = "/";
@@ -218,6 +223,8 @@ public class Hierarchy {
             root.getParents().clear();
         }
 
+        distribution = new double[nodes.size()];
+
         // once the structure of the hierarchy is validated, computes
         // the weights of the nodes (see Vens et al., "Decision Trees
         // for Hierarchical Multi-label Classification",
@@ -225,13 +232,31 @@ public class Hierarchy {
 
         weigh();
 
-        distribution = new double[nodes.size()];
+        // determines the depth of each node of the class hierarchy
+        // if a node has multiple parents, the depth is the smallest
+        // value among the parents
+
+        root.depth = 0;
+        LinkedList<Node> toVisit = new LinkedList<>(root.getChildren());
+
+        while (!toVisit.isEmpty()) {
+            Node node = toVisit.removeFirst();
+
+            for (Node parent : node.getParents()) {
+                if (node.depth == -1 || (parent.depth + 1) < node.depth) {
+                    node.depth = parent.depth + 1;
+                }
+            }
+
+            toVisit.addAll(node.getChildren());
+        }
     }
 
     /**
      * Increaments the class label distribution.
      * 
-     * @param active the active class labels to increment.
+     * @param active
+     *            the active class labels to increment.
      */
     public void increment(boolean[] active) {
         if (active.length != distribution.length) {
@@ -298,6 +323,11 @@ public class Hierarchy {
         private double weight;
 
         /**
+         * The depth of the node in the class hierarchy.
+         */
+        private int depth = -1;
+
+        /**
          * Default constructor.
          * 
          * @param label
@@ -307,6 +337,20 @@ public class Hierarchy {
             this.label = label;
             parents = new LinkedList<Node>();
             children = new LinkedList<Node>();
+        }
+
+        /**
+         * Returns the depth of the node in the class hierarchy.
+         * 
+         * @return the depth of the node in the class hierarchy.
+         */
+        public int getDepth() {
+            if (depth == -1) {
+                throw new IllegalStateException("Depth not calculated: "
+                        + depth);
+            }
+
+            return depth;
         }
 
         /**

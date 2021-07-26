@@ -174,7 +174,8 @@ public final class Label implements Prediction, Cloneable {
     /**
      * Returns the number of labels present in both <code>Label</code> objects.
      * 
-     * @param other the <code>Label</code> object for comparison.
+     * @param other
+     *            the <code>Label</code> object for comparison.
      * 
      * @return the number of labels present in both <code>Label</code> objects.
      */
@@ -247,6 +248,30 @@ public final class Label implements Prediction, Cloneable {
     @Override
     public int hashCode() {
         return Arrays.hashCode(active);
+    }
+
+    /**
+     * Indicates whether some label is "equal to" this label. The comparison
+     * only takes into consideration the active label, i.e., the probabilities
+     * of the labels are not compared.
+     * 
+     * @param other
+     *            the label with which to compare.
+     * 
+     * @return <code>true</code> is this label has the same active values as the
+     *         other label; <code>false</code> otherwise.
+     */
+    public boolean equals(Label other) {
+        return Arrays.equals(active, other.active);
+    }
+
+    @Override
+    public boolean equals(Object object) {
+        if (object instanceof Label) {
+            return equals((Label) object);
+        }
+
+        return false;
     }
 
     /**
@@ -343,6 +368,35 @@ public final class Label implements Prediction, Cloneable {
 
         Label label = new Label(target);
         label.active = active;
+        return label;
+    }
+
+    /**
+     * Returns a new <code>Label</code> instance representing the specified list
+     * of labels.
+     * 
+     * @param target
+     *            the target attribute.
+     * @param active
+     *            the information of active values.
+     * @param probabilities
+     *            the probability associared with each label.
+     * 
+     * @return a new <code>Label</code> instance representing the specified list
+     *         of labels.
+     */
+    public static Label toLabel(Attribute target,
+                                boolean[] active,
+                                double[] probabilities) {
+        if (target.length() < active.length) {
+            throw new IllegalArgumentException("Invalid number of labels: <"
+                    + target.length() + "> expected, <" + active.length
+                    + "> found");
+        }
+
+        Label label = new Label(target);
+        label.active = active;
+        label.probabilities = probabilities;
         return label;
     }
 }

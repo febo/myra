@@ -80,9 +80,19 @@ public class ARFFReader {
     private static final String REAL = "real";
 
     /**
+     * Constant representing the value separator.
+     */
+    private static final String SEPARATOR = ",";
+
+    /**
      * Constant representing a hierarchical attribute.
      */
     private static final String HIERARCHICAL = "hierarchical";
+
+    /**
+     * Constant representing the hierarchical relations.
+     */
+    private static final String HIERARCHY_RELATION = "@class";
 
     /**
      * Reads the specified file.
@@ -150,6 +160,8 @@ public class ARFFReader {
         Dataset dataset = new Dataset();
         String line = null;
         boolean dataSection = false;
+        // hierarchy relations (if present)
+        StringBuffer hierarchy = null;
 
         while ((line = reader.readLine()) != null) {
             String[] split = split(line);
@@ -169,9 +181,29 @@ public class ARFFReader {
                         processAttribute(dataset, split);
                     }
                 } else if (split[0].startsWith(DATA)) {
+                    // hierarchy relations specified, need to process them
+                    if (hierarchy != null) {
+                        split = new String[] { ATTRIBUTE,
+                                               dataset.getTarget().getName(),
+                                               HIERARCHICAL,
+                                               hierarchy.toString() };
+                        // removes the class attribute (it will be added
+                        // together with the class hierarchy)
+                        dataset.remove(dataset.getTarget());
+
+                        processHierarchy(dataset, split);
+                    }
+
                     dataSection = true;
                 } else if (split[0].startsWith(RELATION) && split.length == 2) {
                     dataset.setName(split[1]);
+                } else if (split[0].startsWith(HIERARCHY_RELATION)) {
+                    if (hierarchy == null) {
+                        hierarchy = new StringBuffer();
+                    } else {
+                        hierarchy.append(SEPARATOR);
+                    }
+                    hierarchy.append(processHierarchyRelation(split));
                 }
                 // we must be dealing with an instance
                 else if (dataSection) {
@@ -315,7 +347,7 @@ public class ARFFReader {
      *            the instance information.
      */
     private void processInstance(Dataset dataset, String line) {
-        StringTokenizer tokens = new StringTokenizer(line, ",");
+        StringTokenizer tokens = new StringTokenizer(line, SEPARATOR);
         String[] values = new String[tokens.countTokens()];
         int index = 0;
 
@@ -403,7 +435,8 @@ public class ARFFReader {
         dataset.add(attribute);
         dataset.setHierarchy(hierarchy);
 
-        // (4) determines the labels from the hierarchy to ignore (usually the root label)
+        // (4) determines the labels from the hierarchy to ignore (usually the
+        // root label)
 
         boolean[] flags = new boolean[dataset.getTarget().size()];
         Arrays.fill(flags, false);
@@ -415,8 +448,7 @@ public class ARFFReader {
             if (list == null) {
                 ignore = new HashSet<>();
             } else {
-                ignore = new HashSet<>(Arrays
-                        .asList(list.split(Hierarchy.SEPARATOR)));
+                ignore = new HashSet<>(Arrays.asList(Hierarchy.SEPARATOR));
             }
             // the root label is always ignore
             ignore.add(dataset.getHierarchy().root().getLabel());
@@ -429,6 +461,44 @@ public class ARFFReader {
         }
 
         CONFIG.set(IGNORE, flags);
+    }
+
+    /**
+     * Parses an attribute.
+     * 
+     * @param dataset
+     *            the dataset being read.
+     * @param components
+     *            the components representing the attribute.
+     */
+    private String processHierarchyRelation(String[] components) {
+        StringBuffer relations = new StringBuffer();
+
+        if (components.length < 3) {
+            // root label
+            relations.append("root");
+            relations.append(DELIMITER);
+            relations.append(trim(components[1]));
+        } else if (components[2].startsWith("{")) {
+            StringBuffer values = new StringBuffer();
+            for (int i = 0; i < components[2].length(); i++) {
+                if (components[2].charAt(i) == ','
+                        || components[2].charAt(i) == '}') {
+                    if (relations.length() > 0) {
+                        relations.append(SEPARATOR);
+                    }
+                    relations.append(trim(values.toString()));
+                    relations.append(DELIMITER);
+                    relations.append(trim(components[1]));
+                    // clears the previous value
+                    values.delete(0, values.length());
+                } else if (components[2].charAt(i) != '{') {
+                    values.append(components[2].charAt(i));
+                }
+            }
+        }
+
+        return relations.toString();
     }
 
     /**

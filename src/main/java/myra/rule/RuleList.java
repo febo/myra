@@ -84,6 +84,15 @@ public class RuleList extends AbstractWeighable<RuleList> implements Model {
     }
 
     /**
+     * Returns the last rule in the list.
+     * 
+     * @return the last rule in the list.
+     */
+    public Rule last() {
+        return rules[rules.length - 1];
+    }
+
+    /**
      * Returns the number of rules.
      * 
      * @return the number of rules.
@@ -101,7 +110,7 @@ public class RuleList extends AbstractWeighable<RuleList> implements Model {
      */
     public boolean hasDefault() {
         for (int i = 0; i < rules.length; i++) {
-            if (rules[i].terms().length == 0) {
+            if (rules[i].terms().length == 0 && rules[i].isEnabled()) {
                 return true;
             }
         }
@@ -117,7 +126,7 @@ public class RuleList extends AbstractWeighable<RuleList> implements Model {
      */
     public Rule defaultRule() {
         for (int i = 0; i < rules.length; i++) {
-            if (rules[i].terms().length == 0) {
+            if (rules[i].terms().length == 0 && rules[i].isEnabled()) {
                 return rules[i];
             }
         }
@@ -189,10 +198,37 @@ public class RuleList extends AbstractWeighable<RuleList> implements Model {
      */
     public void compact() {
         int position = 0;
+        int defaultIndex = -1;
 
-        for (Rule rule : rules) {
+        for (int i = 0; i < rules.length; i++) {
+            Rule rule = rules[i];
+
             if (rule.isEnabled()) {
-                position++;
+                if (defaultIndex == -1) {
+                    position++;
+                } else {
+                    rule.setEnabled(false);
+                }
+            }
+            // we will disable all rules after the default rule
+            // since they will not be used
+            if (rule.size() == 0 && rule.isEnabled()) {
+                defaultIndex = i;
+            }
+        }
+
+        // disable rules before the default rule which have
+        // the same class prediction since they are reduntant
+        Prediction consequent = rules[defaultIndex].getConsequent();
+
+        for (int i = defaultIndex - 1; i >= 0; i--) {
+            if (rules[i].isEnabled()) {
+                if (consequent.equals(rules[i].getConsequent())) {
+                    rules[i].setEnabled(false);
+                    position--;
+                } else {
+                    break;
+                }
             }
         }
 

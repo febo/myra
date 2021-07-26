@@ -1,8 +1,8 @@
 /*
- * ClassHierarchy.java
+ * ListHierarchicalFmeasure.java
  * (this file is part of MYRA)
  * 
- * Copyright 2008-2016 Fernando Esteban Barril Otero
+ * Copyright 2008-2021 Fernando Esteban Barril Otero
  * 
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -17,23 +17,23 @@
  * limitations under the License.
  */
 
-package myra.datamining;
+package myra.classification.rule.hierarchical;
 
-import myra.Config.ConfigKey;
+import myra.Cost;
+import myra.classification.ClassificationModel;
+import myra.classification.hierarchical.HierarchicalFmeasure;
+import myra.datamining.Dataset;
+import myra.rule.ListMeasure;
+import myra.rule.RuleList;
 
 /**
- * This class represents a class hierarchy.
+ * Hierarchical F-measure list evaluator.
  * 
  * @author Fernando Esteban Barril Otero
  */
-public class ClassHierarchy {
-    /**
-     * The config key for the class weight value.
-     */
-    public final static ConfigKey<Double> WEIGHT = new ConfigKey<>();
-
-    /**
-     * Relationship separator between nodes of the hierarchy.
-     */
-    public final static String RELATION = "/";
+public class ListHierarchicalFmeasure extends HierarchicalFmeasure implements ListMeasure {
+    @Override
+    public Cost evaluate(Dataset dataset, RuleList list) {
+        return evaluate(dataset, new ClassificationModel(list));
+    }
 }

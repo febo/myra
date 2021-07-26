@@ -27,6 +27,8 @@ import myra.rule.ListMeasure;
 import myra.rule.RuleList;
 
 /**
+ * AUPRC list evaluator.
+ * 
  * @author Fernando Esteban Barril Otero
  */
 public class ListAUPRC extends AUPRC implements ListMeasure {

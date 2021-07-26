@@ -49,21 +49,26 @@ public class SinglePathAssignator extends ProbabilisticAssignator {
         String[] values = target.values();
         double[] probabilities = label.probabilities();
 
-        // identifies the leaf node with the highest probability
-        Node leaf = null;
-        double p = Double.MIN_VALUE;
+        // identifies the leaf node at the lowest depth
+        Node node = null;
+        double p = 0;
 
         for (int i = 0; i < probabilities.length; i++) {
-            if (probabilities[i] > p && hierarchy.get(values[i]).isLeaf()) {
-                leaf = hierarchy.get(values[i]);
-                p = probabilities[i];
+            if (probabilities[i] > 0) {
+                Node n = hierarchy.get(values[i]);
+                if (node == null || node.getDepth() < n.getDepth()
+                        || (node.getDepth() == n.getDepth()
+                                && probabilities[i] > p)) {
+                    node = n;
+                    p = probabilities[i];
+                }
             }
         }
 
         TreeSet<String> labels = new TreeSet<>();
-        labels.add(leaf.getLabel());
+        labels.add(node.getLabel());
 
-        for (Node ancestor : leaf.getAncestors()) {
+        for (Node ancestor : node.getAncestors()) {
             labels.add(ancestor.getLabel());
         }
 
@@ -71,9 +76,13 @@ public class SinglePathAssignator extends ProbabilisticAssignator {
 
         for (int i = 0; i < values.length; i++) {
             active[i] = labels.contains(values[i]);
+            if (!active[i]) {
+                probabilities[i] = 0;
+            }
         }
 
-        rule.setConsequent(Label.toLabel(dataset.getTarget(), active));
+        rule.setConsequent(Label
+                .toLabel(dataset.getTarget(), active, probabilities));
 
         return available;
     }
