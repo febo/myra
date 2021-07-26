@@ -217,17 +217,19 @@ public class RuleList extends AbstractWeighable<RuleList> implements Model {
             }
         }
 
-        // disable rules before the default rule which have
-        // the same class prediction since they are reduntant
-        Prediction consequent = rules[defaultIndex].getConsequent();
+        if (defaultIndex > -1) {
+            // disable rules before the default rule which have
+            // the same class prediction since they are reduntant
+            Prediction consequent = rules[defaultIndex].getConsequent();
 
-        for (int i = defaultIndex - 1; i >= 0; i--) {
-            if (rules[i].isEnabled()) {
-                if (consequent.equals(rules[i].getConsequent())) {
-                    rules[i].setEnabled(false);
-                    position--;
-                } else {
-                    break;
+            for (int i = defaultIndex - 1; i >= 0; i--) {
+                if (rules[i].isEnabled()) {
+                    if (consequent.equals(rules[i].getConsequent())) {
+                        rules[i].setEnabled(false);
+                        position--;
+                    } else {
+                        break;
+                    }
                 }
             }
         }
