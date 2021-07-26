@@ -22,7 +22,6 @@ package myra.rule;
 import static myra.Config.CONFIG;
 
 import java.util.Arrays;
-import java.util.Collection;
 
 import myra.Config.ConfigKey;
 import myra.Cost;

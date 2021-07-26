@@ -22,7 +22,6 @@ package myra.datamining;
 import static myra.Config.CONFIG;
 import static myra.datamining.Attribute.Type.CONTINUOUS;
 import static myra.datamining.Attribute.Type.NOMINAL;
-import static myra.datamining.Hierarchy.SEPARATOR;
 
 import java.security.InvalidParameterException;
 import java.util.ArrayList;
