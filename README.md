@@ -10,7 +10,17 @@ While this repository is a fresh start, the versioning is maintained &mdash; the
 
 ###### Latest Release
 
-* [MYRA 5.0 (jar file)](https://sourceforge.net/projects/myra/files/myra/5.0/myra-5.0.jar/download)
+* [JAR file (myra-5.0.jar)](https://github.com/febo/myra/releases/download/v5.0/myra-5.0.jar)
+
+* Maven dependency:
+
+```
+<dependency>
+   <groupId>com.github.febo</groupId>
+   <artifactId>myra</artifactId>
+   <version>5.0</version>
+</dependency>
+```
 
 ### Algorithms
 
