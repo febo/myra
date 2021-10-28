@@ -115,15 +115,16 @@ public class VarianceGain extends ClassificationRuleFunction {
                 for (int j = 0; j < active.length; j++) {
                     double tValue =
                             (active[j] ? instances[i].weight : 0) - tAverage[j];
-                    tDistance = weight[j] * (tValue * tValue);
+                    tDistance += weight[j] * (tValue * tValue);
 
                     double cValue =
                             (active[j] ? instances[i].weight : 0) - cAverage[j];
-                    cDistance = weight[j] * (cValue * cValue);
+                    cDistance += weight[j] * (cValue * cValue);
                 }
-
-                tVariance += Math.sqrt(tDistance);
-                cVariance += Math.sqrt(cDistance);
+                // the sqrt of the distance function cancels out the sq of the
+                // variance
+                tVariance += tDistance;
+                cVariance += cDistance;
             } else if (instances[i].flag == NOT_COVERED) {
                 double tDistance = 0.0;
                 double uDistance = 0.0;
@@ -131,15 +132,16 @@ public class VarianceGain extends ClassificationRuleFunction {
                 for (int j = 0; j < active.length; j++) {
                     double tValue =
                             (active[j] ? instances[i].weight : 0) - tAverage[j];
-                    tDistance = weight[j] * (tValue * tValue);
+                    tDistance += weight[j] * (tValue * tValue);
 
                     double uValue =
                             (active[j] ? instances[i].weight : 0) - uAverage[j];
-                    uDistance = weight[j] * (uValue * uValue);
+                    uDistance += weight[j] * (uValue * uValue);
                 }
-
-                tVariance += Math.sqrt(tDistance);
-                uVariance += Math.sqrt(uDistance);
+                // the sqrt of the distance function cancels out the sq of the
+                // variance
+                tVariance += tDistance;
+                uVariance += uDistance;
             }
         }
 

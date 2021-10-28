@@ -118,9 +118,7 @@ public class VarianceHeuristic implements Heuristic {
                         int[] counter = new int[attribute.size()];
 
                         // (1) computer the average values for the hierarchy
-                        // values
-                        // for each
-                        // value of the attribute
+                        // values for each value of the attribute
 
                         for (int j = 0; j < dataset.size(); j++) {
                             if (instances[j].flag == RULE_COVERED) {
@@ -168,10 +166,11 @@ public class VarianceHeuristic implements Heuristic {
                                                 (active[k] ? instances[j].weight
                                                         : 0)
                                                         - average[(int) v][k];
-                                        distance = weight[k] * (value * value);
+                                        distance += weight[k] * (value * value);
                                     }
-
-                                    variance[(int) v] += Math.sqrt(distance);
+                                    // the sqrt of the distance function cancels
+                                    // out the sq of the variance
+                                    variance[(int) v] += distance;
                                 }
                             }
                         }
@@ -187,9 +186,8 @@ public class VarianceHeuristic implements Heuristic {
                                                 / total;
                                 // negative values indicate that the split has a
                                 // worst variance than the original set;
-                                // therefore
-                                // we set the heuristic to 0 to avoid selecting
-                                // the term
+                                // therefore we set the heuristic to 0 to avoid
+                                // selecting the term
                                 heuristic[vertex]
                                         .set(0, value > 0.0 ? value : 0.0);
                             }
@@ -281,10 +279,11 @@ public class VarianceHeuristic implements Heuristic {
                 for (int j = 0; j < active.length; j++) {
                     double value = (active[j] ? instances[i].weight : 0)
                             - frequency[j];
-                    distance = weight[j] * (value * value);
+                    distance += weight[j] * (value * value);
                 }
-
-                variance += Math.sqrt(distance);
+                // the sqrt of the distance function cancels out the sq of the
+                // variance
+                variance += distance;
             }
         }
 

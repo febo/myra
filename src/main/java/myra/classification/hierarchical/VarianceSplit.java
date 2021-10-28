@@ -320,10 +320,11 @@ public class VarianceSplit extends IntervalBuilder {
                 double value =
                         (candidates[i].active[j] ? candidates[i].weight : 0)
                                 - average[j];
-                distance = weight[j] * (value * value);
+                distance += weight[j] * (value * value);
             }
-
-            variance += Math.sqrt(distance);
+            // the sqrt of the distance function cancels out the sq of the
+            // variance
+            variance += distance;
         }
 
         return variance / size;
