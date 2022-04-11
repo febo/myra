@@ -172,4 +172,20 @@ public abstract class AbstractPruner {
             }
         }
     }
+
+    /**
+     * A <i>no pruner</i> procedure.
+     * 
+     * @author Fernando Esteban Barril Otero
+     */
+    public static class None extends AbstractPruner {
+        @Override
+        protected void prune(Dataset dataset,
+                             Tree tree,
+                             InternalNode node,
+                             InternalNode parent,
+                             int index) {
+            // this is a 'no' pruner operator
+        }
+    }
 }

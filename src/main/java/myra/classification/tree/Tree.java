@@ -338,7 +338,7 @@ public class Tree extends AbstractWeighable<Tree> implements Model {
                         }
                     }
 
-                    // at the end of this procedure, the threshold ad value
+                    // at the end of this procedure, the threshold and value
                     // should be the same
                     for (int k = 0; k < c.value.length; k++) {
                         c.value[k] = c.threshold[k];

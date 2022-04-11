@@ -87,6 +87,7 @@ public class AJ48 extends Classifier {
                              "method");
         pruner.add("accuracy", new AccuracyPruner());
         pruner.add("pessimistic", CONFIG.get(DEFAULT_PRUNER));
+        pruner.add("none", new AbstractPruner.None());
         options.add(pruner);
 
         // heuristic information
