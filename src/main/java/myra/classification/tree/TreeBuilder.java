@@ -230,7 +230,7 @@ public class TreeBuilder {
         if (valid >= 2) {
             for (int i = 0; i < count.length; i++) {
                 if (count[i] == 0) {
-                    // add a leaf node predicting the mojority class of
+                    // add a leaf node predicting the majority class of
                     // the parent node
 
                     Label prediction =

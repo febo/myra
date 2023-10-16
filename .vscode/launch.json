@@ -12,6 +12,14 @@
         },
         {
             "type": "java",
+            "name": "AJ48",
+            "request": "launch",
+            "mainClass": "myra.classification.tree.AJ48",
+            "projectName": "myra",
+            "args": "-f /Users/febo/Documents/uok/uci/datasets/credit-g/german.arff"
+        },
+        {
+            "type": "java",
             "name": "Ant-Miner",
             "request": "launch",
             "mainClass": "myra.algorithm.AntMiner",
